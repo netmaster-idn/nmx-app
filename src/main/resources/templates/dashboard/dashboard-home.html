@@ -1,0 +1,1043 @@
+<div th:fragment="content">
+    <style>
+        .dashboard-home {
+            display: grid;
+            gap: 14px;
+        }
+
+        .dashboard-home .card {
+            background: var(--surface-gradient-soft);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(var(--blur-md));
+            -webkit-backdrop-filter: blur(var(--blur-md));
+            overflow: hidden;
+        }
+
+        .dashboard-home .widget-stat {
+            padding: 14px;
+        }
+
+        .dashboard-home .p-6 {
+            padding: 16px;
+        }
+
+        .dashboard-home .card::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px auto 1px;
+            height: 34%;
+            border-radius: inherit;
+            background: var(--glass-top-highlight);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .dashboard-alert-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .dashboard-alert-card {
+            min-width: 0;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .dashboard-alert-trigger {
+            width: 100%;
+            display: block;
+            padding: 0;
+            color: inherit;
+            text-align: left;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+
+        .dashboard-alert-card .alert-item {
+            height: 100%;
+            padding: 12px 14px;
+            align-items: flex-start;
+            border-radius: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--popup-form-surface);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(var(--blur-sm));
+            -webkit-backdrop-filter: blur(var(--blur-sm));
+            transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .dashboard-alert-trigger:hover .alert-item,
+        .dashboard-alert-trigger:focus-visible .alert-item {
+            transform: translateY(-3px);
+            border-color: rgba(103, 232, 249, 0.3);
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.24), var(--shadow-sm);
+        }
+
+        .dashboard-alert-trigger:focus-visible {
+            outline: none;
+        }
+
+        .dashboard-alert-card .widget-stat-icon {
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 11px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+            font-size: 14px;
+        }
+
+        .dashboard-alert-card.severity-critical .widget-stat-icon {
+            background: rgba(251, 113, 133, 0.16);
+            color: #fda4af;
+        }
+
+        .dashboard-alert-card.severity-warning .widget-stat-icon {
+            background: rgba(251, 191, 36, 0.16);
+            color: #fcd34d;
+        }
+
+        .dashboard-alert-card.severity-billing .widget-stat-icon {
+            background: rgba(168, 85, 247, 0.16);
+            color: #d8b4fe;
+        }
+
+        .dashboard-alert-card.severity-info .widget-stat-icon,
+        .dashboard-alert-card.severity-success .widget-stat-icon {
+            background: rgba(56, 189, 248, 0.16);
+            color: #93c5fd;
+        }
+
+        .dashboard-alert-card.severity-critical .alert-item {
+            border-left: 1px solid rgba(251, 113, 133, 0.26);
+            border-color: rgba(251, 113, 133, 0.26);
+            border-radius: 18px;
+            box-shadow: 0 0 20px rgba(251, 113, 133, 0.08), var(--shadow-sm);
+        }
+
+        .dashboard-alert-card.severity-warning .alert-item {
+            border-color: rgba(251, 191, 36, 0.22);
+        }
+
+        .dashboard-alert-card.severity-billing .alert-item {
+            border-color: rgba(168, 85, 247, 0.22);
+        }
+
+        .dashboard-alert-card.severity-info .alert-item,
+        .dashboard-alert-card.severity-success .alert-item {
+            border-color: rgba(103, 232, 249, 0.22);
+        }
+
+        .dashboard-alert-copy {
+            min-width: 0;
+        }
+
+        .dashboard-alert-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .dashboard-alert-title {
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .dashboard-alert-detail {
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .dashboard-stats-grid > .card,
+        .dashboard-analytics-grid > .card,
+        .dashboard-bottom-grid > .card {
+            min-width: 0;
+            position: relative;
+        }
+
+        .dashboard-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .dashboard-stat-subtitle {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+
+        .dashboard-analytics-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+            gap: 12px;
+        }
+
+        .dashboard-chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dashboard-chart-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .dashboard-chart-subtitle {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .dashboard-chart-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--color-surface-soft);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dashboard-chart-wrap {
+            height: 170px;
+        }
+
+        .dashboard-chart-wrap.revenue-chart {
+            height: 270px;
+            margin-top: 10px;
+        }
+
+        .dashboard-chart-wrap.donut {
+            height: 170px;
+        }
+
+        .dashboard-health-stats {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .dashboard-health-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .dashboard-health-label {
+            color: var(--text-muted);
+        }
+
+        .dashboard-health-value {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .dashboard-bottom-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+            gap: 12px;
+        }
+
+        .dashboard-map-shell {
+            position: relative;
+            min-height: 320px;
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 38%),
+                radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.14), transparent 32%),
+                linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+
+        .dashboard-map-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.35;
+        }
+
+        .dashboard-map-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06), 0 0 20px currentColor;
+            transform: translate(-50%, -50%);
+        }
+
+        .dashboard-map-legend {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            padding: 14px;
+            border-radius: 18px;
+            background: var(--popup-form-surface);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(var(--blur-sm));
+            -webkit-backdrop-filter: blur(var(--blur-sm));
+            min-width: 180px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dashboard-map-legend-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .dashboard-map-legend-row + .dashboard-map-legend-row {
+            margin-top: 10px;
+        }
+
+        .dashboard-map-legend-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dashboard-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dashboard-empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 320px;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px;
+        }
+
+        .dashboard-registration-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .dashboard-registration-row {
+            display: grid;
+            gap: 8px;
+        }
+
+        .dashboard-registration-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .dashboard-registration-label {
+            color: var(--text-muted);
+        }
+
+        .dashboard-registration-label.current {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .dashboard-registration-value {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .dashboard-highlight-card {
+            margin-top: 4px;
+            padding: 14px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(59, 130, 246, 0.06) 40%, rgba(249, 115, 22, 0.08) 100%);
+            border: 1px solid #c8d8f0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dashboard-highlight-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .dashboard-highlight-value {
+            margin-top: 6px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .dashboard-highlight-detail {
+            margin-top: 4px;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .dashboard-home .stat-icon,
+        .dashboard-home .widget-stat-icon,
+        .dashboard-home .mini-stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            font-size: 15px;
+        }
+
+        .dashboard-home .stat-label {
+            font-size: 10px;
+            line-height: 1.2;
+        }
+
+        .dashboard-home .stat-breakdown {
+            margin-top: 8px;
+        }
+
+        .dashboard-home .stat-breakdown .text-xs,
+        .dashboard-home .dashboard-health-row,
+        .dashboard-home .dashboard-health-value {
+            font-size: 11px;
+        }
+
+        .dashboard-home .widget-stat > .flex.justify-between.items-start.mb-4 {
+            margin-bottom: 10px;
+        }
+
+        .dashboard-fallback {
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .dashboard-alert-modal-content {
+            width: 100%;
+            max-width: 760px;
+            max-height: min(78vh, 720px);
+            margin: 0;
+            transform: scale(0.97) translateY(14px);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        }
+
+        #dashboardAlertModal {
+            align-items: center;
+            justify-content: center;
+            padding: 108px 24px 86px;
+            overflow: hidden;
+        }
+
+        #dashboardAlertModal.open .dashboard-alert-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .dashboard-alert-modal-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .dashboard-alert-modal-copy {
+            display: grid;
+            gap: 8px;
+        }
+
+        .dashboard-alert-modal-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+
+        .dashboard-alert-modal-summary {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .dashboard-alert-modal-card {
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .dashboard-alert-modal-card-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+
+        .dashboard-alert-modal-card-value {
+            margin-top: 8px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .dashboard-alert-modal-card-detail {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .dashboard-alert-modal-note {
+            margin-top: 18px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .dashboard-alert-modal-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 1280px) {
+            .dashboard-alert-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .dashboard-stats-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-analytics-grid,
+            .dashboard-bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-alert-grid,
+            .dashboard-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-alert-modal-content {
+                width: 100%;
+                max-width: calc(100vw - 24px);
+                max-height: calc(100vh - 24px);
+            }
+
+            #dashboardAlertModal {
+                padding: 12px;
+            }
+
+            .dashboard-alert-modal-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+
+    <div class="dashboard-home">
+        <div class="dashboard-alert-grid">
+            <div th:class="'dashboard-alert-card severity-' + ${alert.severityClass}" th:each="alert : ${dashboard.alerts}">
+                <button
+                    class="dashboard-alert-trigger"
+                    type="button"
+                    th:attr="data-alert-label=${alert.label},data-alert-title=${alert.title},data-alert-detail=${alert.detail},data-alert-severity=${alert.severityClass}">
+                    <div th:class="'alert-item alert-' + ${alert.severityClass}">
+                        <div class="widget-stat-icon">
+                            <i th:class="${alert.iconClass}"></i>
+                        </div>
+                        <div class="dashboard-alert-copy">
+                            <div class="dashboard-alert-label" th:text="${alert.label}">Critical Alert</div>
+                            <div class="dashboard-alert-title" th:text="${alert.title}">0 alert kritis aktif</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="dashboard-fallback" th:if="${#lists.isEmpty(dashboard.alerts)}">
+            Ringkasan dashboard belum memiliki data alert untuk ditampilkan.
+        </div>
+
+        <div class="modal" id="dashboardAlertModal" aria-hidden="true">
+            <div class="modal-backdrop" data-dashboard-alert-close></div>
+            <div class="modal-content dashboard-alert-modal-content">
+                <div class="modal-header">
+                    <div class="dashboard-alert-modal-head">
+                        <div class="dashboard-alert-modal-copy">
+                            <div class="dashboard-alert-modal-label" id="dashboardAlertModalLabel">Alert</div>
+                            <h3 class="modal-title" id="dashboardAlertModalTitle">Informasi Alert</h3>
+                            <p class="modal-subtitle" id="dashboardAlertModalSubtitle">Ringkasan alert akan tampil di sini.</p>
+                        </div>
+                    </div>
+                    <button class="modal-close" type="button" data-dashboard-alert-close>&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="dashboard-alert-modal-summary" id="dashboardAlertModalSummary"></div>
+                    <div class="dashboard-alert-modal-note" id="dashboardAlertModalNote">Keterangan alert.</div>
+                </div>
+                <div class="modal-footer dashboard-alert-modal-actions" id="dashboardAlertModalActions"></div>
+            </div>
+        </div>
+
+        <div class="dashboard-stats-grid">
+            <div class="card widget-stat">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="stat-label">Total Pelanggan</div>
+                    <div class="stat-icon purple">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="dashboard-stat-value" th:text="${dashboard.customerSummary.total}">0</div>
+                <div class="stat-breakdown">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Aktif</span>
+                        <span class="dashboard-health-value" style="color: var(--status-success-text);" th:text="${dashboard.customerSummary.active}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Suspend</span>
+                        <span class="dashboard-health-value" style="color: var(--status-warning-text);" th:text="${dashboard.customerSummary.suspended}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted">Nonaktif</span>
+                        <span class="dashboard-health-value" style="color: var(--status-danger-text);" th:text="${dashboard.customerSummary.inactive}">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card widget-stat stat-card-gradient">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <div class="stat-label">Revenue Bulan Ini</div>
+                        <div class="dashboard-stat-subtitle" th:text="${dashboard.revenueSummary.subtitle}">Revenue bulan ini</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="dashboard-stat-value" th:text="${dashboard.revenueSummary.totalLabel}">Rp 0</div>
+                <div class="stat-breakdown">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Invoice Periode Ini</span>
+                        <span class="dashboard-health-value" th:text="${dashboard.revenueSummary.invoiceCount}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Overdue</span>
+                        <span class="dashboard-health-value" style="color: var(--status-danger-text);" th:text="${dashboard.revenueSummary.overdueCount}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted">Masuk Hari Ini</span>
+                        <span class="dashboard-health-value" style="color: var(--status-success-text);" th:text="${dashboard.revenueSummary.todayPaidLabel}">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card widget-stat">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="stat-label">Network Device</div>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                </div>
+                <div class="dashboard-stat-value" th:text="${dashboard.deviceSummary.total}">0</div>
+                <div class="stat-breakdown">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Online</span>
+                        <span class="dashboard-health-value" style="color: var(--status-success-text);" th:text="${dashboard.deviceSummary.online}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Offline</span>
+                        <span class="dashboard-health-value" style="color: var(--status-danger-text);" th:text="${dashboard.deviceSummary.offline}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted">Warning</span>
+                        <span class="dashboard-health-value" style="color: var(--status-warning-text);" th:text="${dashboard.deviceSummary.warning}">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card widget-stat">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="stat-label">Status ONT</div>
+                    <div class="stat-icon red">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                </div>
+                <div class="dashboard-stat-value" th:text="${dashboard.ontSummary.total}">0</div>
+                <div class="stat-breakdown">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Online</span>
+                        <span class="dashboard-health-value" style="color: var(--status-success-text);" th:text="${dashboard.ontSummary.online}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-muted">Offline</span>
+                        <span class="dashboard-health-value" style="color: var(--status-danger-text);" th:text="${dashboard.ontSummary.offline}">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted">Low Signal</span>
+                        <span class="dashboard-health-value" style="color: var(--status-warning-text);" th:text="${dashboard.ontSummary.lowSignal}">0</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dashboard-analytics-grid">
+            <div class="card p-6">
+                <div class="dashboard-chart-header">
+                    <div>
+                        <h3 class="dashboard-chart-title">Revenue Analytics</h3>
+                        <div class="dashboard-chart-subtitle">Penerimaan invoice 7 hari terakhir dari pembayaran yang sudah tercatat.</div>
+                    </div>
+                    <div class="dashboard-chart-badge">7 Hari</div>
+                </div>
+                <div class="dashboard-chart-wrap revenue-chart">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card p-6">
+                <div class="dashboard-chart-header">
+                    <div>
+                        <h3 class="dashboard-chart-title">Registrasi Bulanan</h3>
+                        <div class="dashboard-chart-subtitle">Perbandingan registrasi pelanggan 4 bulan terakhir.</div>
+                    </div>
+                </div>
+                <div class="dashboard-registration-list">
+                    <div class="dashboard-registration-row" th:each="item : ${dashboard.registrations}">
+                        <div class="dashboard-registration-meta">
+                            <span th:class="'dashboard-registration-label' + (${item.current} ? ' current' : '')"
+                                  th:text="${item.current ? item.label + ' (Current)' : item.label}">Maret</span>
+                            <span class="dashboard-registration-value" th:text="${item.count + ' user'}">0 user</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" th:style="'width:' + ${item.progressPercent} + '%'"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-highlight-card">
+                    <div class="dashboard-highlight-label" th:text="${dashboard.highlightSummary.label}">Collection Rate</div>
+                    <div class="dashboard-highlight-value" th:text="${dashboard.highlightSummary.value}">0%</div>
+                    <div class="dashboard-highlight-detail" th:text="${dashboard.highlightSummary.detail}">Detail highlight</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const alertSummaryData = {
+                criticalAlert: {
+                    label: 'Critical Alert',
+                    summary: [
+                        {
+                            label: 'Alert Kritis',
+                            value: /*[[${dashboard.alerts[0].title}]]*/ '0 alert kritis aktif',
+                            detail: 'Gangguan prioritas tinggi yang perlu segera dicek.'
+                        },
+                        {
+                            label: 'Device Offline',
+                            value: /*[[${dashboard.deviceSummary.offline}]]*/ 0,
+                            detail: 'Jumlah perangkat yang sedang tidak dapat dijangkau.'
+                        },
+                        {
+                            label: 'Service Health',
+                            value: /*[[${dashboard.healthSummary.serviceHealthRate}]]*/ '0%',
+                            detail: 'Persentase kesehatan layanan monitoring saat ini.'
+                        }
+                    ],
+                    note: 'Alert kritis dipakai untuk memusatkan perhatian pada gangguan yang paling berdampak. Dari modal ini tim bisa cepat melihat prioritas sebelum lanjut ke halaman monitoring alert.',
+                    actions: [
+                        { label: 'Buka Monitoring Alert', href: '/monitoring/alert', className: 'btn btn-primary' },
+                        { label: 'Lihat Trafik', href: '/monitoring/trafik', className: 'btn btn-secondary' }
+                    ]
+                },
+                networkAlert: {
+                    label: 'Network Alert',
+                    summary: [
+                        {
+                            label: 'Total Device',
+                            value: /*[[${dashboard.deviceSummary.total}]]*/ 0,
+                            detail: 'Seluruh perangkat yang ikut dimonitor pada dashboard.'
+                        },
+                        {
+                            label: 'Offline',
+                            value: /*[[${dashboard.deviceSummary.offline}]]*/ 0,
+                            detail: 'Perangkat yang statusnya offline dan perlu penanganan.'
+                        },
+                        {
+                            label: 'Warning',
+                            value: /*[[${dashboard.deviceSummary.warning}]]*/ 0,
+                            detail: 'Perangkat yang masih aktif namun menunjukkan warning.'
+                        }
+                    ],
+                    note: 'Network alert membantu memilah apakah gangguan dominan datang dari device offline atau kondisi warning. Ini cocok dipakai sebagai pintu masuk ke pengecekan operasional jaringan.',
+                    actions: [
+                        { label: 'Buka Monitoring Alert', href: '/monitoring/alert', className: 'btn btn-primary' },
+                        { label: 'Lihat Trafik', href: '/monitoring/trafik', className: 'btn btn-secondary' }
+                    ]
+                },
+                billingAlert: {
+                    label: 'Billing Alert',
+                    summary: [
+                        {
+                            label: 'Invoice Periode',
+                            value: /*[[${dashboard.revenueSummary.invoiceCount}]]*/ 0,
+                            detail: 'Jumlah invoice yang masuk pada periode aktif sekarang.'
+                        },
+                        {
+                            label: 'Overdue',
+                            value: /*[[${dashboard.revenueSummary.overdueCount}]]*/ 0,
+                            detail: 'Invoice yang sudah melewati jatuh tempo dan belum lunas.'
+                        },
+                        {
+                            label: 'Outstanding',
+                            value: /*[[${dashboard.revenueSummary.outstandingLabel}]]*/ 'Rp 0',
+                            detail: 'Total sisa tagihan yang masih perlu ditagihkan.'
+                        }
+                    ],
+                    note: 'Billing alert berfungsi untuk memantau risiko keterlambatan pembayaran. Ringkasan ini memudahkan tim menilai urgensi penagihan sebelum masuk ke halaman invoice.',
+                    actions: [
+                        { label: 'Buka Invoice', href: '/finance/invoice', className: 'btn btn-primary' }
+                    ]
+                },
+                systemAlert: {
+                    label: 'System Alert',
+                    summary: [
+                        {
+                            label: 'Issue Dipantau',
+                            value: /*[[${dashboard.alerts[3].title}]]*/ '0 issue sedang dipantau',
+                            detail: 'Jumlah issue aktif yang masih diawasi oleh sistem.'
+                        },
+                        {
+                            label: 'Tiket Aktif',
+                            value: /*[[${dashboard.ticketSummary.active}]]*/ 0,
+                            detail: 'Tiket pekerjaan yang masih berjalan saat ini.'
+                        },
+                        {
+                            label: 'Prioritas Tinggi',
+                            value: /*[[${dashboard.ticketSummary.highPriority}]]*/ 0,
+                            detail: 'Tiket yang perlu respons cepat dari tim operasional.'
+                        }
+                    ],
+                    note: 'System alert menampilkan gambaran umum stabilitas operasional, termasuk issue monitoring dan beban tiket aktif. Cocok dipakai untuk melihat apakah masalah sudah terdokumentasi ke workflow tim.',
+                    actions: [
+                        { label: 'Buka Monitoring Alert', href: '/monitoring/alert', className: 'btn btn-primary' },
+                        { label: 'Buka Tiket Aktif', href: '/ticketing/aktif', className: 'btn btn-secondary' }
+                    ]
+                }
+            };
+
+            const alertModal = document.getElementById('dashboardAlertModal');
+            const alertModalLabel = document.getElementById('dashboardAlertModalLabel');
+            const alertModalTitle = document.getElementById('dashboardAlertModalTitle');
+            const alertModalSubtitle = document.getElementById('dashboardAlertModalSubtitle');
+            const alertModalSummary = document.getElementById('dashboardAlertModalSummary');
+            const alertModalNote = document.getElementById('dashboardAlertModalNote');
+            const alertModalActions = document.getElementById('dashboardAlertModalActions');
+
+            function normalizeAlertKey(label) {
+                const value = (label || '').toLowerCase().replace(/\s+/g, '');
+                if (value === 'criticalalert') return 'criticalAlert';
+                if (value === 'networkalert') return 'networkAlert';
+                if (value === 'billingalert') return 'billingAlert';
+                if (value === 'systemalert') return 'systemAlert';
+                return null;
+            }
+
+            function closeDashboardAlertModal() {
+                if (!alertModal) return;
+                alertModal.classList.remove('open');
+                alertModal.setAttribute('aria-hidden', 'true');
+            }
+
+            function openDashboardAlertModal(trigger) {
+                if (!alertModal || !trigger) return;
+
+                const alertKey = normalizeAlertKey(trigger.dataset.alertLabel);
+                const config = alertKey ? alertSummaryData[alertKey] : null;
+                if (!config) return;
+
+                alertModalLabel.textContent = config.label;
+                alertModalTitle.textContent = trigger.dataset.alertTitle || 'Informasi Alert';
+                alertModalSubtitle.textContent = trigger.dataset.alertDetail || 'Ringkasan alert tidak tersedia.';
+                alertModalNote.textContent = config.note;
+
+                alertModalSummary.replaceChildren();
+                config.summary.forEach(function (item) {
+                    const card = document.createElement('div');
+                    card.className = 'dashboard-alert-modal-card';
+
+                    const itemLabel = document.createElement('div');
+                    itemLabel.className = 'dashboard-alert-modal-card-label';
+                    itemLabel.textContent = item.label;
+
+                    const itemValue = document.createElement('div');
+                    itemValue.className = 'dashboard-alert-modal-card-value';
+                    itemValue.textContent = String(item.value);
+
+                    const itemDetail = document.createElement('div');
+                    itemDetail.className = 'dashboard-alert-modal-card-detail';
+                    itemDetail.textContent = item.detail;
+
+                    card.appendChild(itemLabel);
+                    card.appendChild(itemValue);
+                    card.appendChild(itemDetail);
+                    alertModalSummary.appendChild(card);
+                });
+
+                alertModalActions.replaceChildren();
+                config.actions.forEach(function (action) {
+                    const link = document.createElement('a');
+                    link.href = action.href;
+                    link.className = action.className;
+                    link.textContent = action.label;
+                    alertModalActions.appendChild(link);
+                });
+
+                alertModal.classList.add('open');
+                alertModal.setAttribute('aria-hidden', 'false');
+            }
+
+            document.querySelectorAll('.dashboard-alert-trigger').forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    openDashboardAlertModal(trigger);
+                });
+            });
+
+            document.querySelectorAll('[data-dashboard-alert-close]').forEach(function (button) {
+                button.addEventListener('click', closeDashboardAlertModal);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && alertModal && alertModal.classList.contains('open')) {
+                    closeDashboardAlertModal();
+                }
+            });
+
+            const revenueLabels = /*[[${dashboard.revenueLabels}]]*/ [];
+            const revenueValues = /*[[${dashboard.revenueValues}]]*/ [];
+
+            const revenueCanvas = document.getElementById('revenueChart');
+            if (revenueCanvas && typeof Chart !== 'undefined') {
+                new Chart(revenueCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: revenueLabels,
+                        datasets: [{
+                            label: 'Penerimaan',
+                            data: revenueValues,
+                            fill: true,
+                            tension: 0.35,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.12)',
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#2563eb',
+                            pointRadius: 4,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(148, 163, 184, 0.18)'
+                                },
+                                ticks: {
+                                    color: 'rgba(100, 116, 139, 0.9)'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(148, 163, 184, 0.18)'
+                                },
+                                ticks: {
+                                    color: 'rgba(100, 116, 139, 0.9)',
+                                    callback: function (value) {
+                                        if (value >= 1000000) return 'Rp ' + (value / 1000000).toFixed(1) + 'M';
+                                        if (value >= 1000) return 'Rp ' + (value / 1000).toFixed(0) + 'K';
+                                        return 'Rp ' + value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+        });
+    </script>
+</div>

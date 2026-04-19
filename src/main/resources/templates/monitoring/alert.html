@@ -1,0 +1,446 @@
+<div th:fragment="content" class="billing-page">
+    <style>
+        .billing-page{display:grid;gap:16px;color:var(--text-primary)}
+        .billing-card,.billing-table-card{background:var(--bg-card);border:1px solid rgba(255,255,255,.06);border-radius:20px;box-shadow:var(--shadow-card)}
+        .billing-card{padding:18px}
+        .billing-head,.billing-actions,.billing-tabs,.billing-badges,.billing-pagination,.billing-toolbar,.billing-toolbar-main,.billing-toolbar-side,.billing-compact-row,.billing-topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+        .billing-head{justify-content:space-between;gap:18px}
+        .billing-head h2,.billing-title{margin:0;color:var(--text-primary)}
+        .billing-head p,.billing-meta,.billing-empty{color:var(--text-muted)}
+        .billing-head p{margin:6px 0 0;max-width:640px;line-height:1.5;font-size:13px}
+        .billing-lead{display:grid;gap:6px}
+        .billing-eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
+        .billing-toolbar{justify-content:space-between}
+        .billing-toolbar-main,.billing-toolbar-side{gap:10px}
+        .billing-topbar{justify-content:space-between;align-items:center;gap:18px;flex-wrap:nowrap}
+        .billing-topbar .billing-toolbar{justify-content:flex-start;flex:1 1 auto;min-width:0}
+        .billing-topbar .billing-badges{justify-content:center;flex:0 0 auto}
+        .billing-topbar .billing-inline-tools{justify-content:flex-end;flex:1 1 auto}
+        .billing-pill,.billing-badge,.status-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;font-size:11px;font-weight:700;line-height:1}
+        .status-chip::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.9}
+        .ok{background:rgba(34,197,94,.12);color:#4ade80}.warn{background:rgba(245,158,11,.14);color:#f59e0b}.err{background:rgba(239,68,68,.12);color:#f87171}.info{background:rgba(59,130,246,.12);color:#60a5fa}
+        .billing-actions{gap:8px;flex-wrap:nowrap}
+        .billing-primary{display:flex;gap:10px;flex-wrap:wrap}
+        .billing-kpi-row{display:flex;gap:12px;align-items:stretch;flex-wrap:nowrap;margin-top:14px}
+        .billing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;flex:1 1 68%;min-width:0}
+        .billing-kpi{padding:12px 14px;min-height:auto}
+        .billing-kpi small{display:block;color:var(--text-muted);text-transform:uppercase;font-size:10px;letter-spacing:.08em}
+        .billing-kpi strong{display:block;margin-top:6px;font-size:22px;line-height:1.05}
+        .billing-kpi span{display:block;margin-top:4px;color:var(--text-dim);font-size:10px;line-height:1.35}
+        .billing-kpi-grid-secondary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+        .billing-kpi-mini{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+        .billing-kpi-mini strong{display:block;font-size:16px;color:var(--text-primary)}
+        .billing-kpi-mini span{display:block;margin-top:3px;font-size:10px;color:var(--text-muted);line-height:1.3}
+        .billing-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+        .billing-filter-bar{padding:0 20px 18px}
+        .billing-filter-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+        .billing-filter-group{display:grid;gap:6px;min-width:180px;flex:1 1 220px}
+        .billing-filter-group label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700}
+        .billing-filter-hint{font-size:12px;color:var(--text-muted)}
+        .billing-tab{padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.03);color:var(--text-muted);cursor:pointer;font-weight:700}
+        .billing-tab.active{background:linear-gradient(135deg,#0f766e,#0ea5e9);border-color:transparent;color:#fff}
+        .billing-table-wrap{overflow:auto}.billing-table{width:100%;border-collapse:collapse;table-layout:fixed}.billing-table th,.billing-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:top}.billing-table th{background:var(--bg-input);font-size:10px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.08em}.billing-table thead th,#bsTableCard .billing-table thead th,#bsLogsCard .billing-table thead th{text-align:left!important}.billing-table th:nth-child(1),.billing-table td:nth-child(1){width:28%}.billing-table th:nth-child(2),.billing-table td:nth-child(2){width:28%}.billing-table th:nth-child(3),.billing-table td:nth-child(3){width:24%}.billing-table th:nth-child(4),.billing-table td:nth-child(4){width:20%}
+        .billing-main{display:block;font-weight:700;color:var(--text-primary);font-size:13px;line-height:1.35}.billing-sub{display:block;margin-top:4px;font-size:11px;color:var(--text-muted);line-height:1.45}.billing-empty{text-align:center;padding:28px 16px}
+        .billing-feedback{display:none;padding:14px 16px;border-radius:14px}.billing-feedback.show{display:block}.billing-feedback.error{background:rgba(239,68,68,.12);color:#b91c1c}.billing-feedback.success{background:rgba(34,197,94,.12);color:#15803d}
+        .billing-table-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:20px 20px 0}.billing-table-head .billing-tabs{justify-content:flex-end}.billing-pagination{justify-content:space-between;padding:16px 20px 20px}
+        .billing-shell{display:grid;gap:14px}
+        .billing-compact-row{justify-content:space-between}
+        .bot-toggle-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));min-width:240px;flex:1 1 250px}
+        .bot-toggle-card-header{min-width:220px;flex:0 1 260px;padding:10px 12px}
+        .bot-toggle-copy{display:grid;gap:3px}
+        .bot-toggle-copy strong{font-size:13px;color:var(--text-primary)}
+        .bot-toggle-copy span{font-size:11px;color:var(--text-muted)}
+        .bot-toggle-switch{position:relative;width:52px;height:30px;flex:0 0 auto}.bot-toggle-switch input{position:absolute;inset:0;opacity:0;cursor:pointer}.bot-toggle-slider{position:absolute;inset:0;border-radius:999px;background:rgba(148,163,184,.22);border:1px solid rgba(255,255,255,.08);transition:all var(--transition-fast)}.bot-toggle-slider::before{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(15,23,42,.28);transition:transform var(--transition-fast)}.bot-toggle-switch input:checked + .bot-toggle-slider{background:rgba(34,197,94,.28);border-color:rgba(34,197,94,.3)}.bot-toggle-switch input:checked + .bot-toggle-slider::before{transform:translateX(22px)}
+        .billing-summary-copy{display:grid;gap:4px}
+        .billing-summary-copy strong{font-size:13px;color:var(--text-primary)}
+        .billing-summary-copy span{font-size:12px;color:var(--text-muted)}
+        .billing-filter-body{padding:12px 14px 14px}
+        .billing-kpi-secondary{flex:0 0 32%;min-width:320px;align-self:stretch}
+        .billing-section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+        .billing-section-head p{margin:0;font-size:12px;color:var(--text-muted)}
+        .billing-section-copy{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .billing-section-copy::after{content:"";display:none}
+        .billing-section-sep{color:var(--text-dim);font-size:12px}
+        .billing-action-menu{position:relative}
+        .billing-action-menu summary{list-style:none}
+        .billing-action-menu summary::-webkit-details-marker{display:none}
+        .billing-action-trigger{display:inline-flex;align-items:center;gap:8px}
+        .billing-action-panel{position:absolute;right:0;top:calc(100% + 8px);min-width:220px;padding:8px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:#11192b;box-shadow:0 16px 36px rgba(2,6,23,.45);display:grid;gap:4px;z-index:20}
+        .billing-action-item{width:100%;display:flex;align-items:center;gap:10px;justify-content:flex-start;border:none;background:transparent;color:var(--text-primary);padding:10px 12px;border-radius:12px;font-size:13px;cursor:pointer}
+        .billing-action-item:hover{background:rgba(255,255,255,.05)}
+        .billing-action-icon{width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-muted);flex:0 0 16px}
+        .billing-action-item:hover .billing-action-icon{color:var(--text-primary)}
+        .billing-action-icon svg{width:16px;height:16px;display:block;stroke:currentColor}
+        .billing-action-btn{width:34px;height:34px;padding:0;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text-secondary);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--transition-fast);box-shadow:var(--shadow-sm)}
+        .billing-action-btn svg{width:15px;height:15px;stroke:currentColor;display:block}
+        .billing-action-btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.08);color:var(--text-primary)}
+        .billing-action-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+        .billing-action-btn.primary{color:#60a5fa}
+        .billing-action-btn.secondary{color:#cbd5e1}
+        .billing-action-btn.success{color:#4ade80}
+        .billing-action-btn.warning{color:#fbbf24}
+        .billing-inline-tools{display:flex;gap:8px;flex-wrap:wrap}
+        .icon-btn{min-width:40px;height:40px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text-primary);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:700}
+        .icon-btn:hover{background:rgba(255,255,255,.06)}
+        .billing-note{font-size:12px;color:var(--text-muted)}
+        .wa-history-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.wa-history-card{padding:14px;border-radius:16px;border:1px solid var(--border);background:rgba(255,255,255,.03)}.wa-history-card strong{display:block;font-size:24px;color:var(--text-primary)}.wa-history-card span{display:block;margin-top:6px;font-size:12px;color:var(--text-muted)}
+        .wa-history-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600}.wa-history-badge.paid{background:rgba(34,197,94,.15);color:#22c55e}.wa-history-badge.unpaid{background:rgba(239,68,68,.15);color:#ef4444}.wa-history-badge.overdue{background:rgba(245,158,11,.15);color:#f59e0b}.wa-history-badge.cancelled{background:rgba(107,114,128,.15);color:#9ca3af}
+        .billing-code,.billing-invoice{font-family:var(--font-mono);font-size:11px;color:var(--nmx-orange);font-weight:500}
+        #bsSettingsModal,#bsPppoeModal{box-sizing:border-box;padding:24px}
+        #bsSettingsModal.open,#bsPppoeModal.open{display:flex!important;align-items:center!important;justify-content:center!important}
+        #bsSettingsModal .modal-backdrop,#bsPppoeModal .modal-backdrop{position:fixed;inset:0}
+        #bsSettingsModal .modal-content,#bsPppoeModal .modal-content{position:relative;width:100%;margin:0 auto}
+        #bsSettingsModal .modal-content{max-width:980px}
+        #bsPppoeModal .modal-content{max-width:620px}
+        #bsSettingsModal .modal-content,#bsPppoeModal .modal-content{max-height:min(88vh,900px)}
+        #bsSettingsModal .modal-body,#bsPppoeModal .modal-body{padding-right:20px;padding-left:20px}
+        #waBotHistoryModal{box-sizing:border-box;padding:24px}
+        #waBotHistoryModal.open{display:flex;align-items:center;justify-content:center}
+        #waBotHistoryModal .modal-content{width:100%;max-width:1180px;max-height:min(76vh,720px);margin:0;display:flex;flex-direction:column}
+        #waBotHistoryModal .modal-header,#waBotHistoryModal .modal-footer{flex:0 0 auto}
+        #waBotHistoryModal .modal-body{flex:1 1 auto;min-height:0;padding-right:14px;padding-left:14px;display:flex;flex-direction:column;overflow:hidden}
+        .alert-modal-summary,.history-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+        .alert-modal-summary-card,.history-summary-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center}
+        .alert-modal-summary-card .label,.history-summary-card .label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-dim);margin-bottom:6px}
+        .alert-modal-summary-card .value,.history-summary-card .value{font-size:15px;font-weight:600;color:var(--text-primary);line-height:1.4;text-align:center}
+        .alert-modal-note,.history-summary-note{margin:0 0 16px;font-size:12px;color:var(--text-muted);line-height:1.6}
+        .wa-history-modal-wrap{flex:1 1 auto;min-height:0;max-height:none;overflow:auto}
+        #waBotHistoryModal .billing-table thead th{position:sticky;top:0;z-index:2}
+        .alert-settings-advanced{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
+        .alert-settings-advanced summary{list-style:none;cursor:pointer}
+        .alert-settings-advanced summary::-webkit-details-marker{display:none}
+        .alert-settings-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;font-weight:700;color:var(--text-primary)}
+        .alert-settings-trigger::after{content:"Lanjutan";font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)}
+        .alert-settings-advanced[open] .alert-settings-trigger::after{content:"Tutup"}
+        .alert-form-block{display:grid;gap:12px}
+        .alert-modal-highlight{padding:16px 18px;border-radius:16px;border:1px solid rgba(96,165,250,.16);background:linear-gradient(180deg,rgba(59,130,246,.16),rgba(30,41,59,.36));margin-bottom:16px}
+        .alert-modal-highlight strong{display:block;font-size:13px;color:#bfdbfe}
+        .alert-modal-highlight span{display:block;margin-top:6px;font-size:12px;color:#cbd5e1;line-height:1.55}
+        .alert-pppoe-meta{display:grid;gap:6px;margin-bottom:4px}
+        .alert-pppoe-reason{margin-top:16px}
+        #waBotHistoryModal .billing-table{table-layout:auto}
+        #waBotHistoryModal .billing-table th,#waBotHistoryModal .billing-table td{padding:9px 10px;font-size:11px}
+        #waBotHistoryModal .billing-table th{font-size:9px;letter-spacing:.06em}
+        #waBotHistoryModal .billing-table td:nth-child(1),#waBotHistoryModal .billing-table th:nth-child(1){min-width:118px}
+        #waBotHistoryModal .billing-table td:nth-child(2),#waBotHistoryModal .billing-table th:nth-child(2){min-width:100px}
+        #waBotHistoryModal .billing-table td:nth-child(3),#waBotHistoryModal .billing-table th:nth-child(3){min-width:88px}
+        #waBotHistoryModal .billing-table td:nth-child(4),#waBotHistoryModal .billing-table th:nth-child(4){min-width:116px}
+        #waBotHistoryModal .billing-table td:nth-child(5),#waBotHistoryModal .billing-table td:nth-child(6),#waBotHistoryModal .billing-table th:nth-child(5),#waBotHistoryModal .billing-table th:nth-child(6){white-space:nowrap}
+        #waBotHistoryModal .billing-table td:nth-child(7),#waBotHistoryModal .billing-table td:nth-child(8),#waBotHistoryModal .billing-table th:nth-child(7),#waBotHistoryModal .billing-table th:nth-child(8){white-space:nowrap;min-width:106px}
+        #waBotHistoryModal .billing-table td:nth-child(9),#waBotHistoryModal .billing-table th:nth-child(9){min-width:118px}
+        @media(max-width:980px){.billing-pagination .btn,.billing-primary .btn{width:100%}.billing-toolbar,.billing-compact-row,.billing-section-head{align-items:stretch}.billing-topbar{flex-wrap:wrap}.billing-topbar .billing-toolbar,.billing-topbar .billing-badges,.billing-topbar .billing-inline-tools{flex:1 1 100%;justify-content:flex-start}.billing-action-panel{left:0;right:auto}.wa-history-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.billing-filter-group,.billing-filter-form .btn{width:100%}}
+        @media(max-width:980px){.billing-kpi-row{flex-wrap:wrap}.billing-grid,.billing-kpi-secondary{flex:1 1 100%;min-width:0}.billing-kpi-grid-secondary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:980px){#bsSettingsModal,#bsPppoeModal{padding:20px}#bsSettingsModal .modal-content{max-width:min(96vw,920px)}#waBotHistoryModal{padding:20px}#waBotHistoryModal .modal-content{max-width:min(96vw,980px);max-height:min(82vh,720px)}.wa-history-modal-wrap{overflow:auto}}
+        @media(max-width:640px){.billing-card{padding:16px}.billing-head p{max-width:none}.billing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.billing-kpi strong{font-size:20px}.wa-history-grid,.alert-modal-summary,.history-summary-grid{grid-template-columns:1fr}#bsSettingsModal,#bsPppoeModal,#waBotHistoryModal{padding:14px}.alert-settings-trigger{align-items:flex-start;flex-direction:column}}
+    </style>
+
+    <section class="billing-card">
+        <div class="billing-shell">
+            <div class="billing-topbar">
+                <div class="billing-toolbar">
+                <div class="billing-primary">
+                    <button class="btn btn-warning" id="bsRunDisable" type="button">Run Disable Check</button>
+                    <button class="btn btn-success" id="bsRunEnable" type="button">Enable Paid Customers</button>
+                </div>
+                <div class="billing-toolbar-side">
+                    <details class="billing-action-menu" id="bsActionMenu">
+                        <summary class="btn btn-secondary billing-action-trigger" role="button">Actions</summary>
+                        <div class="billing-action-panel">
+                            <button class="billing-action-item" id="bsRefresh" type="button">
+                                <span class="billing-action-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+                                        <path d="M21 3v6h-6"/>
+                                    </svg>
+                                </span>
+                                <span>Refresh Data</span>
+                            </button>
+                            <button class="billing-action-item" id="bsOpenSettings" type="button">
+                                <span class="billing-action-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3"/>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 .99-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 .99 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51.99H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51.99Z"/>
+                                    </svg>
+                                </span>
+                                <span>Auto Disable Settings</span>
+                            </button>
+                            <button class="billing-action-item" id="bsWaSettings" type="button">
+                                <span class="billing-action-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8A8.5 8.5 0 0 1 12.5 20a8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.8-7.6A8.38 8.38 0 0 1 12.5 3h.5A8.48 8.48 0 0 1 21 11v.5Z"/>
+                                        <path d="M9.5 9.5h.01"/>
+                                        <path d="M12 12h.01"/>
+                                        <path d="M14.5 9.5h.01"/>
+                                    </svg>
+                                </span>
+                                <span>BOT WA Settings</span>
+                            </button>
+                            <button class="billing-action-item" id="bsWaHistory" type="button">
+                                <span class="billing-action-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 4h18"/>
+                                        <path d="M3 10h18"/>
+                                        <path d="M3 16h18"/>
+                                        <path d="M3 22h18"/>
+                                    </svg>
+                                </span>
+                                <span>View BOT History</span>
+                            </button>
+                        </div>
+                    </details>
+                </div>
+                </div>
+                <div class="billing-badges">
+                    <span class="status-chip info" id="bsWa" title="Memuat status WhatsApp">WA</span>
+                    <span class="status-chip info" id="bsMk" title="Memuat status MikroTik">MK</span>
+                    <span class="status-chip warn" id="bsRun" title="Memuat status scheduler">Job</span>
+                    <span class="status-chip info" id="bsDisableRule" title="Memuat aturan auto disable">Auto</span>
+                </div>
+                <div class="billing-inline-tools">
+                    <button class="icon-btn" id="bsHistoryQuick" type="button" title="Lihat history BOT">Log</button>
+                    <button class="icon-btn" id="bsRefreshQuick" type="button" title="Refresh data">Sync</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="billing-feedback" id="bsFeedback"></div>
+    <section class="billing-card">
+        <div class="billing-section-head">
+            <div class="billing-section-copy">
+                <h3 class="billing-title">Ringkasan Inti</h3>
+                <span class="billing-section-sep">|</span>
+                <p id="bsKpiMeta">Menyiapkan metrik operasional utama.</p>
+            </div>
+        </div>
+        <div class="billing-kpi-row">
+            <div class="billing-grid" id="bsKpisPrimary"><div class="billing-table-card billing-kpi"><small>Status</small><strong>Loading...</strong><span>Menyiapkan ringkasan billing scheduler</span></div></div>
+            <div class="billing-kpi-secondary" id="bsKpisSecondaryWrap">
+                <div class="billing-filter-body">
+                    <div class="billing-kpi-grid-secondary" id="bsKpisSecondary"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="billing-table-card" id="bsTableCard">
+        <div class="billing-table-head"><div><h3 class="billing-title" id="bsTableTitle">Upcoming 7 Days</h3><div class="billing-meta" id="bsTableMeta">Memuat data...</div></div><div class="billing-tabs" id="bsTabs"><button class="billing-tab active" data-tab="upcoming" type="button">Upcoming 7 Days</button><button class="billing-tab" data-tab="all" type="button">All Customers</button><button class="billing-tab" data-tab="overdue" type="button">Overdue</button><button class="billing-tab" data-tab="disabled" type="button">Disabled PPPoE</button><button class="billing-tab" data-tab="failed" type="button">Failed Delivery</button><button class="billing-tab" data-tab="logs" type="button">Logs</button></div></div>
+        <div class="billing-filter-bar">
+            <form id="invoiceFilterForm" class="billing-filter-form">
+                <div class="billing-filter-group">
+                    <label for="bsDateFilterMode">Filter Tanggal</label>
+                    <select class="form-select" id="bsDateFilterMode" name="date_mode">
+                        <option value="single">Tanggal tertentu</option>
+                        <option value="all">Semua tanggal</option>
+                    </select>
+                </div>
+                <div class="billing-filter-group">
+                    <label for="bsDateFilter">Tanggal jatuh tempo</label>
+                    <input class="form-input" id="bsDateFilter" name="due_date" type="date">
+                </div>
+                <button class="btn btn-primary" type="submit">Terapkan</button>
+                <button class="btn btn-secondary" id="bsDateFilterReset" type="button">Hari Ini</button>
+            </form>
+            <div class="billing-filter-hint" id="bsDateFilterHint">Filter pelanggan berdasarkan tanggal jatuh tempo invoice.</div>
+        </div>
+        <div class="billing-table-wrap"><table class="billing-table"><thead><tr><th>Pelanggan</th><th>Billing</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bsRows"><tr><td colspan="4" class="billing-empty">Memuat data...</td></tr></tbody></table></div>
+        <div class="billing-pagination" id="bsPagination"><button class="btn btn-secondary" id="bsPrev" type="button">Previous</button><span class="billing-meta" id="bsPageInfo">Page 1 of 1</span><button class="btn btn-secondary" id="bsNext" type="button">Next</button></div>
+    </section>
+
+    <section class="billing-table-card" id="bsLogsCard" style="display:none">
+        <div class="billing-table-head"><div><h3 class="billing-title">Activity Logs</h3><div class="billing-meta" id="bsLogsMeta">Sinkron invoice delivery dan aksi PPPoE terbaru</div></div></div>
+        <div class="billing-table-wrap"><table class="billing-table"><thead><tr><th>Target</th><th>Invoice Delivery</th><th>PPPoE Action</th></tr></thead><tbody id="bsLogs"><tr><td colspan="3" class="billing-empty">Memuat log...</td></tr></tbody></table></div>
+    </section>
+    <div class="modal" id="bsSettingsModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="bsSettingsModal"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">Setting Auto Disable PPPoE</h3>
+                    <p class="modal-subtitle">Pengaturan scheduler penagihan, warning, dan kontrol PPPoE otomatis.</p>
+                </div>
+                <button class="modal-close" type="button" data-close-modal="bsSettingsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-modal-summary">
+                    <div class="alert-modal-summary-card">
+                        <span class="label">Rule Disable</span>
+                        <div class="value">H+ <span id="bsLateDaysPreview">3</span></div>
+                    </div>
+                    <div class="alert-modal-summary-card">
+                        <span class="label">Waktu Eksekusi</span>
+                        <div class="value" id="bsExecutionPreview">09:00</div>
+                    </div>
+                    <div class="alert-modal-summary-card">
+                        <span class="label">Mode Eksekusi</span>
+                        <div class="value" id="bsDisableModePreview">Automatic</div>
+                    </div>
+                    <div class="alert-modal-summary-card">
+                        <span class="label">Status Automation</span>
+                        <div class="value" id="bsActivePreview">Aktif</div>
+                    </div>
+                </div>
+                <div class="alert-modal-highlight">
+                    <strong>Rule overdue PPPoE</strong>
+                    <span>Tentukan berapa hari setelah jatuh tempo invoice pelanggan, secret PPPoE akan otomatis dinonaktifkan oleh scheduler.</span>
+                </div>
+                <p class="alert-modal-note">Contoh: isi <strong>3</strong> berarti pelanggan akan dinonaktifkan pada H+3 dari tanggal jatuh tempo jika masih memenuhi syarat overdue.</p>
+                <div class="alert-form-block">
+                    <div class="billing-filters">
+                        <select class="form-select" id="bsAutoDisable"><option value="true">Auto disable PPPoE aktif</option><option value="false">Auto disable PPPoE nonaktif</option></select>
+                        <input class="form-input" id="bsLateDays" type="number" min="0" max="90" placeholder="H+ setelah jatuh tempo">
+                        <select class="form-select" id="bsDisableMode"><option value="automatic">Automatic</option><option value="approval">Approval</option></select>
+                        <select class="form-select" id="bsWarnFirst"><option value="true">Kirim warning sebelum disable</option><option value="false">Tanpa warning</option></select>
+                        <input class="form-input" id="bsExecutionTime" type="time">
+                        <select class="form-select" id="bsActive"><option value="true">Automation aktif</option><option value="false">Automation nonaktif</option></select>
+                        <select class="form-select" id="bsAutoEnable"><option value="true">Auto enable setelah pembayaran</option><option value="false">Manual enable</option></select>
+                    </div>
+                    <details class="alert-settings-advanced">
+                        <summary class="alert-settings-trigger">Pengaturan lanjutan</summary>
+                        <div class="billing-filters" style="margin-top:12px">
+                            <select class="form-select" id="bsAutoInvoice"><option value="true">Auto send invoice aktif</option><option value="false">Auto send invoice nonaktif</option></select>
+                            <input class="form-input" id="bsLeadDays" type="number" min="0" max="30" placeholder="Hari kirim invoice sebelum jatuh tempo">
+                            <select class="form-select" id="bsAutoReceipt"><option value="true">Auto send receipt aktif</option><option value="false">Auto send receipt nonaktif</option></select>
+                        </div>
+                        <textarea class="form-input" id="bsTemplate" rows="5" style="margin-top:12px" placeholder="Template warning sebelum disable"></textarea>
+                    </details>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-close-modal="bsSettingsModal">Tutup</button>
+                <button class="btn btn-primary" id="bsSaveSettings" type="button">Simpan</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="bsPppoeModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="bsPppoeModal"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="bsPppoeTitle">PPPoE Action</h3>
+                    <p class="modal-subtitle">Konfirmasi aksi manual untuk secret PPPoE pelanggan terpilih.</p>
+                </div>
+                <button class="modal-close" type="button" data-close-modal="bsPppoeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-modal-summary">
+                    <div class="alert-modal-summary-card">
+                        <span class="label">Aksi</span>
+                        <div class="value" id="bsPppoeActionPreview">Disable</div>
+                    </div>
+                    <div class="alert-modal-summary-card">
+                        <span class="label">Target</span>
+                        <div class="value" id="bsPppoeInfoCard">-</div>
+                    </div>
+                </div>
+                <div class="alert-modal-highlight">
+                    <strong>Manual override</strong>
+                    <span>Gunakan modal ini saat perlu menonaktifkan atau mengaktifkan PPPoE pelanggan di luar alur scheduler otomatis.</span>
+                </div>
+                <div class="alert-pppoe-meta">
+                    <span class="billing-sub" id="bsPppoeInfo">-</span>
+                </div>
+                <textarea class="form-input alert-pppoe-reason" id="bsPppoeReason" rows="4" placeholder="Masukkan alasan aksi PPPoE"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-close-modal="bsPppoeModal">Batal</button>
+                <button class="btn btn-primary" id="bsSubmitPppoe" type="button">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="waBotHistoryModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="waBotHistoryModal"></div>
+        <div class="modal-content modal-content-xl">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">History BOT WhatsApp</h3>
+                    <p class="modal-subtitle">Riwayat pengiriman invoice, tagihan, dan struk pembayaran ke pelanggan.</p>
+                </div>
+                <button class="modal-close" type="button" data-close-modal="waBotHistoryModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-summary-grid wa-history-grid">
+                    <div class="history-summary-card wa-history-card"><span class="label">Total Kirim</span><strong id="waHistoryTotalCount">0</strong></div>
+                    <div class="history-summary-card wa-history-card"><span class="label">Terkirim</span><strong id="waHistorySentCount">0</strong></div>
+                    <div class="history-summary-card wa-history-card"><span class="label">Berhasil Terkirim</span><strong id="waHistoryDeliveredCount">0</strong></div>
+                    <div class="history-summary-card wa-history-card"><span class="label">Sudah Dibaca</span><strong id="waHistoryReadCount">0</strong></div>
+                </div>
+                <p class="history-summary-note">Panel ini menampilkan histori gateway WhatsApp untuk invoice dan receipt, termasuk status dispatch, delivery, read, dan pesan balikan dari gateway.</p>
+                <div class="billing-table-wrap wa-history-modal-wrap">
+                    <table class="billing-table">
+                        <thead><tr><th>Pelanggan</th><th>No. Invoice</th><th>Jenis</th><th>Nomor Tujuan</th><th>Status Kirim</th><th>Status Baca</th><th>Waktu Kirim</th><th>Waktu Dibaca</th><th>Pesan Gateway</th></tr></thead>
+                        <tbody id="waBotHistoryTableBody"><tr><td colspan="9" class="billing-empty">Memuat history BOT WhatsApp...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-close-modal="waBotHistoryModal">Tutup</button>
+                <button type="button" class="btn btn-primary" id="bsWaHistoryRefresh">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="none">
+        (function(){
+            const todayStr=()=>{const now=new Date();const year=now.getFullYear();const month=String(now.getMonth()+1).padStart(2,"0");const day=String(now.getDate()).padStart(2,"0");return year+"-"+month+"-"+day;};
+            const s={tab:"upcoming",page:0,size:20,summary:{},upcoming:[],allRows:[],pagination:{page:0,total_pages:1,total_elements:0},invoiceLogs:[],pppoeLogs:[],pending:null,loaded:false,filters:{dateMode:"single",selectedDate:todayStr()}};
+            const CACHE_KEY="nmx:monitoring-alert:dataset";
+            const $=id=>document.getElementById(id);
+            const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+            const norm=v=>String(v||"unknown").toLowerCase();
+            const num=v=>new Intl.NumberFormat("id-ID").format(Number(v||0));
+            const money=v=>"Rp "+num(v);
+            const d=v=>{if(!v)return"-";const x=new Date(v);return Number.isNaN(x.getTime())?"-":x.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});};
+            const dt=v=>{if(!v)return"-";const x=new Date(v);return Number.isNaN(x.getTime())?"-":x.toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});};
+            const cls=v=>["sent","paid","active","success","connected"].includes(norm(v))?"ok":["overdue","disabled","failed","disconnected"].includes(norm(v))?"err":["scheduled","pending","partial","queued"].includes(norm(v))?"warn":"info";
+            const fb=(m,t)=>{const e=$("bsFeedback");if(!m){e.className="billing-feedback";e.textContent="";return;}e.className="billing-feedback show "+(t||"success");e.textContent=m;};
+            const syncBodyModalLock=()=>{const hasOpenModal=Boolean(document.querySelector(".modal.open"));document.body.style.overflow=hasOpenModal?"hidden":"";};
+            const mountGlobalModal=id=>{const modal=$(id);if(!modal||modal.parentElement===document.body)return;document.body.appendChild(modal);};
+            const openModal=id=>{const e=$(id);if(!e)return; const content=e.querySelector(".modal-content"),body=e.querySelector(".modal-body");e.classList.add("open");e.setAttribute("aria-hidden","false");if(content)content.scrollTop=0;if(body)body.scrollTop=0;e.scrollTop=0;syncBodyModalLock();};
+            const closeModal=id=>{const e=$(id);if(!e)return; e.classList.remove("open"); e.setAttribute("aria-hidden","true"); syncBodyModalLock();};
+            async function j(url,opt){const options=Object.assign({credentials:"same-origin"},opt||{});const headers=Object.assign({"Content-Type":"application/json"},options.headers||{});const method=String(options.method||"GET").toUpperCase();if(method!=="GET"&&method!=="HEAD"){headers[window.csrfHeader||"X-CSRF-TOKEN"]=window.csrfToken||"";}options.headers=headers;let r;try{r=await fetch(url,options);}catch(_){throw new Error("Gagal menghubungi server. Periksa koneksi aplikasi.");}const raw=await r.text();let payload=null;if(raw){try{payload=JSON.parse(raw);}catch(_){throw new Error("Server mengembalikan response yang tidak valid.");}}if(!r.ok)throw new Error(payload&&payload.message?payload.message:"Request gagal diproses.");if(!payload||payload.success!==true)throw new Error(payload&&payload.message?payload.message:"Response API tidak lengkap.");return payload.data;}
+            function badge(id,label,status,title){const e=$(id);if(!e)return;e.textContent=label||"-";e.className=(e.classList.contains("status-chip")?"status-chip ":"billing-pill ")+cls(status);e.title=title||label||"-";}
+            function historyBadge(label,tone){return '<span class="wa-history-badge '+(tone||"unpaid")+'">'+esc(label||"-")+'</span>';}
+            function saveCache(){try{window.sessionStorage.setItem(CACHE_KEY,JSON.stringify({summary:s.summary||{},upcoming:Array.isArray(s.upcoming)?s.upcoming:[],allRows:Array.isArray(s.allRows)?s.allRows:[],invoiceLogs:Array.isArray(s.invoiceLogs)?s.invoiceLogs:[],pppoeLogs:Array.isArray(s.pppoeLogs)?s.pppoeLogs:[],savedAt:Date.now()}));}catch(_){/* noop */}}
+            function loadCache(){try{const raw=window.sessionStorage.getItem(CACHE_KEY);if(!raw)return false;const data=JSON.parse(raw);if(!data||typeof data!=="object")return false;s.summary=data.summary||{};s.upcoming=Array.isArray(data.upcoming)?data.upcoming:[];s.allRows=Array.isArray(data.allRows)?data.allRows:[];s.invoiceLogs=Array.isArray(data.invoiceLogs)?data.invoiceLogs:[];s.pppoeLogs=Array.isArray(data.pppoeLogs)?data.pppoeLogs:[];updatePagination();s.loaded=true;return true;}catch(_){return false;}}
+            function updatePagination(){const total=Math.max(1,Math.ceil(s.allRows.length/s.size));if(s.page>total-1)s.page=0;s.pagination={page:s.page,total_pages:total,total_elements:s.allRows.length};}
+            function pagedRows(){const start=s.page*s.size;return s.allRows.slice(start,start+s.size);}
+            function activeDate(){return s.filters.dateMode==="all"?"":String(s.filters.selectedDate||"");}
+            function isAllDates(){return s.filters.dateMode==="all";}
+            function formatFilterDate(value){if(!value)return"-";const parts=String(value).split("-");if(parts.length!==3)return value;return parts[2]+"/"+parts[1]+"/"+parts[0];}
+            function syncInvoiceFilterForm(){const mode=$("bsDateFilterMode"),date=$("bsDateFilter"),hint=$("bsDateFilterHint");if(mode)mode.value=isAllDates()?"all":"single";if(date){date.value=activeDate()||todayStr();date.disabled=isAllDates();}if(hint)hint.textContent=isAllDates()?"Menampilkan seluruh pelanggan dari awal tanggal sampai akhir tanggal invoice yang tersedia.":"Menampilkan pelanggan yang jatuh tempo pada tanggal "+formatFilterDate(activeDate())+".";}
+            async function fetchAllRows(){const params=new URLSearchParams({page:"0",size:"1000",sort_by:"dueDate",sort_direction:"asc"});if(!isAllDates()&&activeDate()){params.set("due_date_from",activeDate());params.set("due_date_to",activeDate());}const data=await j("/api/billing/customers?"+params.toString());s.allRows=Array.isArray(data.content)?data.content:[];updatePagination();}
+            function kpis(){const primary=[["Pelanggan aktif",s.summary.total_customers,"Basis pelanggan yang dipantau"],["Jatuh tempo dekat",s.summary.upcoming_invoices_7_days,"Invoice 7 hari ke depan"],["Overdue",s.summary.overdue_customers,"Butuh tindak lanjut"],["PPPoE disabled",s.summary.pppoe_disabled_count,"Secret sudah dinonaktifkan"]],secondary=[["Invoice sent",s.summary.invoices_sent],["Receipt sent",s.summary.receipts_sent],["Unpaid",s.summary.unpaid_customers],["Delivery gagal",s.summary.failed_whatsapp_count]];$("bsKpisPrimary").innerHTML=primary.map(x=>'<div class="billing-table-card billing-kpi"><small>'+esc(x[0])+'</small><strong>'+num(x[1])+'</strong><span>'+esc(x[2])+'</span></div>').join("");$("bsKpisSecondary").innerHTML=secondary.map(x=>'<div class="billing-kpi-mini"><strong>'+num(x[1])+'</strong><span>'+esc(x[0])+'</span></div>').join("");$("bsKpiMeta").textContent="Prioritas cepat untuk pemantauan harian.";}
+            function actions(r){const cid=Number(r.customerId||0),iid=Number(r.invoiceId||0),pid=Number(r.paymentId||0),hasP=Boolean(r.pppoeUsername),name=esc(r.customerName||""),user=esc(r.pppoeUsername||"");return `<div class="billing-actions"><button class="billing-action-btn primary" type="button" title="Send invoice" aria-label="Send invoice" data-a="send" data-cid="${cid}" data-iid="${iid}"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button><button class="billing-action-btn secondary" type="button" title="Resend invoice" aria-label="Resend invoice" data-a="resend" data-cid="${cid}" data-iid="${iid}"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button><button class="billing-action-btn success" type="button" title="Send receipt" aria-label="Send receipt" data-a="receipt" data-pid="${pid}"${pid?"":" disabled"}><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></button><button class="billing-action-btn warning" type="button" title="Disable PPPoE" aria-label="Disable PPPoE" data-a="pppoe" data-mode="disable" data-cid="${cid}" data-name="${name}" data-user="${user}"${hasP?"":" disabled"}><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 5.64A9 9 0 1 1 5.64 18.36"/><path d="M5.64 5.64 18.36 18.36"/></svg></button><button class="billing-action-btn success" type="button" title="Enable PPPoE" aria-label="Enable PPPoE" data-a="pppoe" data-mode="enable" data-cid="${cid}" data-name="${name}" data-user="${user}"${hasP?"":" disabled"}><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>`;}
+            function row(r){return '<tr><td><span class="billing-main">'+esc(r.customerName||"-")+'</span><span class="billing-sub">'+esc(r.customerCode||"-")+' | '+esc(r.phone||"-")+'</span><span class="billing-sub">PPPoE: '+esc(r.pppoeUsername||"-")+' | Paket: '+esc(r.packageName||"-")+'</span></td><td><span class="billing-main">'+esc(r.invoiceNumber||"-")+'</span><span class="billing-sub">Due: '+d(r.dueDate)+' | Jadwal Kirim: '+d(r.sendDate)+'</span><span class="billing-sub">Nominal: '+money(r.amount)+' | Last sent: '+dt(r.lastSentAt)+'</span></td><td><div class="billing-actions"><span class="billing-badge '+cls(r.invoiceStatus)+'">'+esc(r.invoiceStatus||"-")+'</span><span class="billing-badge '+cls(r.paymentStatus)+'">'+esc(r.paymentStatus||"-")+'</span><span class="billing-badge '+cls(r.pppoeStatus)+'">'+esc(r.pppoeStatus||"-")+'</span></div><span class="billing-sub">Receipt: '+dt(r.lastReceiptSentAt)+' | Overdue: '+num(r.overdueDays||0)+' hari</span></td><td>'+actions(r)+'</td></tr>';}
+            function currentRows(){if(s.tab==="upcoming")return s.upcoming;if(s.tab==="overdue")return s.allRows.filter(r=>norm(r.invoiceStatus)==="overdue");if(s.tab==="disabled")return s.allRows.filter(r=>norm(r.pppoeStatus)==="disabled");if(s.tab==="failed")return s.allRows.filter(r=>norm(r.invoiceStatus)==="failed");return pagedRows();}
+            function renderLogs(){const il=Array.isArray(s.invoiceLogs)?s.invoiceLogs:[],pl=Array.isArray(s.pppoeLogs)?s.pppoeLogs:[],max=Math.max(il.length,pl.length,1),rows=[];for(let i=0;i<max;i+=1){const a=il[i],b=pl[i];if(!a&&!b)continue;rows.push('<tr><td><span class="billing-main">'+esc((a&&a.customerName)||(b&&b.customerName)||"-")+'</span><span class="billing-sub">'+esc((a&&a.target)||(b&&b.pppoeUsername)||"-")+'</span></td><td>'+(a?'<span class="billing-main">'+esc(a.invoiceNumber||"-")+'</span><span class="billing-sub">'+esc(a.messageType||"-")+' | '+esc(a.status||"-")+'</span><span class="billing-sub">'+dt(a.sentAt||a.createdAt)+'</span>':'<span class="billing-sub">Tidak ada log invoice</span>')+'</td><td>'+(b?'<span class="billing-main">'+esc(b.actionType||"-")+'</span><span class="billing-sub">'+esc(b.pppoeUsername||"-")+' | '+esc(b.status||"-")+'</span><span class="billing-sub">'+dt(b.executedAt||b.createdAt)+'</span>':'<span class="billing-sub">Tidak ada log PPPoE</span>')+'</td></tr>');}$("bsLogs").innerHTML=rows.length?rows.join(""):'<tr><td colspan="3" class="billing-empty">Belum ada log.</td></tr>';$("bsLogsMeta").textContent="Invoice log: "+num(il.length)+" | PPPoE log: "+num(pl.length);}
+            function renderPagination(){const total=Math.max(1,Number(s.pagination.total_pages||1)),page=Math.max(0,Number(s.pagination.page||0));$("bsPageInfo").textContent="Page "+(page+1)+" of "+total+" | "+num(s.pagination.total_elements||0)+" data";$("bsPrev").disabled=page<=0;$("bsNext").disabled=page>=total-1;$("bsPagination").style.display=(s.tab==="upcoming"||s.tab==="logs")?"none":"flex";}
+            function tableTitle(){if(s.tab==="all")return isAllDates()?"Semua Pelanggan":"Pelanggan Jatuh Tempo";if(s.tab==="overdue")return isAllDates()?"Overdue":"Overdue pada Tanggal Pilihan";if(s.tab==="disabled")return isAllDates()?"Disabled PPPoE":"Disabled PPPoE pada Tanggal Pilihan";if(s.tab==="failed")return isAllDates()?"Failed Delivery":"Failed Delivery pada Tanggal Pilihan";return "Upcoming 7 Days";}
+            function tableMeta(rows){const base=num(rows.length)+" data ditampilkan";if(s.tab==="upcoming")return base+" | Invoice 7 hari ke depan";return isAllDates()?base+" | Semua tanggal jatuh tempo":base+" | Tanggal jatuh tempo "+formatFilterDate(activeDate());}
+            function renderTable(){syncInvoiceFilterForm();if(s.tab==="logs"){$("bsTableCard").style.display="none";$("bsLogsCard").style.display="block";renderLogs();return;}$("bsTableCard").style.display="block";$("bsLogsCard").style.display="none";const rows=currentRows();$("bsTableTitle").textContent=tableTitle();$("bsTableMeta").textContent=tableMeta(rows);$("bsRows").innerHTML=rows.length?rows.map(row).join(""):'<tr><td colspan="4" class="billing-empty">Tidak ada data.</td></tr>';renderPagination();}
+            function renderSummary(){const wa=s.summary.whatsapp_connection||{},mk=s.summary.mikrotik_connection||{},run=s.summary.last_scheduler_run||{},set=s.summary.automation_settings||{};badge("bsWa",wa.status==="connected"?"WA On":"WA Off",wa.status,wa.label||wa.status||"WhatsApp");badge("bsMk",mk.status==="connected"?"MK On":"MK Off",mk.status,mk.label||mk.status||"MikroTik");badge("bsRun",run.status?("Job "+(norm(run.status)==="success"?"OK":norm(run.status)==="running"?"Run":"Idle")):"Job Idle",run.status,run.jobName?run.jobName+" | "+dt(run.startedAt):"Belum ada scheduler run");badge("bsDisableRule",set.autoDisablePppoe===false?"Auto Off":"H+"+num(set.latePaymentDisableDays||0),set.autoDisablePppoe===false?"info":"warn",set.autoDisablePppoe===false?"Auto disable PPPoE nonaktif":"Auto disable aktif pada H+"+num(set.latePaymentDisableDays||0));kpis();}
+            function render(){renderSummary();renderTable();}
+            function updateWaHistoryStats(items){const x=Array.isArray(items)?items:[];$("waHistoryTotalCount").textContent=String(x.length);$("waHistorySentCount").textContent=String(x.filter(i=>i&&i.sent).length);$("waHistoryDeliveredCount").textContent=String(x.filter(i=>i&&i.delivered).length);$("waHistoryReadCount").textContent=String(x.filter(i=>i&&i.read).length);}
+            function renderWaBotHistory(items){const tbody=$("waBotHistoryTableBody");if(!tbody)return;const x=Array.isArray(items)?items:[];updateWaHistoryStats(x);if(!x.length){tbody.innerHTML='<tr><td colspan="9" class="billing-empty">Belum ada history pengiriman BOT WhatsApp.</td></tr>';return;}tbody.innerHTML=x.map(item=>{const customerCode=item&&item.customerCode?item.customerCode:"-";const customerLabel=customerCode!=="-"?esc(item.customerName||"-")+'<br><span class="billing-code">'+esc(customerCode)+'</span>':esc(item.customerName||"-");const dispatchTone=item&&item.dispatchStatus==="error"?"unpaid":(item&&item.dispatchStatus==="skipped"?"cancelled":"paid");const deliveryTone=item&&item.read?"paid":(item&&item.delivered?"overdue":(item&&item.sent?"unpaid":"cancelled"));return '<tr><td>'+customerLabel+'</td><td><span class="billing-invoice">'+esc(item&&item.invoiceNumber?item.invoiceNumber:"-")+'</span></td><td>'+esc(item&&(item.documentLabel||item.documentType)?(item.documentLabel||item.documentType):"-")+'</td><td>'+esc(item&&item.phoneNumber?item.phoneNumber:"-")+'</td><td>'+historyBadge(item&&item.dispatchStatusLabel?item.dispatchStatusLabel:"-",dispatchTone)+'</td><td>'+historyBadge(item&&item.deliveryStatusLabel?item.deliveryStatusLabel:"-",deliveryTone)+'</td><td>'+esc(dt(item&&item.sentAt))+'</td><td>'+esc(dt(item&&item.readAt))+'</td><td>'+esc(item&&item.gatewayMessage?item.gatewayMessage:"-")+'</td></tr>';}).join("");}
+            function syncSettingsPreview(){const lateDays=$("bsLateDays"),execution=$("bsExecutionTime"),mode=$("bsDisableMode"),active=$("bsActive");if($("bsLateDaysPreview"))$("bsLateDaysPreview").textContent=String(lateDays&&lateDays.value?lateDays.value:"0");if($("bsExecutionPreview"))$("bsExecutionPreview").textContent=execution&&execution.value?execution.value:"-";if($("bsDisableModePreview"))$("bsDisableModePreview").textContent=mode&&mode.value?mode.value.charAt(0).toUpperCase()+mode.value.slice(1):"-";if($("bsActivePreview"))$("bsActivePreview").textContent=active&&active.value==="true"?"Aktif":"Nonaktif";}
+            function syncPppoePreview(mode,label){if($("bsPppoeActionPreview"))$("bsPppoeActionPreview").textContent=mode==="enable"?"Enable":"Disable";if($("bsPppoeInfoCard"))$("bsPppoeInfoCard").textContent=label||"-";}
+            function syncWaToggleLabel(){const toggle=$("waBotToggle"),label=$("waBotToggleLabel");if(!toggle||!label)return;const status=String(toggle.dataset.status||"").toLowerCase();if(toggle.checked){label.textContent=status==="connected"?"Status: Terhubung":"Status: Menghubungkan";return;}label.textContent="Status: Nonaktif";}
+            function openWaSettings(){if(typeof window.openWaBotSettings==="function"){window.openWaBotSettings();window.setTimeout(syncWaToggleLabel,200);return;}if(window.NmxWhatsappPanel&&typeof window.NmxWhatsappPanel.open==="function"){window.NmxWhatsappPanel.open();window.setTimeout(syncWaToggleLabel,200);return;}fb("Panel WhatsApp belum siap.","error");}
+            function toggleWaBotState(toggle){if(typeof window.toggleWaBot==="function"){window.toggleWaBot(toggle);window.setTimeout(syncWaToggleLabel,200);return;}if(window.NmxWhatsappPanel&&typeof window.NmxWhatsappPanel.toggle==="function"){window.NmxWhatsappPanel.toggle(toggle);window.setTimeout(syncWaToggleLabel,200);return;}syncWaToggleLabel();fb("Kontrol BOT WhatsApp belum siap.","error");}
+            async function viewWaBotHistory(){const tbody=$("waBotHistoryTableBody");if(tbody)tbody.innerHTML='<tr><td colspan="9" class="billing-empty">Memuat history BOT WhatsApp...</td></tr>';updateWaHistoryStats([]);openModal("waBotHistoryModal");try{const result=await j("/api/whatsapp/history");renderWaBotHistory(result||[]);}catch(e){if(tbody)tbody.innerHTML='<tr><td colspan="9" class="billing-empty">'+esc(e.message||"Gagal memuat history BOT WhatsApp")+'</td></tr>';fb(e.message||"Gagal memuat history BOT WhatsApp","error");}}
+            async function refresh(force){if(!force&&s.loaded)return render();fb("","");const data=await Promise.all([j("/api/billing/scheduler/summary"),j("/api/billing/scheduler/upcoming?days=7"),fetchAllRows(),j("/api/billing/logs/invoice-delivery"),j("/api/billing/logs/pppoe-actions")]);s.summary=data[0]||{};s.upcoming=Array.isArray(data[1])?data[1]:[];s.invoiceLogs=Array.isArray((data[3]||{}).items)?data[3].items:[];s.pppoeLogs=Array.isArray((data[4]||{}).items)?data[4].items:[];s.loaded=true;saveCache();render();}
+            async function doAction(factory,message,updater){try{const result=await factory();if(typeof updater==="function")updater(result);fb(message,"success");saveCache();render();}catch(e){fb(e.message,"error");}}
+            async function sendWhatsappManualDocument(invoiceId){const normalizedId=Number(invoiceId||0);if(!Number.isFinite(normalizedId)||normalizedId<=0)throw new Error("Invoice tidak ditemukan");const payload=await j("/api/whatsapp/invoices/"+normalizedId+"/manual-send",{method:"POST"});return payload&&typeof payload==="object"?payload:{};}
+            async function applyDateFilter(mode,dateValue){s.filters.dateMode=mode==="all"?"all":"single";s.filters.selectedDate=dateValue||todayStr();s.page=0;if(s.tab==="upcoming")s.tab="all";document.querySelectorAll("#bsTabs .billing-tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===s.tab));syncInvoiceFilterForm();await refresh(true);}
+            function loadPage(page){s.page=Math.max(0,Number(page||0));updatePagination();renderTable();}
+            function openSettings(){const d=s.summary.automation_settings||{};$("bsAutoInvoice").value=String(Boolean(d.autoSendInvoice));$("bsLeadDays").value=String(d.invoiceSendDaysBeforeDue??7);$("bsAutoReceipt").value=String(Boolean(d.autoSendReceipt));$("bsAutoDisable").value=String(Boolean(d.autoDisablePppoe));$("bsLateDays").value=String(d.latePaymentDisableDays??3);$("bsDisableMode").value=String(d.disableMode||"automatic");$("bsWarnFirst").value=String(Boolean(d.sendWarningBeforeDisable));$("bsAutoEnable").value=String(Boolean(d.autoEnablePppoeAfterPayment));$("bsExecutionTime").value=String(d.executionTime||"09:00").substring(0,5);$("bsActive").value=String(Boolean(d.isActive));$("bsTemplate").value=d.warningTemplate||"";syncSettingsPreview();openModal("bsSettingsModal");}
+            async function saveSettings(){const p={autoSendInvoice:$("bsAutoInvoice").value==="true",invoiceSendDaysBeforeDue:Number($("bsLeadDays").value||7),autoSendReceipt:$("bsAutoReceipt").value==="true",autoDisablePppoe:$("bsAutoDisable").value==="true",latePaymentDisableDays:Number($("bsLateDays").value||3),disableMode:$("bsDisableMode").value,sendWarningBeforeDisable:$("bsWarnFirst").value==="true",autoEnablePppoeAfterPayment:$("bsAutoEnable").value==="true",executionTime:$("bsExecutionTime").value||"09:00",isActive:$("bsActive").value==="true",warningTemplate:$("bsTemplate").value};await doAction(()=>j("/api/billing/automation-settings",{method:"PUT",body:JSON.stringify(p)}),"Setting H+"+num(p.latePaymentDisableDays)+" auto disable PPPoE berhasil disimpan.",result=>{s.summary.automation_settings=result;closeModal("bsSettingsModal");});}
+            function openPppoe(mode,cid,name,user){const label=(name||"-")+" | "+(user||"-");s.pending={mode:mode,cid:Number(cid||0)};$("bsPppoeTitle").textContent=mode==="disable"?"Manual Disable PPPoE":"Manual Enable PPPoE";$("bsPppoeInfo").textContent=label;$("bsPppoeReason").value="";syncPppoePreview(mode,label);openModal("bsPppoeModal");}
+            async function submitPppoe(){if(!s.pending||!s.pending.cid){fb("Aksi PPPoE belum dipilih.","error");return;}const reason=$("bsPppoeReason").value.trim();if(!reason){fb("Alasan aksi PPPoE wajib diisi.","error");return;}const url=s.pending.mode==="disable"?"/api/customers/"+s.pending.cid+"/pppoe/disable":"/api/customers/"+s.pending.cid+"/pppoe/enable";await doAction(()=>j(url,{method:"POST",body:JSON.stringify({reason:reason})}),"PPPoE berhasil di-"+(s.pending.mode==="disable"?"disable":"enable")+".",()=>{closeModal("bsPppoeModal");s.pending=null;});}
+            function closeActionMenu(){const menu=$("bsActionMenu");if(menu)menu.removeAttribute("open");}
+            function bind(){document.querySelectorAll("#bsTabs .billing-tab").forEach(b=>b.addEventListener("click",()=>{s.tab=b.dataset.tab;document.querySelectorAll("#bsTabs .billing-tab").forEach(x=>x.classList.toggle("active",x===b));renderTable();}));document.querySelectorAll("[data-close-modal]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.closeModal)));document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id);}));["bsLateDays","bsExecutionTime","bsDisableMode","bsActive"].forEach(id=>{const el=$(id);if(el)el.addEventListener("input",syncSettingsPreview);if(el)el.addEventListener("change",syncSettingsPreview);});const filterMode=$("bsDateFilterMode"),filterDate=$("bsDateFilter"),filterForm=$("invoiceFilterForm");if(filterMode)filterMode.addEventListener("change",()=>{syncInvoiceFilterForm();if(filterMode.value==="all")applyDateFilter("all",filterDate&&filterDate.value?filterDate.value:todayStr()).catch(e=>fb(e.message,"error"));});if(filterDate)filterDate.addEventListener("change",()=>{if(filterMode&&filterMode.value!=="all")applyDateFilter("single",filterDate.value||todayStr()).catch(e=>fb(e.message,"error"));});if(filterForm)filterForm.addEventListener("submit",e=>{e.preventDefault();applyDateFilter(filterMode&&filterMode.value==="all"?"all":"single",filterDate&&filterDate.value?filterDate.value:todayStr()).catch(err=>fb(err.message,"error"));});$("bsDateFilterReset").addEventListener("click",()=>applyDateFilter("single",todayStr()).catch(e=>fb(e.message,"error")));document.addEventListener("click",e=>{const menu=$("bsActionMenu");if(menu&&!menu.contains(e.target))menu.removeAttribute("open");});$("bsRefresh").addEventListener("click",()=>{closeActionMenu();refresh(true).catch(e=>fb(e.message,"error"));});$("bsRefreshQuick").addEventListener("click",()=>refresh(true).catch(e=>fb(e.message,"error")));$("bsOpenSettings").addEventListener("click",()=>{closeActionMenu();openSettings();});$("bsSaveSettings").addEventListener("click",saveSettings);$("bsSubmitPppoe").addEventListener("click",submitPppoe);$("bsRunDisable").addEventListener("click",()=>doAction(()=>j("/api/network/pppoe/disable-overdue",{method:"POST"}),"Disable overdue check selesai."));$("bsRunEnable").addEventListener("click",()=>doAction(()=>j("/api/network/pppoe/enable-paid",{method:"POST"}),"Enable paid customers selesai."));$("bsPrev").addEventListener("click",()=>loadPage(s.page-1));$("bsNext").addEventListener("click",()=>loadPage(s.page+1));$("bsWaSettings").addEventListener("click",()=>{closeActionMenu();openWaSettings();});$("bsWaHistory").addEventListener("click",()=>{closeActionMenu();viewWaBotHistory();});$("bsHistoryQuick").addEventListener("click",viewWaBotHistory);$("bsWaHistoryRefresh").addEventListener("click",viewWaBotHistory);$("waBotToggle").addEventListener("change",e=>toggleWaBotState(e.target));$("bsRows").addEventListener("click",e=>{const b=e.target.closest("button[data-a]");if(!b)return;const a=b.dataset.a;if(a==="send"||a==="resend"){doAction(()=>sendWhatsappManualDocument(Number(b.dataset.iid||0)),a==="resend"?"Invoice finance berhasil dikirim ulang ke WhatsApp.":"Invoice finance berhasil dikirim ke WhatsApp.");return;}if(a==="receipt"){doAction(()=>sendWhatsappManualDocument(Number(b.dataset.iid||0)),"Struk pembayaran finance berhasil dikirim ke WhatsApp.");return;}if(a==="pppoe"){openPppoe(b.dataset.mode,b.dataset.cid,b.dataset.name,b.dataset.user);}});window.viewWaBotHistory=viewWaBotHistory;}
+            document.addEventListener("DOMContentLoaded",()=>{mountGlobalModal("waBotHistoryModal");bind();syncInvoiceFilterForm();syncWaToggleLabel();window.setTimeout(syncWaToggleLabel,400);if(loadCache())render();refresh(true).catch(e=>fb(e.message,"error"));});
+        })();
+    </script>
+</div>

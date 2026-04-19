@@ -1,0 +1,150 @@
+<div th:fragment="content">
+    <style>
+        .hybrid-grid { display: grid; gap: 20px; }
+        .hybrid-page-shell { display: grid; gap: 20px; }
+        .page-header-custom.mikrotik-page-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .server-toolbar { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
+        .server-search { position: relative; width: 100%; max-width: 420px; }
+        .server-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
+        .server-search input { width: 100%; padding: 12px 14px 12px 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); }
+        .server-search input:focus { outline: none; border-color: rgba(103, 232, 249, 0.42); box-shadow: var(--focus-ring), var(--shadow-inset); }
+        .hybrid-modal { position: absolute; inset: 0; display: none; align-items: flex-start; justify-content: center; padding: 16px; background: rgba(15, 23, 42, 0.48); z-index: 20; backdrop-filter: blur(6px); overflow-y: auto; }
+        .hybrid-modal.is-open { display: flex; }
+        .hybrid-two { display: grid; width: min(760px, 100%); margin: 0 auto; }
+        .hybrid-modal-panel { background: var(--surface-gradient); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-card); max-height: none; overflow: visible; }
+        .hybrid-card { background: var(--surface-gradient); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-card); }
+        .hybrid-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+        .hybrid-head h3 { margin: 0; color: var(--text-primary); }
+        .hybrid-head p { margin: 6px 0 0; color: var(--text-muted); font-size: 13px; }
+        .hybrid-section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .hybrid-section-icon { width: 32px; height: 32px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; }
+        .hybrid-section-icon.orange { background: rgba(249, 115, 22, 0.12); color: #f97316; }
+        .hybrid-section-icon.blue { background: rgba(14, 165, 233, 0.12); color: #0ea5e9; }
+        .hybrid-section-icon.green { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+        .source-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+        .source-badge.monitoring { background: rgba(14, 165, 233, 0.12); color: #0369a1; }
+        .source-badge.api { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+        .status-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-weight: 700; }
+        .status-chip.online { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+        .status-chip.offline { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+        .status-chip.maintenance { background: rgba(249, 115, 22, 0.12); color: #c2410c; }
+        .hybrid-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .hybrid-form-group { display: flex; flex-direction: column; gap: 8px; }
+        .hybrid-form-group.full { grid-column: 1 / -1; }
+        .hybrid-actions, .inline-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .mini-note { color: var(--text-muted); font-size: 12px; }
+        .hybrid-table { width: 100%; border-collapse: collapse; }
+        .hybrid-table th, .hybrid-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .hybrid-table th { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+        .hybrid-mono { font-family: "JetBrains Mono", monospace; font-size: 12px; }
+        .hybrid-table-shell { border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: var(--bg-card); box-shadow: inset 0 1px 0 rgba(255,255,255,0.03); }
+        .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 36px; margin-bottom: 14px; opacity: .4; }
+        .hybrid-modal-close { margin-left: auto; }
+        @media (max-width: 980px) { .hybrid-form-grid { grid-template-columns: 1fr; } .hybrid-modal { padding: 12px; } .page-header-custom.mikrotik-page-header { align-items: stretch; } .page-header-custom.mikrotik-page-header .btn { width: 100%; justify-content: center; } }
+    </style>
+
+    <div class="hybrid-grid hybrid-page-shell">
+        <div class="page-header-custom mikrotik-page-header">
+            <div class="server-search">
+                <i class="fas fa-search"></i>
+                <input id="mikrotikSearchInput" type="text" placeholder="Cari device, POP, IP, atau status...">
+            </div>
+            <button class="btn btn-primary" id="focusFormButton" type="button">
+                <i class="fas fa-plus"></i>
+                Tambah / Edit Device
+            </button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-server"></i></div><div class="stat-info"><h4 id="mkStatTotal">0</h4><p>Total Device</p></div></div>
+            <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h4 id="mkStatOnline">0</h4><p>Online</p></div></div>
+            <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><h4 id="mkStatOffline">0</h4><p>Offline</p></div></div>
+            <div class="stat-card"><div class="stat-icon cyan"><i class="fas fa-clock"></i></div><div class="stat-info"><h4 id="mkStatLastSync">-</h4><p>Last Sync</p></div></div>
+        </div>
+
+        <div class="hybrid-modal" id="devicePanel">
+        <div class="hybrid-two">
+            <section class="hybrid-modal-panel">
+                <div class="hybrid-head">
+                    <div style="width:100%;">
+                        <div class="hybrid-section-title">
+                            <span class="hybrid-section-icon orange"><i class="fas fa-router"></i></span>
+                            <div>
+                                <h3>Konfigurasi MikroTik</h3>
+                                <p>Frontend hanya mengelola data inti perangkat. Backend akan memakai konfigurasi ini untuk test API, pengecekan status, dan monitoring berkala.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary hybrid-modal-close" id="closeDevicePanelButton" type="button">Tutup</button>
+                    <span class="status-chip offline" id="deviceOnlineIndicator">offline</span>
+                </div>
+
+                <form id="mikrotikForm" class="hybrid-form-grid">
+                    <input type="hidden" id="deviceId">
+                    <div class="hybrid-form-group">
+                        <label for="deviceNameInput">Device Name</label>
+                        <input class="form-input" id="deviceNameInput" type="text" placeholder="MikroTik POP Karang Anyar" required>
+                    </div>
+                    <div class="hybrid-form-group">
+                        <label for="siteNameInput">Site / Nama POP</label>
+                        <input class="form-input" id="siteNameInput" type="text" placeholder="POP Samarinda" required>
+                    </div>
+                    <div class="hybrid-form-group">
+                        <label for="vpnIpInput">VPN / Private IP</label>
+                        <input class="form-input hybrid-mono" id="vpnIpInput" type="text" placeholder="103.103.21.27:9437">
+                    </div>
+                    <div class="hybrid-form-group">
+                        <label for="monitoringIntervalInput">Monitoring Interval</label>
+                        <input class="form-input" id="monitoringIntervalInput" type="number" placeholder="60" min="15">
+                    </div>
+                    <div class="hybrid-form-group">
+                        <label for="apiUsernameInput">Username API</label>
+                        <input class="form-input" id="apiUsernameInput" type="text" placeholder="admin">
+                    </div>
+                    <div class="hybrid-form-group">
+                        <label for="apiPasswordInput">Password API</label>
+                        <input class="form-input" id="apiPasswordInput" type="password" placeholder="Kosongkan jika tidak diubah">
+                    </div>
+                    <div class="hybrid-form-group full">
+                        <div class="hybrid-actions">
+                            <button class="btn btn-secondary" id="resetFormButton" type="button">Reset Form</button>
+                            <button class="btn btn-secondary" id="testApiButton" type="button">Test API Connection</button>
+                            <button class="btn btn-secondary" id="checkStatusButton" type="button">Check Status</button>
+                            <button class="btn btn-primary" type="submit">Save Device</button>
+                        </div>
+                        <div class="mini-note" id="formMessage">Isi data inti perangkat lalu lakukan test API atau check status sebelum menyimpan jika diperlukan.</div>
+                    </div>
+                </form>
+            </section>
+
+        </div>
+        </div>
+
+        <section class="hybrid-card">
+            <div class="hybrid-head">
+                <div style="width:100%;">
+                    <div class="hybrid-section-title">
+                        <span class="hybrid-section-icon green"><i class="fas fa-server"></i></span>
+                    <div><h3>Daftar Device MikroTik</h3><p>Data tabel diambil dari database. Test koneksi dan check status tetap dijalankan oleh backend.</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="hybrid-table-shell">
+                <div class="table-scroll">
+                    <table class="hybrid-table">
+                        <thead><tr><th>Device</th><th>POP</th><th>VPN / Port</th><th>Status</th><th>Monitoring</th><th>Aksi</th></tr></thead>
+                        <tbody id="mikrotikTableBody"></tbody>
+                    </table>
+                    <div class="empty-state" id="mikrotikEmptyState" style="display:none;">
+                        <i class="fas fa-router"></i>
+                        <h3>Belum Ada Device MikroTik</h3>
+                        <p>Simpan konfigurasi device agar backend bisa mulai test koneksi, cek status, dan monitoring berkala dari database.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/mikrotik-page.js"></script>
+</div>

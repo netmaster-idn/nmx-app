@@ -1,0 +1,914 @@
+<div th:fragment="content">
+    <style>
+        .page-header-custom.server-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .server-toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .server-search {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .server-search i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .server-search input {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .server-search input:focus {
+            outline: none;
+            border-color: rgba(103, 232, 249, 0.42);
+            box-shadow: var(--focus-ring), var(--shadow-inset);
+        }
+
+        .stats-row.server-stats-row {
+            margin-top: 0;
+        }
+
+        .server-name {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .server-name strong {
+            color: var(--text-primary);
+        }
+
+        .server-meta {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .server-link-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(59, 130, 246, 0.16);
+            background: rgba(59, 130, 246, 0.08);
+            color: #93c5fd;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .server-link-chip.empty {
+            border-color: var(--border);
+            background: rgba(148, 163, 184, 0.08);
+            color: var(--text-muted);
+        }
+
+        .server-link-chip i {
+            font-size: 11px;
+        }
+
+        .server-code {
+            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .server-coordinates {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 2px;
+            font-family: var(--font-mono, 'JetBrains Mono', monospace);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .server-coordinates.empty {
+            font-family: inherit;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+        }
+
+        .status-badge.inactive {
+            background: rgba(107, 114, 128, 0.12);
+            color: #9ca3af;
+        }
+
+        .status-badge.maintenance {
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+        }
+
+        .quick-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .quick-action-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+        }
+
+        .quick-actions:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.14);
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+
+        .quick-action-btn.refresh:hover {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+        }
+
+        .quick-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+        }
+
+        .quick-action-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.35;
+        }
+
+        .alert-message {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        .alert-message.success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #86efac;
+        }
+
+        .alert-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .alert-message.info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: min(560px, calc(100% - 32px));
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            transform: scale(0.96);
+            transition: all 0.25s ease;
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header,
+        .modal-footer {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border);
+            border-bottom: none;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-body {
+            padding: 22px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--nmx-orange);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+        }
+
+        .form-hint {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .form-input[readonly] {
+            color: var(--text-secondary);
+            background: rgba(148, 163, 184, 0.08);
+            cursor: default;
+        }
+
+        @media (max-width: 768px) {
+            .page-header-custom.server-page-header {
+                align-items: stretch;
+            }
+
+            .server-toolbar {
+                align-items: stretch;
+            }
+
+            .server-search {
+                max-width: 100%;
+            }
+
+            .page-header-custom.server-page-header .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-action-label {
+                display: none;
+            }
+
+            .quick-actions {
+                gap: 6px;
+                padding: 5px 7px;
+            }
+        }
+    </style>
+
+    <div class="page-header-custom server-page-header">
+        <div class="server-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="serverSearchInput" placeholder="Cari nama server, IP, atau lokasi...">
+        </div>
+        <button th:if="${permissionLevel == 'FULL'}" class="btn btn-primary" type="button" onclick="openServerModal()">
+            <i class="fas fa-plus"></i>
+            Tambah Server
+        </button>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <div class="stats-row server-stats-row">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-server"></i></div>
+            <div class="stat-info"><h4 id="serverTotal">0</h4><p>Total Server</p></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info"><h4 id="serverActive">0</h4><p>Aktif</p></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-location-dot"></i></div>
+            <div class="stat-info"><h4 id="serverWithLocation">0</h4><p>Punya Lokasi</p></div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="table-scroll">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Server</th>
+                        <th>Mikrotik</th>
+                        <th>IP Address</th>
+                        <th>Lokasi</th>
+                        <th>Koordinat</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="serverTableBody"></tbody>
+            </table>
+            <div class="empty-state" id="serverEmptyState" style="display: none;">
+                <i class="fas fa-server"></i>
+                <h3>Belum Ada Server</h3>
+                <p>Tambahkan data server agar bisa dipakai di modul Network dan Registrasi.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="serverModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="serverModalTitle">Tambah Server</h3>
+            </div>
+            <form id="serverForm">
+                <div class="modal-body">
+                    <input type="hidden" id="serverId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="serverName">Nama Server</label>
+                            <input class="form-input" id="serverName" type="text" placeholder="Contoh: POP Samarinda">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="serverMikrotikId">Mikrotik Server</label>
+                            <select class="form-select" id="serverMikrotikId">
+                                <option value="">-- Pilih Mikrotik --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="serverLocation">Lokasi</label>
+                            <input class="form-input" id="serverLocation" type="text" placeholder="Contoh: Samarinda Seberang">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label" for="serverCoordinates">Koordinat</label>
+                            <div class="input-wrapper">
+                                <input class="form-input" id="serverCoordinates" type="text" placeholder="-0.48649594690223724, 117.1219023709373">
+                                <small class="form-hint">Format: latitude, longitude (contoh: -6.1754, 106.8272)</small>
+                            </div>
+                            <input id="serverLatitude" type="hidden">
+                            <input id="serverLongitude" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="serverStatus">Status</label>
+                            <input class="form-input" id="serverStatus" type="text" placeholder="Status Mikrotik" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="serverIpAddress">IP Address</label>
+                            <input class="form-input" id="serverIpAddress" type="text" placeholder="IP Mikrotik" readonly>
+                        </div>
+                        <div class="form-group full-width" style="display: none;">
+                            <label class="form-label" for="serverLocation">Lokasi</label>
+                            <input class="form-input" id="serverIsActive" type="hidden">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" onclick="closeServerModal()">Batal</button>
+                    <button th:if="${permissionLevel == 'FULL'}" class="btn btn-primary" type="submit">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const serverPermissionLevel = /*[[${permissionLevel}]]*/ 'READ';
+        let servers = [];
+        let filteredServers = [];
+        let mikrotikDevices = [];
+        let mikrotikSyncTimer = null;
+
+        function serverHeaders(includeJson = false) {
+            const headers = {};
+            if (includeJson) {
+                headers['Content-Type'] = 'application/json';
+            }
+            const csrfToken = window.csrfToken || '';
+            const csrfHeader = window.csrfHeader || 'X-CSRF-TOKEN';
+            if (csrfToken) {
+                headers[csrfHeader] = csrfToken;
+            }
+            return headers;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadMikrotikOptions();
+            loadServers();
+            setupServerSearch();
+            setupServerCoordinateInput();
+            setupMikrotikSelection();
+            document.getElementById('serverForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                saveServer();
+            });
+            document.getElementById('serverModal').addEventListener('click', function (event) {
+                if (event.target === this) {
+                    closeServerModal();
+                }
+            });
+        });
+
+        async function loadServers() {
+            try {
+                const response = await fetch('/api/servers', { credentials: 'same-origin' });
+                const result = await response.json();
+                if (!result.success) {
+                    showServerAlert('error', result.message || 'Gagal memuat data server.');
+                    return;
+                }
+                servers = Array.isArray(result.data) ? result.data : [];
+                filteredServers = [...servers];
+                renderServerTable();
+                updateServerStats();
+            } catch (error) {
+                console.error('Error loading servers:', error);
+                servers = [];
+                filteredServers = [];
+                renderServerTable();
+                updateServerStats();
+                showServerAlert('error', 'Terjadi kesalahan saat memuat data server.');
+            }
+        }
+
+        function updateServerStats() {
+            document.getElementById('serverTotal').textContent = servers.length;
+            document.getElementById('serverActive').textContent = servers.filter(server => server.isActive !== false).length;
+            document.getElementById('serverWithLocation').textContent = servers.filter(server => server.location && server.location.trim() !== '').length;
+        }
+
+        function renderServerTable() {
+            const tbody = document.getElementById('serverTableBody');
+            const emptyState = document.getElementById('serverEmptyState');
+            if (!filteredServers.length) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+            tbody.innerHTML = filteredServers.map(server => {
+                const hasCoordinates = server.latitude != null && server.longitude != null;
+                const coordinates = hasCoordinates
+                    ? `
+                        <span class="server-coordinates">
+                            <span>${escapeHtml(server.latitude)}</span>
+                            <span>${escapeHtml(server.longitude)}</span>
+                        </span>
+                    `
+                    : '<span class="server-coordinates empty">Belum diatur</span>';
+                const statusTextRaw = (server.mikrotikStatus || 'unknown').toLowerCase();
+                const statusClass = statusTextRaw === 'online'
+                    ? 'active'
+                    : statusTextRaw === 'maintenance'
+                        ? 'maintenance'
+                        : 'inactive';
+                const statusText = statusTextRaw === 'online'
+                    ? 'Online'
+                    : statusTextRaw === 'maintenance'
+                        ? 'Maintenance'
+                        : statusTextRaw === 'unknown'
+                            ? 'Unknown'
+                            : 'Offline';
+                const actions = serverPermissionLevel === 'FULL'
+                    ? `
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" type="button" title="Edit" onclick="editServer(${server.id})">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button class="quick-action-btn refresh" type="button" title="Refresh" onclick="refreshServerMikrotik(${server.id})">
+                                <i class="fas fa-rotate-right"></i>
+                            </button>
+                            <button class="quick-action-btn delete" type="button" title="Hapus" onclick="deleteServer(${server.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `
+                    : '<span class="server-meta">View only</span>';
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="server-name">
+                                <strong>${escapeHtml(server.name || '-')}</strong>
+                                <span class="server-meta">Server ID #${server.id}</span>
+                            </div>
+                        </td>
+                        <td>
+                            ${server.mikrotikName
+                                ? `<span class="server-link-chip"><i class="fas fa-router"></i>${escapeHtml(server.mikrotikName)}</span>`
+                                : '<span class="server-link-chip empty"><i class="fas fa-link-slash"></i>Belum terhubung</span>'}
+                        </td>
+                        <td><span class="server-code">${escapeHtml(server.ipAddress || '-')}</span></td>
+                        <td>${escapeHtml(server.location || '-')}</td>
+                        <td>${coordinates}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${actions}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function setupServerSearch() {
+            const input = document.getElementById('serverSearchInput');
+            input.addEventListener('input', function (event) {
+                const keyword = event.target.value.toLowerCase().trim();
+                filteredServers = !keyword
+                    ? [...servers]
+                    : servers.filter(server =>
+                        (server.name || '').toLowerCase().includes(keyword) ||
+                        (server.mikrotikName || '').toLowerCase().includes(keyword) ||
+                        (server.mikrotikStatus || '').toLowerCase().includes(keyword) ||
+                        (server.ipAddress || '').toLowerCase().includes(keyword) ||
+                        (server.location || '').toLowerCase().includes(keyword)
+                    );
+                renderServerTable();
+            });
+        }
+        function openServerModal() {
+            if (serverPermissionLevel !== 'FULL') {
+                showServerAlert('info', 'Mode baca saja. Hanya Super Admin yang dapat mengubah data server.');
+                return;
+            }
+            document.getElementById('serverModalTitle').textContent = 'Tambah Server';
+            document.getElementById('serverForm').reset();
+            document.getElementById('serverId').value = '';
+            document.getElementById('serverMikrotikId').value = '';
+            document.getElementById('serverCoordinates').value = '';
+            document.getElementById('serverLatitude').value = '';
+            document.getElementById('serverLongitude').value = '';
+            document.getElementById('serverStatus').value = '';
+            document.getElementById('serverIpAddress').value = '';
+            document.getElementById('serverIsActive').value = 'true';
+            updateSelectedMikrotikFields();
+            startMikrotikSync();
+            document.getElementById('serverModal').classList.add('open');
+        }
+
+        function closeServerModal() {
+            document.getElementById('serverModal').classList.remove('open');
+            stopMikrotikSync();
+        }
+
+        function editServer(serverId) {
+            if (serverPermissionLevel !== 'FULL') {
+                return;
+            }
+            const server = servers.find(item => item.id === serverId);
+            if (!server) {
+                return;
+            }
+            document.getElementById('serverModalTitle').textContent = 'Edit Server';
+            document.getElementById('serverId').value = server.id;
+            document.getElementById('serverName').value = server.name || '';
+            document.getElementById('serverMikrotikId').value = server.mikrotikId || '';
+            document.getElementById('serverLocation').value = server.location || '';
+            document.getElementById('serverCoordinates').value = server.latitude != null && server.longitude != null
+                ? `${server.latitude}, ${server.longitude}`
+                : '';
+            document.getElementById('serverLatitude').value = server.latitude ?? '';
+            document.getElementById('serverLongitude').value = server.longitude ?? '';
+            document.getElementById('serverIsActive').value = server.isActive === false ? 'false' : 'true';
+            updateSelectedMikrotikFields();
+            startMikrotikSync();
+            document.getElementById('serverModal').classList.add('open');
+        }
+
+        async function saveServer() {
+            if (serverPermissionLevel !== 'FULL') {
+                return;
+            }
+
+            if (!parseServerCoordinates(document.getElementById('serverCoordinates').value)) {
+                showServerAlert('error', 'Format koordinat tidak valid. Gunakan: latitude, longitude');
+                return;
+            }
+
+            const id = document.getElementById('serverId').value;
+            const payload = {
+                name: document.getElementById('serverName').value.trim(),
+                ipAddress: document.getElementById('serverIpAddress').value.trim(),
+                mikrotikId: document.getElementById('serverMikrotikId').value ? Number(document.getElementById('serverMikrotikId').value) : null,
+                location: document.getElementById('serverLocation').value.trim(),
+                latitude: document.getElementById('serverLatitude').value ? Number(document.getElementById('serverLatitude').value) : null,
+                longitude: document.getElementById('serverLongitude').value ? Number(document.getElementById('serverLongitude').value) : null,
+                isActive: document.getElementById('serverIsActive').value === 'true'
+            };
+
+            if (!payload.name || !payload.mikrotikId || !payload.ipAddress) {
+                showServerAlert('error', 'Nama server, Mikrotik server, dan IP Address wajib diisi.');
+                return;
+            }
+
+            const url = id ? `/api/servers/${id}` : '/api/servers';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: serverHeaders(true),
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    showServerAlert('error', result.message || 'Gagal menyimpan data server.');
+                    return;
+                }
+                closeServerModal();
+                showServerAlert('success', id ? 'Server berhasil diperbarui.' : 'Server berhasil ditambahkan.');
+                await loadServers();
+            } catch (error) {
+                console.error('Error saving server:', error);
+                showServerAlert('error', 'Terjadi kesalahan saat menyimpan data server.');
+            }
+        }
+
+        async function refreshServerMikrotik(serverId) {
+            if (serverPermissionLevel !== 'FULL') {
+                return;
+            }
+            try {
+                const response = await fetch(`/api/servers/${serverId}/sync-mikrotik`, {
+                    method: 'POST',
+                    headers: serverHeaders(),
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    showServerAlert('error', result.message || 'Gagal menyinkronkan data Mikrotik.');
+                    return;
+                }
+                showServerAlert('success', 'Data server berhasil disinkronkan dari Mikrotik.');
+                await Promise.all([loadMikrotikOptions(), loadServers()]);
+            } catch (error) {
+                console.error('Error syncing server:', error);
+                showServerAlert('error', 'Terjadi kesalahan saat sinkronisasi server.');
+            }
+        }
+
+        async function deleteServer(serverId) {
+            if (serverPermissionLevel !== 'FULL') {
+                return;
+            }
+
+            const server = servers.find(item => item.id === serverId);
+            if (!server) {
+                return;
+            }
+
+            const confirmed = await window.nmxConfirm(`Hapus server "${server.name}"?`, {
+                title: 'Konfirmasi Hapus',
+                confirmText: 'Hapus',
+                confirmClass: 'btn btn-danger'
+            });
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/servers/${serverId}`, {
+                    method: 'DELETE',
+                    headers: serverHeaders(),
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    showServerAlert('error', result.message || 'Gagal menghapus server.');
+                    return;
+                }
+                showServerAlert('success', 'Server berhasil dihapus.');
+                await loadServers();
+            } catch (error) {
+                console.error('Error deleting server:', error);
+                showServerAlert('error', 'Terjadi kesalahan saat menghapus data server.');
+            }
+        }
+
+        function showServerAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            if (!container) {
+                return;
+            }
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+            const alert = document.createElement('div');
+            alert.className = `alert-message ${type}`;
+            alert.innerHTML = `<i class="fas fa-${icon}"></i><span>${escapeHtml(message)}</span>`;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        async function loadMikrotikOptions() {
+            try {
+                const response = await fetch('/api/network/mikrotik', { credentials: 'same-origin' });
+                const result = await response.json();
+                mikrotikDevices = result.success && Array.isArray(result.data) ? result.data : [];
+                renderMikrotikOptions();
+                updateSelectedMikrotikFields();
+            } catch (error) {
+                console.error('Error loading Mikrotik options:', error);
+                mikrotikDevices = [];
+                renderMikrotikOptions();
+            }
+        }
+
+        function renderMikrotikOptions() {
+            const select = document.getElementById('serverMikrotikId');
+            const selectedValue = select.value;
+            const options = mikrotikDevices.map(device =>
+                `<option value="${device.id}">${escapeHtml(device.name || '-')}</option>`
+            ).join('');
+            select.innerHTML = `<option value="">-- Pilih Mikrotik --</option>${options}`;
+            if (selectedValue) {
+                select.value = selectedValue;
+            }
+        }
+
+        function setupMikrotikSelection() {
+            const select = document.getElementById('serverMikrotikId');
+            if (!select) {
+                return;
+            }
+            select.addEventListener('change', function () {
+                updateSelectedMikrotikFields();
+            });
+        }
+
+        function updateSelectedMikrotikFields() {
+            const selectedId = Number(document.getElementById('serverMikrotikId').value);
+            const selected = mikrotikDevices.find(device => device.id === selectedId);
+            document.getElementById('serverIpAddress').value = resolveServerMikrotikIp(selected);
+            document.getElementById('serverStatus').value = formatMikrotikStatus(selected?.status);
+            // isActive is managed as data availability, not operational status.
+        }
+
+        function resolveServerMikrotikIp(device) {
+            if (!device) {
+                return '';
+            }
+            return [
+                device.ipAddress,
+                device.apiIpAddress,
+                device.winboxIpAddress
+            ].find(value => String(value || '').trim() !== '') || '';
+        }
+
+        function formatMikrotikStatus(status) {
+            const normalized = String(status || '').toLowerCase();
+            if (normalized === 'online') return 'Online';
+            if (normalized === 'maintenance') return 'Maintenance';
+            if (normalized === 'offline') return 'Offline';
+            return '';
+        }
+
+        function setupServerCoordinateInput() {
+            const coordInput = document.getElementById('serverCoordinates');
+            if (!coordInput) {
+                return;
+            }
+            coordInput.addEventListener('blur', function () {
+                parseServerCoordinates(this.value);
+            });
+        }
+
+        function parseServerCoordinates(coordStr) {
+            if (!coordStr || coordStr.trim() === '') {
+                document.getElementById('serverLatitude').value = '';
+                document.getElementById('serverLongitude').value = '';
+                return true;
+            }
+            const parts = coordStr.trim().split(',');
+            if (parts.length !== 2) {
+                return false;
+            }
+            const latitude = Number(parts[0].trim());
+            const longitude = Number(parts[1].trim());
+            if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+                return false;
+            }
+            document.getElementById('serverLatitude').value = latitude;
+            document.getElementById('serverLongitude').value = longitude;
+            return true;
+        }
+
+        function startMikrotikSync() {
+            stopMikrotikSync();
+            mikrotikSyncTimer = window.setInterval(async function () {
+                if (!document.getElementById('serverModal').classList.contains('open')) {
+                    return;
+                }
+                await loadMikrotikOptions();
+            }, 10000);
+        }
+
+        function stopMikrotikSync() {
+            if (mikrotikSyncTimer) {
+                window.clearInterval(mikrotikSyncTimer);
+                mikrotikSyncTimer = null;
+            }
+        }
+    </script>
+</div>
+
+

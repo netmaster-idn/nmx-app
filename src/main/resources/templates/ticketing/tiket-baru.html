@@ -1,0 +1,602 @@
+<div th:fragment="content">
+    <style>
+        /* Page Header */
+        .page-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+.header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--status-info);
+        }
+        
+        .stat-icon.orange {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+        
+        .stat-icon.green {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--status-success);
+        }
+        
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--status-danger);
+        }
+        
+        .stat-info h4 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .stat-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+        
+        /* Form Section */
+        .form-section {
+            margin-bottom: 24px;
+        }
+        
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        /* Form Row */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Form Elements */
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .form-label.required::after {
+            content: " *";
+            color: var(--status-danger);
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--nmx-orange);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-hint {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+        
+        /* Priority Badges */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .priority-badge.high {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+        
+        .priority-badge.medium {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+        
+        .priority-badge.low {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+        
+        /* Alert Messages */
+        .alert-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            font-size: 13px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .alert-message.success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        
+        .alert-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .alert-message.info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header-custom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+    <div><div class="page-header-custom"><div class="header-actions">
+                <a href="/ticketing/aktif" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Kembali
+                </a>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="openTickets">0</h4>
+                    <p>Tiket Terbuka</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="progressTickets">0</h4>
+                    <p>Sedang Dikerjakan</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="completedTickets">0</h4>
+                    <p>Selesai Bulan Ini</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <form id="ticketForm">
+                <!-- Information Section -->
+                <div class="form-section">
+                    <div class="form-section-title">Informasi Tiket</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required">Judul / Subjek</label>
+                            <input type="text" class="form-input" id="ticketSubject" placeholder="Masukkan judul ticket" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Kategori</label>
+                            <select class="form-select" id="ticketCategory" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="complaint">Pengaduan</option>
+                                <option value="request">Permintaan</option>
+                                <option value="installation">Instalasi Baru</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="billing">Tagihan</option>
+                                <option value="technical">Masalah Teknis</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Prioritas</label>
+                            <select class="form-select" id="ticketPriority" required>
+                                <option value="">Pilih Prioritas</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Tipe Pelanggan</label>
+                            <select class="form-select" id="customerType" required>
+                                <option value="">Pilih Tipe</option>
+                                <option value="residential">Residential</option>
+                                <option value="business">Business</option>
+                                <option value="enterprise">Enterprise</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Section -->
+                <div class="form-section">
+                    <div class="form-section-title">Data Pelanggan</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required">Pelanggan</label>
+                            <select class="form-select" id="customerId" required>
+                                <option value="">Pilih Pelanggan</option>
+                                <option value="1">Ahmad Santos -Jl. Merdeka No. 10</option>
+                                <option value="2">Budi Wijaya -Jl. Sudirman No. 25</option>
+                                <option value="3">Clara Susilo -Jl. Thamrin No. 15</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nomor Handphone</label>
+                            <input type="text" class="form-input" id="customerPhone" placeholder="08xxxxxxxxxx" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="customerEmail" placeholder="email@domain.com" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Paket Internet</label>
+                            <input type="text" class="form-input" id="customerPackage" placeholder="-" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Section -->
+                <div class="form-section">
+                    <div class="form-section-title">Deskripsi Masalah</div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label class="form-label required">Deskripsi</label>
+                            <textarea class="form-textarea" id="ticketDescription" placeholder="Jelaskan secara detail masalah yang dialami..." required></textarea>
+                            <div class="form-hint">Berikan informasi yang jelas agar teknisi dapat membantu dengan tepat.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment Section -->
+                <div class="form-section">
+                    <div class="form-section-title">Penugasan</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tugaskn Ke Teknisi</label>
+                            <select class="form-select" id="assignedTechnician">
+                                <option value="">Pilih Teknisi (Opsional)</option>
+                                <option value="1">Budi Santoso - Jakarta Selatan</option>
+                                <option value="2">Rudi Santika - Jakarta Barat</option>
+                                <option value="3">Ahmad Syahrul - Jakarta Utara</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estimasi Waktu</label>
+                            <select class="form-select" id="estimatedTime">
+                                <option value="">Pilih Estimasi</option>
+                                <option value="1">1 Jam</option>
+                                <option value="2">2 Jam</option>
+                                <option value="4">4 Jam</option>
+                                <option value="8">8 Jam</option>
+                                <option value="24">1 Hari</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-reset"></i>
+                        Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Simpan Tiket
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Global data
+        let tickets = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTicketStats();
+            setupForm();
+        });
+        
+        // Load ticket statistics
+        async function loadTicketStats() {
+            try {
+                const response = await fetch('/ticketing/api/tickets');
+                const result = await response.json();
+                
+                if (result.success) {
+                    tickets = result.data;
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                // Demo data
+                tickets = [
+                    { status: 'open' },
+                    { status: 'in_progress' },
+                    { status: 'completed' }
+                ];
+                updateStats();
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            document.getElementById('openTickets').textContent = tickets.filter(t => t.status === 'open' || t.status === 'waiting').length;
+            document.getElementById('progressTickets').textContent = tickets.filter(t => t.status === 'in_progress').length;
+            document.getElementById('completedTickets').textContent = tickets.filter(t => t.status === 'completed').length;
+        }
+        
+        // Setup form
+        function setupForm() {
+            const form = document.getElementById('ticketForm');
+            form.addEventListener('submit', handleSubmit);
+            
+            // Customer selection change
+            const customerSelect = document.getElementById('customerId');
+            customerSelect.addEventListener('change', handleCustomerChange);
+        }
+        
+        // Handle customer change
+        function handleCustomerChange(e) {
+            const customerId = e.target.value;
+            
+            // Demo customer data
+            const customerData = {
+                '1': { phone: '081234567890', email: 'ahmad@mail.com', package: '20 Mbps' },
+                '2': { phone: '081234567891', email: 'budi@mail.com', package: '50 Mbps' },
+                '3': { phone: '081234567892', email: 'clara@mail.com', package: '100 Mbps' }
+            };
+            
+            if (customerData[customerId]) {
+                document.getElementById('customerPhone').value = customerData[customerId].phone;
+                document.getElementById('customerEmail').value = customerData[customerId].email;
+                document.getElementById('customerPackage').value = customerData[customerId].package;
+            } else {
+                document.getElementById('customerPhone').value = '';
+                document.getElementById('customerEmail').value = '';
+                document.getElementById('customerPackage').value = '';
+            }
+        }
+        
+        // Handle form submit
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                subject: document.getElementById('ticketSubject').value,
+                category: document.getElementById('ticketCategory').value,
+                priority: document.getElementById('ticketPriority').value,
+                customerType: document.getElementById('customerType').value,
+                customerId: document.getElementById('customerId').value,
+                description: document.getElementById('ticketDescription').value,
+                assignedTechnician: document.getElementById('assignedTechnician').value,
+                estimatedTime: document.getElementById('estimatedTime').value
+            };
+            
+            try {
+                const response = await fetch('/ticketing/api/tickets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', 'Tiket berhasil dibuat!');
+                    resetForm();
+                    loadTicketStats();
+                    setTimeout(() => {
+                        window.location.href = '/ticketing/aktif';
+                    }, 1500);
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                console.error('Error creating ticket:', error);
+                // Demo mode - simulate success
+                showAlert('success', 'Tiket berhasil dibuat! (Demo Mode)');
+                resetForm();
+                loadTicketStats();
+            }
+        }
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('ticketForm').reset();
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('customerEmail').value = '';
+            document.getElementById('customerPackage').value = '';
+        }
+        
+        // Show alert
+        function showAlert(type, message) {
+            if (window.nmxNotify) {
+                window.nmxNotify({
+                    type: type,
+                    message: message
+                });
+                return;
+            }
+
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-message ${type}`;
+            
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            
+            alertDiv.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</div>
+
+

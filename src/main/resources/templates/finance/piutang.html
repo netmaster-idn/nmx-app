@@ -1,0 +1,527 @@
+<div th:fragment="content">
+    <style>
+        .receivable-page {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .receivable-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .receivable-header .stats-row {
+            flex: 1 1 720px;
+            margin-bottom: 0;
+        }
+
+        .toolbar-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 390px;
+            margin-left: auto;
+            align-self: flex-start;
+        }
+
+        .toolbar-search-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            order: 2;
+        }
+
+        .toolbar-search-group .search-container {
+            flex: 1 1 auto;
+            max-width: none;
+        }
+
+        .quick-action-bar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+            order: 1;
+        }
+
+        .quick-action-bar .filter-dropdown {
+            min-width: 0;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 8px 10px 8px 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        .search-container input:focus,
+        .filter-dropdown select:focus {
+            outline: none;
+            border-color: var(--nmx-orange);
+        }
+
+        .filter-dropdown select {
+            min-width: 0;
+            width: 100%;
+            padding: 8px 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .receivable-header .stats-row {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(160px, 1fr));
+            gap: 10px;
+        }
+
+        .receivable-header .stats-row .stat-card {
+            min-width: 0;
+            min-height: 78px;
+            padding: 10px 12px;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .receivable-header .stats-row .stat-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 13px;
+        }
+
+        .receivable-header .stats-row .stat-info h4 {
+            font-size: 18px;
+            line-height: 1.1;
+        }
+
+        .receivable-header .stats-row .stat-info p {
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+        .table-scroll { overflow-x: auto; max-height: calc(100vh - 350px); }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead { background: #161616; }
+        .data-table th { padding: 9px 12px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .data-table td { padding: 9px 12px; border-bottom: 1px solid #1a1a1a; color: var(--text-secondary); font-size: 12px; line-height: 1.25; }
+        .invoice-number { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
+        .payment-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            border: 1px solid var(--border);
+            background: rgba(148, 163, 184, 0.08);
+            color: var(--text-primary);
+        }
+        .payment-type-badge.activation {
+            background: rgba(59, 130, 246, 0.12);
+            border-color: rgba(59, 130, 246, 0.35);
+            color: #93c5fd;
+        }
+        .payment-type-badge.subscription {
+            background: rgba(34, 197, 94, 0.10);
+            border-color: rgba(34, 197, 94, 0.30);
+            color: #86efac;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+        .status-badge.overdue { background: rgba(239, 68, 68, 0.12); color: #fca5a5; border-color: rgba(239, 68, 68, 0.32); }
+        .status-badge.pending, .status-badge.partial { background: rgba(245, 158, 11, 0.12); color: #fcd34d; border-color: rgba(245, 158, 11, 0.28); }
+        .status-badge.paid { background: rgba(34, 197, 94, 0.12); color: #86efac; border-color: rgba(34, 197, 94, 0.28); }
+        .customer-name { color: var(--text-primary); font-weight: 600; font-size: 12px; }
+        .customer-code { color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+        .alert-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .alert-message.error { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .alert-message.success { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 24px 14px;
+            color: var(--text-muted);
+        }
+        .empty-state.show { display: block; }
+        .empty-state i { font-size: 30px; margin-bottom: 8px; }
+        @media (max-width: 768px) {
+            .receivable-header { align-items: stretch; }
+            .receivable-header .stats-row,
+            .toolbar-stack,
+            .filter-dropdown,
+            .filter-dropdown select,
+            .search-container { width: 100%; max-width: none; }
+            .toolbar-search-group { flex-wrap: wrap; }
+            .quick-action-bar { grid-template-columns: 1fr; }
+            .receivable-header .stats-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <div class="receivable-page"><div id="alertContainer"></div>
+
+        <div class="receivable-header">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-info"><h4 id="totalReceivables">Rp 0</h4><p>Total Piutang</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-info"><h4 id="overdueCount">0</h4><p>Invoice Jatuh Tempo</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-user-check"></i></div>
+                    <div class="stat-info"><h4 id="activationReceivables">Rp 0</h4><p>Piutang Aktivasi</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-repeat"></i></div>
+                    <div class="stat-info"><h4 id="subscriptionReceivables">Rp 0</h4><p>Piutang Langganan</p></div>
+                </div>
+            </div>
+
+            <div class="toolbar-stack">
+                <div class="toolbar-search-group">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Cari pelanggan, invoice, metode, atau jenis pembayaran">
+                    </div>
+                </div>
+                <div class="quick-action-bar">
+                    <div class="filter-dropdown">
+                        <select id="typeFilter">
+                            <option value="all">Semua Jenis</option>
+                            <option value="activation">Aktivasi</option>
+                            <option value="subscription">Langganan</option>
+                        </select>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select id="statusFilter">
+                            <option value="all">Semua Status</option>
+                            <option value="overdue">Jatuh Tempo</option>
+                            <option value="pending">Pending</option>
+                            <option value="partial">Partial</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Pelanggan</th>
+                            <th>No. Invoice</th>
+                            <th>Jenis Pembayaran</th>
+                            <th>Jatuh Tempo</th>
+                            <th>Total</th>
+                            <th>Sisa</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receivableTableBody"></tbody>
+                </table>
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h3>Tidak Ada Piutang</h3>
+                    <p>Belum ada invoice outstanding pada filter yang dipilih.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let receivableRows = [];
+        let filteredReceivableRows = [];
+        let selectedType = 'all';
+        let selectedStatus = 'all';
+        let searchKeyword = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReceivables();
+            setupFilters();
+            if (window.nmxBilling) {
+                window.nmxBilling.onRefresh(() => loadReceivables());
+            }
+        });
+
+        async function loadReceivables() {
+            try {
+                const currentPeriod = getCurrentPeriod();
+                const query = new URLSearchParams({
+                    year: String(currentPeriod.year),
+                    month: String(currentPeriod.month)
+                });
+                const response = await fetch(`/api/finance/invoices/unpaid?${query.toString()}`);
+                const result = await response.json();
+
+                if (!result.success || !Array.isArray(result.data)) {
+                    throw new Error(result.message || 'Gagal memuat data piutang');
+                }
+
+                receivableRows = [...result.data]
+                    .filter(row => isCurrentMonthReceivable(row, currentPeriod))
+                    .sort((left, right) =>
+                    toDateMillis(right.dueDate || right.billingMonth) - toDateMillis(left.dueDate || left.billingMonth)
+                );
+
+                applyFilters();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading receivables:', error);
+                showAlert('error', 'Gagal memuat data piutang');
+            }
+        }
+
+        function setupFilters() {
+            document.getElementById('typeFilter').addEventListener('change', function(event) {
+                selectedType = event.target.value || 'all';
+                applyFilters();
+                updateStats();
+            });
+
+            document.getElementById('statusFilter').addEventListener('change', function(event) {
+                selectedStatus = event.target.value || 'all';
+                applyFilters();
+                updateStats();
+            });
+
+            document.getElementById('searchInput').addEventListener('input', function(event) {
+                searchKeyword = (event.target.value || '').trim().toLowerCase();
+                applyFilters();
+                updateStats();
+            });
+        }
+
+        function applyFilters() {
+            let rows = [...receivableRows];
+
+            if (selectedType !== 'all') {
+                rows = rows.filter(row => normalizeInvoiceType(row.invoiceType) === selectedType);
+            }
+
+            if (selectedStatus !== 'all') {
+                rows = rows.filter(row => String(row.status || '').toLowerCase() === selectedStatus);
+            }
+
+            if (searchKeyword) {
+                rows = rows.filter(row =>
+                    (row.customerName || '').toLowerCase().includes(searchKeyword) ||
+                    (row.customerCode || '').toLowerCase().includes(searchKeyword) ||
+                    (row.invoiceNumber || '').toLowerCase().includes(searchKeyword) ||
+                    (row.paymentMethod || '').toLowerCase().includes(searchKeyword) ||
+                    (row.invoiceTypeLabel || '').toLowerCase().includes(searchKeyword)
+                );
+            }
+
+            filteredReceivableRows = rows;
+            renderTable();
+        }
+
+        function updateStats() {
+            const totalReceivables = filteredReceivableRows.reduce((sum, row) => sum + getOutstandingAmount(row), 0);
+            const overdueCount = filteredReceivableRows.filter(row => String(row.status || '').toLowerCase() === 'overdue').length;
+            const activationReceivables = filteredReceivableRows
+                .filter(row => normalizeInvoiceType(row.invoiceType) === 'activation')
+                .reduce((sum, row) => sum + getOutstandingAmount(row), 0);
+            const subscriptionReceivables = filteredReceivableRows
+                .filter(row => normalizeInvoiceType(row.invoiceType) === 'subscription')
+                .reduce((sum, row) => sum + getOutstandingAmount(row), 0);
+
+            document.getElementById('totalReceivables').textContent = formatRupiah(totalReceivables);
+            document.getElementById('overdueCount').textContent = overdueCount;
+            document.getElementById('activationReceivables').textContent = formatRupiah(activationReceivables);
+            document.getElementById('subscriptionReceivables').textContent = formatRupiah(subscriptionReceivables);
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('receivableTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!filteredReceivableRows.length) {
+                tbody.innerHTML = '';
+                emptyState.classList.add('show');
+                return;
+            }
+
+            emptyState.classList.remove('show');
+            tbody.innerHTML = filteredReceivableRows.map(row => `
+                <tr>
+                    <td>
+                        <div class="customer-name">${escapeHtml(row.customerName || '-')}</div>
+                        <div class="customer-code">${escapeHtml(row.customerCode || '-')}</div>
+                    </td>
+                    <td><span class="invoice-number">${escapeHtml(row.invoiceNumber || '-')}</span></td>
+                    <td>
+                        <span class="payment-type-badge ${normalizeInvoiceType(row.invoiceType)}">
+                            ${escapeHtml(row.invoiceTypeLabel || 'Pembayaran Langganan Bulanan')}
+                        </span>
+                    </td>
+                    <td>${formatDate(row.dueDate)}</td>
+                    <td>${formatRupiah(row.totalAmount || 0)}</td>
+                    <td>${formatRupiah(getOutstandingAmount(row))}</td>
+                    <td><span class="status-badge ${getStatusClass(row.status)}">${escapeHtml(getStatusText(row.status))}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function normalizeInvoiceType(invoiceType) {
+            return String(invoiceType || 'subscription').toLowerCase() === 'activation' ? 'activation' : 'subscription';
+        }
+
+        function getOutstandingAmount(row) {
+            const explicitOutstanding = asNumber(row && row.outstandingAmount);
+            if (explicitOutstanding > 0) {
+                return explicitOutstanding;
+            }
+            const total = asNumber(row && row.totalAmount);
+            const paid = asNumber(row && row.amountPaid);
+            const remaining = total - paid;
+            return remaining > 0 ? remaining : 0;
+        }
+
+        function getStatusClass(status) {
+            const normalizedStatus = String(status || 'pending').toLowerCase();
+            return window.nmxBilling
+                ? window.nmxBilling.getStatusClass(normalizedStatus)
+                : (normalizedStatus === 'overdue' ? 'overdue' : (normalizedStatus === 'paid' ? 'paid' : 'pending'));
+        }
+
+        function getStatusText(status) {
+            return window.nmxBilling
+                ? window.nmxBilling.getStatusLabel(status)
+                : (String(status || '').toLowerCase() === 'overdue' ? 'Jatuh Tempo' : 'Belum Lunas');
+        }
+
+        function toDateMillis(value) {
+            if (!value) {
+                return 0;
+            }
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+        }
+
+        function getCurrentPeriod() {
+            const now = new Date();
+            return {
+                year: now.getFullYear(),
+                month: now.getMonth() + 1
+            };
+        }
+
+        function isCurrentMonthReceivable(row, currentPeriod = getCurrentPeriod()) {
+            const reference = parseLocalDate(row && (row.billingMonth || row.dueDate));
+            if (!reference) {
+                return false;
+            }
+
+            return reference.getFullYear() === currentPeriod.year
+                && (reference.getMonth() + 1) === currentPeriod.month;
+        }
+
+        function parseLocalDate(value) {
+            if (!value) {
+                return null;
+            }
+
+            const parts = String(value).split('-').map(Number);
+            if (parts.length === 3 && parts.every(part => Number.isFinite(part))) {
+                return new Date(parts[0], parts[1] - 1, parts[2]);
+            }
+
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function asNumber(value) {
+            const parsed = Number(value || 0);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('id-ID');
+        }
+
+        function formatRupiah(amount) {
+            return `Rp. ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(asNumber(amount))}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showAlert(type, message) {
+            if (window.nmxNotify) {
+                window.nmxNotify({ type, message });
+                return;
+            }
+
+            const container = document.getElementById('alertContainer');
+            if (!container) return;
+            const alert = document.createElement('div');
+            alert.className = `alert-message ${type}`;
+            alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${escapeHtml(message)}</span>`;
+            container.innerHTML = '';
+            container.appendChild(alert);
+            window.setTimeout(() => {
+                if (container.contains(alert)) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</div>
+

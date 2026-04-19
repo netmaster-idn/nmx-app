@@ -1,0 +1,589 @@
+<div th:fragment="content">
+    <style>
+        .cashflow-page { display: flex; flex-direction: column; gap: 24px; }
+        .toolbar-header { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .toolbar-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .filter-dropdown select {
+            min-width: 180px;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .stat-icon.green { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .stat-icon.orange { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .stat-icon.red { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .stat-icon.purple { background: rgba(168, 85, 247, 0.12); color: #a855f7; }
+        .stat-icon.teal { background: rgba(20, 184, 166, 0.12); color: #14b8a6; }
+        .stat-info h4 { margin: 0; font-size: 26px; line-height: 1.05; color: var(--text-primary); }
+        .stat-info p { margin: 6px 0 0; color: var(--text-muted); font-size: 12px; }
+        .stat-info small { display: block; margin-top: 8px; color: var(--text-dim); font-size: 11px; }
+        .content-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
+        .card-shell {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-header {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .card-header h3 { margin: 0; color: var(--text-primary); font-size: 15px; }
+        .card-header p { margin: 4px 0 0; color: var(--text-muted); font-size: 12px; }
+        .chart-wrapper { padding: 20px; min-height: 360px; }
+        .table-wrap { overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead { background: #161616; }
+        .data-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .data-table td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid #1a1a1a;
+            vertical-align: top;
+        }
+        .data-table tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+        .payment-type { color: var(--text-primary); font-weight: 600; }
+        .payment-meta { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .month-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-primary);
+            background: rgba(59, 130, 246, 0.10);
+            border: 1px solid rgba(59, 130, 246, 0.24);
+        }
+        .empty-state {
+            padding: 28px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .empty-state i { display: block; font-size: 32px; margin-bottom: 12px; }
+        .info-note {
+            flex: 1 1 320px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(59, 130, 246, 0.24);
+            background: rgba(59, 130, 246, 0.08);
+            color: #bfdbfe;
+            font-size: 13px;
+        }
+        .alert-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+        }
+        .alert-message.error { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        @media (max-width: 980px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .toolbar-header { align-items: stretch; }
+            .toolbar-row { align-items: stretch; }
+            .filter-dropdown, .filter-dropdown select { width: 100%; }
+            .info-note { flex-basis: 100%; }
+        }
+    </style>
+
+    <div class="cashflow-page">
+        <div id="alertContainer"></div>
+
+        <div class="toolbar-header">
+            <div class="toolbar-row">
+                <div class="filter-dropdown">
+                    <select id="yearFilter"></select>
+                </div>
+                <div class="filter-dropdown">
+                    <select id="monthFilter">
+                        <option value="">Semua Bulan</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="info-note">
+                Menu ini menampilkan kas masuk dari invoice yang sudah dibayar serta outstanding tagihan pada periode terpilih.
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-wallet"></i></div>
+                <div class="stat-info">
+                    <h4 id="cashInValue">Rp 0</h4>
+                    <p>Kas Masuk Periode</p>
+                    <small id="cashInHelper">0 pembayaran tercatat</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="stat-info">
+                    <h4 id="outstandingValue">Rp 0</h4>
+                    <p>Outstanding Piutang</p>
+                    <small id="outstandingHelper">0 invoice outstanding</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-user-check"></i></div>
+                <div class="stat-info">
+                    <h4 id="activationCashInValue">Rp 0</h4>
+                    <p>Kas Masuk Aktivasi</p>
+                    <small>Pembayaran aktivasi pelanggan</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon teal"><i class="fas fa-repeat"></i></div>
+                <div class="stat-info">
+                    <h4 id="subscriptionCashInValue">Rp 0</h4>
+                    <p>Kas Masuk Langganan</p>
+                    <small>Pembayaran langganan bulanan</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple"><i class="fas fa-percent"></i></div>
+                <div class="stat-info">
+                    <h4 id="collectionRateValue">0%</h4>
+                    <p>Tingkat Kolektabilitas</p>
+                    <small>Perbandingan kas masuk vs outstanding</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="fas fa-calendar-alt"></i></div>
+                <div class="stat-info">
+                    <h4 id="periodLabel">-</h4>
+                    <p>Periode Aktif</p>
+                    <small>Filter yang sedang ditampilkan</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-shell">
+            <div class="card-header">
+                <div>
+                    <h3>Tren Cashflow Bulanan</h3>
+                    <p>Perbandingan kas masuk pembayaran dengan outstanding tagihan dalam tahun terpilih.</p>
+                </div>
+                <span class="month-pill" id="chartYearLabel">Tahun -</span>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="cashflowChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card-shell">
+                <div class="card-header">
+                    <div>
+                        <h3>Pembayaran Terbaru</h3>
+                        <p>Daftar pembayaran nyata yang masuk pada periode terpilih.</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Invoice</th>
+                                <th>Pelanggan</th>
+                                <th>Jenis Pembayaran</th>
+                                <th>Metode</th>
+                                <th>Dibayar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentPaymentsBody"></tbody>
+                    </table>
+                </div>
+                <div id="recentPaymentsEmpty" class="empty-state" style="display:none;">
+                    <i class="fas fa-receipt"></i>
+                    Belum ada pembayaran pada periode ini.
+                </div>
+            </div>
+
+            <div class="card-shell">
+                <div class="card-header">
+                    <div>
+                        <h3>Ringkasan Bulanan</h3>
+                        <p>Akumulasi per bulan pada tahun yang dipilih.</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Bulan</th>
+                                <th>Kas Masuk</th>
+                                <th>Outstanding</th>
+                                <th>Pembayaran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthlySummaryBody"></tbody>
+                    </table>
+                </div>
+                <div id="monthlySummaryEmpty" class="empty-state" style="display:none;">
+                    <i class="fas fa-chart-column"></i>
+                    Belum ada data cashflow untuk tahun ini.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedYear = '';
+        let selectedMonth = '';
+        let cashflowChartInstance = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeCashflowFilters();
+            await loadCashflow();
+            setupCashflowEvents();
+            if (window.nmxBilling) {
+                window.nmxBilling.onRefresh(() => loadCashflow());
+            }
+        });
+
+        async function initializeCashflowFilters() {
+            const now = new Date();
+            const yearFilter = document.getElementById('yearFilter');
+            const monthFilter = document.getElementById('monthFilter');
+            const availableYears = await fetchAvailableYears();
+            const fallbackYears = availableYears.length ? availableYears : [now.getFullYear()];
+
+            yearFilter.innerHTML = '';
+            fallbackYears.forEach(year => {
+                const option = document.createElement('option');
+                option.value = String(year);
+                option.textContent = String(year);
+                yearFilter.appendChild(option);
+            });
+
+            selectedYear = resolvePreferredValue(fallbackYears, now.getFullYear());
+            yearFilter.value = selectedYear;
+
+            monthFilter.innerHTML = '<option value="">Semua Bulan</option>';
+            getMonthNames().forEach((monthName, index) => {
+                const option = document.createElement('option');
+                option.value = String(index + 1);
+                option.textContent = monthName;
+                monthFilter.appendChild(option);
+            });
+            monthFilter.value = '';
+            selectedMonth = '';
+        }
+
+        function setupCashflowEvents() {
+            document.getElementById('yearFilter').addEventListener('change', async function(event) {
+                selectedYear = event.target.value || selectedYear;
+                await loadCashflow();
+            });
+
+            document.getElementById('monthFilter').addEventListener('change', async function(event) {
+                selectedMonth = event.target.value || '';
+                await loadCashflow();
+            });
+        }
+
+        async function loadCashflow() {
+            try {
+                const response = await fetch(`/api/finance/cashflow${buildCashflowQuery()}`);
+                const result = await response.json();
+
+                if (!result.success || !result.data) {
+                    throw new Error(result.message || 'Gagal memuat cashflow');
+                }
+
+                renderCashflowSummary(result.data);
+                renderCashflowChart(result.data.monthlySeries || []);
+                renderRecentPayments(result.data.recentPayments || []);
+                renderMonthlySummary(result.data.monthlySeries || []);
+            } catch (error) {
+                console.error('Error loading cashflow:', error);
+                showAlert('error', 'Gagal memuat data cashflow');
+            }
+        }
+
+        async function fetchAvailableYears() {
+            try {
+                const response = await fetch('/pelanggan/api/invoices/years');
+                const result = await response.json();
+                return result.success && Array.isArray(result.data) ? result.data : [];
+            } catch (error) {
+                console.error('Error loading cashflow years:', error);
+                return [];
+            }
+        }
+
+        function buildCashflowQuery() {
+            const params = new URLSearchParams();
+            if (selectedYear) {
+                params.set('year', selectedYear);
+            }
+            if (selectedMonth) {
+                params.set('month', selectedMonth);
+            }
+            const query = params.toString();
+            return query ? `?${query}` : '';
+        }
+
+        function renderCashflowSummary(data) {
+            document.getElementById('cashInValue').textContent = formatRupiah(data.cashIn || 0);
+            document.getElementById('outstandingValue').textContent = formatRupiah(data.outstandingAmount || 0);
+            document.getElementById('activationCashInValue').textContent = formatRupiah(data.activationCashIn || 0);
+            document.getElementById('subscriptionCashInValue').textContent = formatRupiah(data.subscriptionCashIn || 0);
+            document.getElementById('collectionRateValue').textContent = `${formatPercent(data.collectionRate || 0)}%`;
+            document.getElementById('cashInHelper').textContent = `${asNumber(data.paidInvoiceCount)} pembayaran tercatat`;
+            document.getElementById('outstandingHelper').textContent = `${asNumber(data.outstandingInvoiceCount)} invoice outstanding`;
+            document.getElementById('periodLabel').textContent = buildPeriodLabel(data.year, data.month);
+            document.getElementById('chartYearLabel').textContent = `Tahun ${data.year || '-'}`;
+        }
+
+        function renderCashflowChart(series) {
+            const canvas = document.getElementById('cashflowChart');
+            if (!canvas || typeof Chart === 'undefined') {
+                return;
+            }
+
+            const labels = series.map(item => item.label || '-');
+            const cashInData = series.map(item => asNumber(item.cashIn));
+            const outstandingData = series.map(item => asNumber(item.outstanding));
+
+            if (cashflowChartInstance) {
+                cashflowChartInstance.destroy();
+            }
+
+            cashflowChartInstance = new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Kas Masuk',
+                            data: cashInData,
+                            backgroundColor: 'rgba(34, 197, 94, 0.65)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Outstanding',
+                            data: outstandingData,
+                            type: 'line',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.16)',
+                            tension: 0.32,
+                            fill: false,
+                            pointRadius: 4,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#9ca3af' } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatRupiah(context.parsed.y || 0)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#9ca3af',
+                                callback: function(value) {
+                                    return formatCompactRupiah(value);
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.06)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderRecentPayments(rows) {
+            const tbody = document.getElementById('recentPaymentsBody');
+            const emptyState = document.getElementById('recentPaymentsEmpty');
+
+            if (!Array.isArray(rows) || rows.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tbody.innerHTML = rows.map(row => `
+                <tr>
+                    <td>${formatDate(row.paymentDate)}</td>
+                    <td>${escapeHtml(row.invoiceNumber || '-')}</td>
+                    <td>${escapeHtml(row.customerName || '-')}</td>
+                    <td>
+                        <div class="payment-type">${escapeHtml(row.invoiceTypeLabel || 'Pembayaran Langganan Bulanan')}</div>
+                        <div class="payment-meta">${escapeHtml(row.paymentMethod || '-')}</div>
+                    </td>
+                    <td>${escapeHtml(row.paymentMethod || '-')}</td>
+                    <td>${formatRupiah(row.amountPaid || 0)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMonthlySummary(series) {
+            const tbody = document.getElementById('monthlySummaryBody');
+            const emptyState = document.getElementById('monthlySummaryEmpty');
+
+            if (!Array.isArray(series) || series.every(item => asNumber(item.cashIn) === 0 && asNumber(item.outstanding) === 0 && asNumber(item.paymentCount) === 0)) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tbody.innerHTML = series.map(item => `
+                <tr>
+                    <td>${escapeHtml(item.label || '-')}</td>
+                    <td>${formatRupiah(item.cashIn || 0)}</td>
+                    <td>${formatRupiah(item.outstanding || 0)}</td>
+                    <td>${asNumber(item.paymentCount)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function buildPeriodLabel(year, month) {
+            if (!year) {
+                return '-';
+            }
+            if (!month) {
+                return `Tahun ${year}`;
+            }
+            const monthIndex = Number(month) - 1;
+            const monthName = getMonthNames()[monthIndex] || `Bulan ${month}`;
+            return `${monthName} ${year}`;
+        }
+
+        function getMonthNames() {
+            return ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        }
+
+        function resolvePreferredValue(values, preferredValue) {
+            const normalizedValues = Array.isArray(values) ? values.map(value => String(value)) : [];
+            const preferred = String(preferredValue || '');
+            if (preferred && normalizedValues.includes(preferred)) {
+                return preferred;
+            }
+            return normalizedValues.length > 0 ? normalizedValues[0] : '';
+        }
+
+        function asNumber(value) {
+            const parsed = Number(value || 0);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return '-';
+            }
+            const normalizedValue = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
+                ? `${value}T00:00:00`
+                : value;
+            const date = new Date(normalizedValue);
+            return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('id-ID');
+        }
+
+        function formatRupiah(amount) {
+            return `Rp. ${new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(asNumber(amount))}`;
+        }
+
+        function formatCompactRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                notation: 'compact',
+                maximumFractionDigits: 1
+            }).format(asNumber(amount));
+        }
+
+        function formatPercent(value) {
+            return new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).format(asNumber(value));
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showAlert(type, message) {
+            if (window.nmxNotify) {
+                window.nmxNotify({ type, message });
+                return;
+            }
+
+            const container = document.getElementById('alertContainer');
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = `<div class="alert-message ${escapeHtml(type || 'error')}"><i class="fas fa-exclamation-circle"></i><span>${escapeHtml(message)}</span></div>`;
+        }
+    </script>
+</div>

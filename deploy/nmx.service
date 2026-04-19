@@ -1,0 +1,18 @@
+[Unit]
+Description=NMX Spring Boot Application
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=nmx
+Group=nmx
+WorkingDirectory=/opt/nmx/app
+EnvironmentFile=/etc/nmx/nmx.env
+ExecStart=/usr/bin/java -jar /opt/nmx/app/nmx.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

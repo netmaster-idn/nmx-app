@@ -1,0 +1,283 @@
+<div th:fragment="content">
+    <style>
+        .log-page { display: flex; flex-direction: column; gap: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+        .stat-card h3 { margin: 0 0 8px; font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-card strong { display: block; font-size: 26px; color: var(--text-primary); }
+        .stat-card p { margin: 6px 0 0; font-size: 12px; color: var(--text-muted); }
+        .log-shell { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+        .log-toolbar { display: flex; gap: 12px; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+        .toolbar-group { display: flex; gap: 12px; align-items: center; width: 100%; flex-wrap: nowrap; }
+        .log-search { flex: 1 1 auto; min-width: 0; }
+        .log-search input, .log-filter { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); padding: 11px 14px; font-size: 13px; }
+        .log-filter { width: 170px; min-width: 170px; flex: 0 0 170px; }
+        .table-wrap { overflow: auto; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead { background: #161616; }
+        .data-table th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .data-table td { padding: 14px 16px; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+        .mono { font-family: var(--font-mono); color: var(--nmx-primary-dark); }
+        .log-meta strong { display: block; color: var(--text-primary); font-size: 13px; }
+        .log-meta span { display: block; margin-top: 4px; color: var(--text-muted); font-size: 12px; }
+        .status-chip, .type-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .status-chip.success { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+        .status-chip.warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .status-chip.error { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .type-chip.page-view { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+        .type-chip.user-action { background: rgba(249, 115, 22, 0.12); color: #fb923c; }
+        .type-chip.api-read { background: rgba(168, 85, 247, 0.12); color: #c084fc; }
+        .empty-state { padding: 28px 18px; color: var(--text-muted); font-size: 13px; text-align: center; }
+        .btn-refresh { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 12px; background: transparent; color: var(--text-secondary); padding: 10px 14px; cursor: pointer; }
+        .btn-refresh:hover { border-color: var(--nmx-primary-light); color: var(--nmx-primary-dark); }
+        @media (max-width: 900px) {
+            .log-toolbar { overflow-x: auto; align-items: center; }
+            .toolbar-group { min-width: max-content; }
+            .btn-refresh { flex: 0 0 auto; }
+        }
+    </style>
+
+    <div class="log-page">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Proses</h3>
+                <strong id="processTotalStat" th:text="${processLogTotal}">0</strong>
+                <p>Jumlah log proses yang sedang ditampilkan.</p>
+            </div>
+            <div class="stat-card">
+                <h3>Page View</h3>
+                <strong id="processPageViewStat" th:text="${processLogPageViews}">0</strong>
+                <p>Halaman aplikasi yang dibuka user.</p>
+            </div>
+            <div class="stat-card">
+                <h3>User Action</h3>
+                <strong id="processActionStat" th:text="${processLogUserActions}">0</strong>
+                <p>Aksi simpan, update, delete, dan proses tulis lainnya.</p>
+            </div>
+            <div class="stat-card">
+                <h3>Warning/Error</h3>
+                <strong id="processErrorStat" th:text="${processLogErrorCount}">0</strong>
+                <p>Request dengan status 4xx atau 5xx.</p>
+            </div>
+        </div>
+
+        <div class="log-shell">
+            <div class="log-toolbar">
+                <div class="toolbar-group">
+                    <div class="log-search">
+                        <input type="text" id="processSearchInput" placeholder="Cari user, module, path, atau IP...">
+                    </div>
+                    <select id="processTypeFilter" class="log-filter">
+                        <option value="">Semua Tipe</option>
+                        <option value="PAGE_VIEW">Page View</option>
+                        <option value="USER_ACTION">User Action</option>
+                        <option value="API_READ">API Read</option>
+                    </select>
+                    <select id="processStatusFilter" class="log-filter">
+                        <option value="">Semua Status</option>
+                        <option value="success">Sukses</option>
+                        <option value="warning">Warning</option>
+                        <option value="error">Error</option>
+                    </select>
+                    <button type="button" id="refreshProcessLogs" class="btn-refresh">
+                        <i class="fas fa-rotate-right"></i>
+                        Refresh Log
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Pengguna</th>
+                            <th>Modul</th>
+                            <th>Tipe</th>
+                            <th>Request</th>
+                            <th>Status</th>
+                            <th>Durasi</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="processLogBody">
+                        <tr th:each="row : ${processLogRows}">
+                            <td class="mono" th:text="${#temporals.format(row.createdAt, 'dd/MM/yyyy HH:mm:ss')}">16/03/2026 10:00:00</td>
+                            <td>
+                                <div class="log-meta">
+                                    <strong th:text="${row.fullName != null ? row.fullName : row.username}">netmaster</strong>
+                                    <span th:text="${row.username}">netmaster</span>
+                                </div>
+                            </td>
+                            <td th:text="${row.moduleName}">Pelanggan</td>
+                            <td>
+                                <span class="type-chip" th:classappend="${#strings.toLowerCase(#strings.replace(row.actionType, '_', '-'))}" th:text="${row.actionType}">PAGE_VIEW</span>
+                            </td>
+                            <td>
+                                <div class="log-meta">
+                                    <strong th:text="${row.actionLabel}">Membuka halaman Pelanggan</strong>
+                                    <span class="mono" th:text="${row.httpMethod + ' ' + row.requestPath}">GET /pelanggan/data</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-chip" th:classappend="${#strings.toLowerCase(row.status)}" th:text="${row.statusCode + ' / ' + row.status}">200 / success</span>
+                            </td>
+                            <td class="mono" th:text="${row.durationMs != null ? row.durationMs + ' ms' : '-'}">45 ms</td>
+                            <td class="mono" th:text="${row.ipAddress}">127.0.0.1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="processEmptyState" class="empty-state" th:style="${processLogRows.isEmpty()} ? '' : 'display:none;'">
+                Belum ada data log proses.
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        window.processLogInitialRows = /*[[${processLogRows}]]*/ [];
+    </script>
+    <script>
+        (function() {
+            const initialRows = Array.isArray(window.processLogInitialRows) ? window.processLogInitialRows : [];
+            const state = { rows: initialRows.slice() };
+
+            const body = document.getElementById('processLogBody');
+            const emptyState = document.getElementById('processEmptyState');
+            const searchInput = document.getElementById('processSearchInput');
+            const typeFilter = document.getElementById('processTypeFilter');
+            const statusFilter = document.getElementById('processStatusFilter');
+            const refreshButton = document.getElementById('refreshProcessLogs');
+
+            if (!body || !emptyState || !searchInput || !typeFilter || !statusFilter || !refreshButton) {
+                return;
+            }
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function formatDateTime(value) {
+                if (!value) return '-';
+                const date = Array.isArray(value)
+                    ? new Date(
+                        Number(value[0] || 0),
+                        Math.max(Number(value[1] || 1) - 1, 0),
+                        Number(value[2] || 1),
+                        Number(value[3] || 0),
+                        Number(value[4] || 0),
+                        Number(value[5] || 0)
+                    )
+                    : new Date(value);
+                if (Number.isNaN(date.getTime())) return '-';
+                return date.toLocaleString('id-ID');
+            }
+
+            function formatActionType(value) {
+                if (!value) return 'UNKNOWN';
+                return String(value).replace(/_/g, ' ');
+            }
+
+            function formatStatusText(row) {
+                const code = row.statusCode != null ? row.statusCode : '-';
+                return `${code} / ${row.status || 'unknown'}`;
+            }
+
+            function renderStats(rows) {
+                document.getElementById('processTotalStat').textContent = rows.length;
+                document.getElementById('processPageViewStat').textContent = rows.filter(row => row.actionType === 'PAGE_VIEW').length;
+                document.getElementById('processActionStat').textContent = rows.filter(row => row.actionType === 'USER_ACTION').length;
+                document.getElementById('processErrorStat').textContent = rows.filter(row => row.status === 'warning' || row.status === 'error').length;
+            }
+
+            function renderTable(rows) {
+                renderStats(rows);
+
+                if (!rows.length) {
+                    body.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                body.innerHTML = rows.map(row => `
+                    <tr>
+                        <td class="mono">${escapeHtml(formatDateTime(row.createdAt))}</td>
+                        <td>
+                            <div class="log-meta">
+                                <strong>${escapeHtml(row.fullName || row.username || 'anonymous')}</strong>
+                                <span>${escapeHtml(row.username || 'anonymous')}</span>
+                            </div>
+                        </td>
+                        <td>${escapeHtml(row.moduleName || '-')}</td>
+                        <td><span class="type-chip ${(row.actionType || '').toLowerCase().replace(/_/g, '-')}">${escapeHtml(formatActionType(row.actionType))}</span></td>
+                        <td>
+                            <div class="log-meta">
+                                <strong>${escapeHtml(row.actionLabel || '-')}</strong>
+                                <span class="mono">${escapeHtml((row.httpMethod || '-') + ' ' + (row.requestPath || '-'))}</span>
+                            </div>
+                        </td>
+                        <td><span class="status-chip ${escapeHtml(row.status || 'success')}">${escapeHtml(formatStatusText(row))}</span></td>
+                        <td class="mono">${escapeHtml(row.durationMs != null ? `${row.durationMs} ms` : '-')}</td>
+                        <td class="mono">${escapeHtml(row.ipAddress || '-')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            function applyFilters() {
+                const keyword = searchInput.value.trim().toLowerCase();
+                const type = typeFilter.value;
+                const status = statusFilter.value;
+
+                const filtered = state.rows.filter(row => {
+                    const haystack = [
+                        row.username,
+                        row.fullName,
+                        row.moduleName,
+                        row.actionLabel,
+                        row.requestPath,
+                        row.ipAddress
+                    ].join(' ').toLowerCase();
+
+                    const matchesKeyword = !keyword || haystack.includes(keyword);
+                    const matchesType = !type || row.actionType === type;
+                    const matchesStatus = !status || row.status === status;
+                    return matchesKeyword && matchesType && matchesStatus;
+                });
+
+                renderTable(filtered);
+            }
+
+            async function refreshLogs() {
+                refreshButton.disabled = true;
+                try {
+                    const response = await fetch('/api/logs/activity?limit=250');
+                    const result = await response.json();
+                    if (!result.success || !Array.isArray(result.data)) {
+                        throw new Error(result.message || 'Gagal memuat log proses');
+                    }
+                    state.rows = result.data;
+                    applyFilters();
+                } catch (error) {
+                    if (window.nmxNotify) {
+                        window.nmxNotify({ type: 'error', message: error.message || 'Gagal memuat log proses' });
+                    }
+                } finally {
+                    refreshButton.disabled = false;
+                }
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            typeFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            refreshButton.addEventListener('click', refreshLogs);
+
+            applyFilters();
+        })();
+    </script>
+</div>

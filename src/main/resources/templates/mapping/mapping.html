@@ -1,0 +1,942 @@
+<div th:fragment="content">
+    <style>
+        @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+        .mapping-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mapping-controls {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            align-items: stretch;
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .mapping-header-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .mapping-header-actions .btn,
+        .mapping-header-actions .mapping-field,
+        .mapping-header-actions .mapping-server-chip,
+        .mapping-header-actions .mapping-select {
+            width: 100%;
+        }
+
+        .mapping-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mapping-field label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .mapping-select,
+        .mapping-input {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-inset), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            font-size: 12px;
+        }
+
+        .mapping-server-chip {
+            min-height: 38px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(249, 115, 22, 0.24);
+            background: rgba(249, 115, 22, 0.12);
+            color: #fdba74;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .mapping-toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .mapping-toolbar .btn {
+            min-height: 36px;
+            width: 100%;
+            padding: 7px 10px;
+            font-size: 12px;
+        }
+
+        .mapping-toolbar .btn.is-active {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            border-color: rgba(249, 115, 22, 0.4);
+        }
+
+        .mapping-note {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 0;
+            width: 100%;
+        }
+
+        .mapping-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+        }
+
+        .mapping-main-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 210px;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .mapping-side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 210px;
+        }
+
+        .mapping-side-card {
+            padding: 14px;
+            border-radius: 16px;
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+            width: 210px;
+        }
+
+        .mapping-side-card-title {
+            margin: 0 0 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .mapping-stat {
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mapping-stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .mapping-stat-icon.server { background: rgba(239, 68, 68, 0.14); color: #f87171; }
+        .mapping-stat-icon.fiber { background: rgba(34, 197, 94, 0.14); color: #4ade80; }
+        .mapping-stat-icon.ont { background: rgba(59, 130, 246, 0.14); color: #60a5fa; }
+        .mapping-stat-icon.link { background: rgba(249, 115, 22, 0.14); color: #fb923c; }
+
+        .mapping-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .mapping-stat-label {
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .mapping-map-card {
+            position: relative;
+            height: 440px;
+            min-height: 440px;
+            background: linear-gradient(180deg, rgba(19, 24, 32, 0.98) 0%, rgba(14, 18, 24, 1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        #networkMap {
+            width: 100%;
+            height: 100%;
+            background: #111827;
+        }
+
+        .mapping-map-empty {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px;
+            background: rgba(10, 14, 21, 0.72);
+            z-index: 480;
+            backdrop-filter: blur(4px);
+        }
+
+        .mapping-map-empty.show {
+            display: flex;
+        }
+
+        .mapping-overlay-card {
+            position: absolute;
+            z-index: 500;
+            background: rgba(12, 17, 24, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 22px 45px rgba(2, 6, 23, 0.34);
+            backdrop-filter: blur(14px);
+            color: #f8fafc;
+        }
+
+        .mapping-status-card {
+            top: 14px;
+            left: 14px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            min-width: 220px;
+        }
+
+        .mapping-status-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .mapping-status-text {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .mapping-detail-card {
+            top: 14px;
+            right: 14px;
+            width: min(300px, calc(100% - 28px));
+            border-radius: 16px;
+            padding: 14px;
+            max-height: calc(100% - 28px);
+            overflow-y: auto;
+        }
+
+        .mapping-detail-card.is-hidden {
+            display: none;
+        }
+
+        .mapping-detail-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .mapping-detail-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
+        }
+
+        .mapping-detail-subtitle {
+            margin: 4px 0 0;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .mapping-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .mapping-badge.active { background: rgba(34, 197, 94, 0.14); color: #86efac; }
+        .mapping-badge.pending { background: rgba(249, 115, 22, 0.14); color: #fdba74; }
+        .mapping-badge.suspended { background: rgba(239, 68, 68, 0.14); color: #fca5a5; }
+
+        .mapping-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .mapping-detail-item {
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .mapping-detail-item-label {
+            font-size: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .mapping-detail-item-value {
+            font-size: 11px;
+            line-height: 1.4;
+            color: #f8fafc;
+            word-break: break-word;
+        }
+
+        .mapping-detail-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .mapping-node-actions .btn {
+            flex: 1;
+            min-height: 32px;
+            padding: 6px 10px;
+            font-size: 11px;
+            border-radius: 8px;
+        }
+
+        .node-edit-btn {
+            background: rgba(34, 197, 94, 0.12);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        .node-delete-btn {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .node-edit-btn:hover, .node-delete-btn:hover {
+            opacity: 0.9;
+        }
+
+        .mapping-inline-form {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .mapping-inline-form-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .mapping-inline-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .mapping-legend {
+            bottom: 14px;
+            left: 14px;
+            border-radius: 16px;
+            padding: 12px;
+            width: 210px;
+        }
+
+        .mapping-legend-title {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .mapping-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .mapping-legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .mapping-modal-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1100;
+            display: none;
+            pointer-events: none;
+        }
+
+        .mapping-modal-overlay.open {
+            display: block;
+        }
+
+        .mapping-modal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: min(312px, calc(100% - 24px));
+            max-height: calc(100% - 24px);
+            background: linear-gradient(180deg, rgba(19, 24, 32, 0.98) 0%, rgba(14, 18, 24, 1) 100%);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 18px;
+            box-shadow: 0 24px 56px rgba(2, 6, 23, 0.4);
+            z-index: 1101;
+            color: #f8fafc;
+            display: none;
+            overflow: hidden;
+        }
+
+        .mapping-modal.open {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mapping-modal form {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            flex: 1 1 auto;
+        }
+
+        .mapping-modal-header,
+        .mapping-modal-footer {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            flex-shrink: 0;
+        }
+
+        .mapping-modal-footer {
+            border-bottom: none;
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .mapping-modal-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .mapping-modal-subtitle {
+            margin: 4px 0 0;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #94a3b8;
+        }
+
+        .mapping-modal-body {
+            padding: 12px 14px;
+            display: grid;
+            gap: 10px;
+            overflow-y: auto;
+            min-height: 0;
+            flex: 1 1 auto;
+        }
+
+        .mapping-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .mapping-modal-grid .mapping-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .mapping-coordinate-help {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.18);
+            color: #bfdbfe;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .mapping-modal .mapping-field {
+            gap: 4px;
+        }
+
+        .mapping-modal .mapping-field label,
+        .mapping-modal .mapping-input,
+        .mapping-modal .mapping-select,
+        .mapping-modal .btn {
+            font-size: 11px;
+        }
+
+        .mapping-modal .mapping-input,
+        .mapping-modal .mapping-select {
+            min-height: 34px;
+            padding: 6px 9px;
+        }
+
+        .mapping-modal .btn {
+            min-height: 32px;
+            padding: 6px 10px;
+        }
+
+        .mapping-legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+        }
+
+        .mapping-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.4);
+        }
+
+        .mapping-marker i {
+            font-size: 10px;
+        }
+
+        .mapping-marker.server { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+        .mapping-marker.odc { background: linear-gradient(135deg, #f97316, #c2410c); }
+        .mapping-marker.odp { background: linear-gradient(135deg, #22c55e, #15803d); }
+        .mapping-marker.ont {
+            background: radial-gradient(circle at top, #93c5fd 0%, #2563eb 42%, #1e3a8a 100%);
+            border-radius: 9px 9px 9px 3px;
+            transform: rotate(-12deg);
+        }
+
+        .mapping-marker.ont .mapping-ont-logo {
+            width: 13px;
+            height: 13px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.16);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            transform: rotate(12deg);
+            line-height: 1;
+        }
+
+        .mapping-marker.ont .mapping-ont-logo i {
+            font-size: 6px;
+        }
+
+        .mapping-marker.ont .mapping-ont-logo span {
+            font-size: 4px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
+            background: rgba(15, 23, 42, 0.95);
+            color: #f8fafc;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            box-shadow: 0 22px 45px rgba(2, 6, 23, 0.34);
+        }
+
+        .mapping-popup {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .mapping-popup strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1024px) {
+            .mapping-controls {
+                grid-template-columns: 1fr;
+                min-width: 100%;
+            }
+
+            .mapping-main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .mapping-map-card {
+                min-height: 760px;
+                height: auto;
+            }
+
+            .mapping-status-card,
+            .mapping-legend,
+            .mapping-detail-card {
+                position: static;
+                width: auto;
+                margin: 14px;
+            }
+
+            .mapping-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mapping-modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mapping-modal {
+                position: fixed;
+                top: 50%;
+                right: 50%;
+                transform: translate(50%, -50%);
+                width: min(540px, calc(100% - 32px));
+                max-height: calc(100vh - 32px);
+            }
+        }
+
+        @media (max-height: 760px) and (min-width: 1025px) {
+            .mapping-modal {
+                top: 8px;
+                right: 8px;
+                width: min(288px, calc(100% - 16px));
+                max-height: calc(100% - 16px);
+                border-radius: 16px;
+            }
+
+            .mapping-modal-header,
+            .mapping-modal-footer,
+            .mapping-modal-body {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .mapping-modal-header,
+            .mapping-modal-footer {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .mapping-modal-body {
+                padding-top: 10px;
+                padding-bottom: 10px;
+                gap: 8px;
+            }
+
+            .mapping-modal-grid {
+                gap: 8px;
+            }
+
+            .mapping-modal-title {
+                font-size: 14px;
+            }
+
+            .mapping-modal-subtitle,
+            .mapping-coordinate-help,
+            .mapping-modal .mapping-field label,
+            .mapping-modal .mapping-input,
+            .mapping-modal .mapping-select,
+            .mapping-modal .btn {
+                font-size: 10px;
+            }
+
+            .mapping-modal .mapping-input,
+            .mapping-modal .mapping-select,
+            .mapping-modal .btn {
+                min-height: 30px;
+                padding: 5px 8px;
+            }
+        }
+    </style>
+
+    <div class="mapping-shell"><div class="mapping-stats">
+            <div class="mapping-stat">
+                <div class="mapping-stat-icon server"><i class="fas fa-server"></i></div>
+                <div>
+                    <div class="mapping-stat-value" id="mappingServerCount">0</div>
+                    <div class="mapping-stat-label">Server / Company</div>
+                </div>
+            </div>
+            <div class="mapping-stat">
+                <div class="mapping-stat-icon fiber"><i class="fas fa-network-wired"></i></div>
+                <div>
+                    <div class="mapping-stat-value" id="mappingFiberCount">0</div>
+                    <div class="mapping-stat-label">ODC + ODP</div>
+                </div>
+            </div>
+            <div class="mapping-stat">
+                <div class="mapping-stat-icon ont"><i class="fas fa-wifi"></i></div>
+                <div>
+                    <div class="mapping-stat-value" id="mappingOntCount">0</div>
+                    <div class="mapping-stat-label">ONT Pelanggan</div>
+                </div>
+            </div>
+            <div class="mapping-stat">
+                <div class="mapping-stat-icon link"><i class="fas fa-link"></i></div>
+                <div>
+                    <div class="mapping-stat-value" id="mappingLinkCount">0</div>
+                    <div class="mapping-stat-label">Garis Tersimpan</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mapping-main-layout">
+            <div class="mapping-map-card">
+                <div id="networkMap"></div>
+
+                <div id="mappingMapEmpty" class="mapping-map-empty">
+                    <div>
+                        <i class="fas fa-map-location-dot" style="font-size: 54px; margin-bottom: 14px; opacity: 0.5;"></i>
+                        <p style="margin: 0; font-size: 16px; color: #f8fafc;">Peta belum siap.</p>
+                        <p style="margin: 10px 0 0; font-size: 13px;">Data koordinat server, ODP/ODC, atau ONT belum lengkap.</p>
+                    </div>
+                </div>
+
+                <div class="mapping-overlay-card mapping-status-card">
+                    <div class="mapping-status-title">Status Mapping</div>
+                    <div id="mappingStatusText" class="mapping-status-text">Memuat data peta...</div>
+                </div>
+
+                <div id="mappingOntDetail" class="mapping-overlay-card mapping-detail-card">
+                    <div class="mapping-detail-head">
+                        <div>
+                            <h3 class="mapping-detail-title">Detail Marker</h3>
+                            <p class="mapping-detail-subtitle">Arahkan kursor ke pin server, ODC, ODP, atau ONT untuk melihat detail.</p>
+                        </div>
+                    </div>
+                    <div class="mapping-detail-item">
+                        <div class="mapping-detail-item-label">Informasi</div>
+                        <div class="mapping-detail-item-value">Belum ada marker yang sedang disentuh cursor.</div>
+                    </div>
+                </div>
+
+                <div class="mapping-overlay-card mapping-legend">
+                    <div class="mapping-legend-title">Legend</div>
+                    <div class="mapping-legend-item">
+                        <div class="mapping-legend-dot" style="background: #ef4444;"></div>
+                        <span>Server / Company</span>
+                    </div>
+                    <div class="mapping-legend-item">
+                        <div class="mapping-legend-dot" style="background: #f97316;"></div>
+                        <span>ODC</span>
+                    </div>
+                    <div class="mapping-legend-item">
+                        <div class="mapping-legend-dot" style="background: #22c55e;"></div>
+                        <span>ODP</span>
+                    </div>
+                    <div class="mapping-legend-item">
+                        <div class="mapping-legend-dot" style="background: #3b82f6;"></div>
+                        <span>ONT Pelanggan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mapping-side-panel">
+                <div class="mapping-side-card">
+                    <h3 class="mapping-side-card-title">Filter & Input</h3>
+                    <div class="mapping-header-actions">
+                        <button id="mappingAddNodeButton" class="btn btn-primary" type="button" style="display: none;">
+                            <i class="fas fa-plus"></i> Tambah ODP/ODC
+                        </button>
+
+                        <div class="mapping-controls">
+                            <div class="mapping-field">
+                                <label for="mappingServerSelect">Server / Company</label>
+                                <select id="mappingServerSelect" class="mapping-select" style="display: none;"></select>
+                                <div id="mappingServerSingle" class="mapping-server-chip">
+                                    <i class="fas fa-server"></i>
+                                    <span>-</span>
+                                </div>
+                            </div>
+
+                            <div class="mapping-field">
+                                <label for="mappingNodeFilter">ODP / ODC</label>
+                                <select id="mappingNodeFilter" class="mapping-select">
+                                    <option value="ALL">Tampilkan semua ODP/ODC</option>
+                                </select>
+                            </div>
+
+                            <div class="mapping-field">
+                                <label for="mappingOntFilter">Nama ONT</label>
+                                <select id="mappingOntFilter" class="mapping-select">
+                                    <option value="ALL">Tampilkan semua ONT</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mapping-side-card">
+                    <h3 class="mapping-side-card-title">Aksi Peta</h3>
+                    <div class="mapping-toolbar">
+                        <button id="mappingRefreshButton" class="btn btn-secondary" type="button">
+                            <i class="fas fa-rotate"></i> Refresh
+                        </button>
+                        <button id="mappingConnectButton" class="btn btn-primary" type="button">
+                            <i class="fas fa-share-nodes"></i> Mode Hubungkan
+                        </button>
+                        <button id="mappingCancelButton" class="btn btn-secondary" type="button">
+                            <i class="fas fa-xmark"></i> Batal Hubungkan
+                        </button>
+                        <button id="mappingDeleteLineButton" class="btn btn-danger" type="button">
+                            <i class="fas fa-trash"></i> Hapus Garis Terpilih
+                        </button>
+                        <p class="mapping-note" id="mappingToolbarNote"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mappingNodeModalOverlay" class="mapping-modal-overlay"></div>
+    <div id="mappingNodeModal" class="mapping-modal">
+        <div class="mapping-modal-header">
+            <h3 class="mapping-modal-title">Tambah ODP/ODC</h3>
+            <p class="mapping-modal-subtitle">Klik lokasi pada peta untuk mengisi titik koordinat otomatis.</p>
+        </div>
+        <form id="mappingNodeForm" data-nmx-loading="manual">
+            <div class="mapping-modal-body">
+                <div class="mapping-coordinate-help">
+                    Saat form ini terbuka, klik area kosong pada peta untuk mengambil koordinat ODP/ODC.
+                </div>
+
+                <div class="mapping-modal-grid">
+                    <div class="mapping-field">
+                        <label for="mappingNodeTypeInput">Jenis Node</label>
+                        <select id="mappingNodeTypeInput" class="mapping-select">
+                            <option value="ODP">ODP</option>
+                            <option value="ODC">ODC</option>
+                        </select>
+                    </div>
+
+                    <div class="mapping-field">
+                        <label for="mappingNodeServerInput">Server / Company</label>
+                        <select id="mappingNodeServerInput" class="mapping-select"></select>
+                    </div>
+
+                    <div class="mapping-field full-width">
+                        <label for="mappingNodeNameInput">Nama ODP/ODC</label>
+                        <input id="mappingNodeNameInput" class="mapping-input" type="text" placeholder="Contoh: ODP BTN BLOK C / ODC Pusat">
+                    </div>
+
+                    <div class="mapping-field full-width">
+                        <label for="mappingNodeSplitterInput">Splitter ODP</label>
+                        <input id="mappingNodeSplitterInput" class="mapping-input" type="text" placeholder="Contoh: 1:8">
+                    </div>
+
+                    <div class="mapping-field full-width">
+                        <label for="mappingNodeCoordinatesInput">Titik Koordinat ODP/ODC</label>
+                        <input id="mappingNodeCoordinatesInput" class="mapping-input" type="text" readonly placeholder="Klik map untuk mengisi koordinat">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mapping-modal-footer">
+                <button id="mappingNodeCancelButton" class="btn btn-secondary" type="button">Batal</button>
+                <button id="mappingNodeSaveButton" class="btn btn-primary" type="submit">
+                    <i class="fas fa-floppy-disk"></i> Simpan Node
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="mappingServerModalOverlay" class="mapping-modal-overlay"></div>
+    <div id="mappingServerModal" class="mapping-modal">
+        <div class="mapping-modal-header">
+            <h3 class="mapping-modal-title">Edit Server</h3>
+            <p class="mapping-modal-subtitle">Perbarui data server/company pada peta.</p>
+        </div>
+        <form id="mappingServerForm" data-nmx-loading="manual">
+            <div class="mapping-modal-body">
+                <div class="mapping-modal-grid">
+                    <div class="mapping-field full-width">
+                        <label for="mappingServerNameInput">Nama Server</label>
+                        <input id="mappingServerNameInput" class="mapping-input" type="text" placeholder="Contoh: POP Samarinda">
+                    </div>
+
+                    <div class="mapping-field full-width">
+                        <label for="mappingServerMikrotikInput">Mikrotik Server</label>
+                        <select id="mappingServerMikrotikInput" class="mapping-select"></select>
+                    </div>
+
+                    <div class="mapping-field full-width">
+                        <label for="mappingServerLocationInput">Lokasi</label>
+                        <input id="mappingServerLocationInput" class="mapping-input" type="text" placeholder="Contoh: Samarinda Seberang">
+                    </div>
+
+                    <div class="mapping-field full-width">
+                        <label for="mappingServerCoordinatesInput">Titik Koordinat Server</label>
+                        <input id="mappingServerCoordinatesInput" class="mapping-input" type="text" placeholder="-0.48649594690223724, 117.1219023709373">
+                        <input id="mappingServerLatitudeInput" type="hidden">
+                        <input id="mappingServerLongitudeInput" type="hidden">
+                    </div>
+
+                    <div class="mapping-field">
+                        <label for="mappingServerStatusInput">Status</label>
+                        <input id="mappingServerStatusInput" class="mapping-input" type="text" placeholder="Status Mikrotik" readonly>
+                    </div>
+
+                    <div class="mapping-field">
+                        <label for="mappingServerIpInput">IP Address</label>
+                        <input id="mappingServerIpInput" class="mapping-input" type="text" placeholder="IP Mikrotik" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mapping-modal-footer">
+                <button id="mappingServerCancelButton" class="btn btn-secondary" type="button">Batal</button>
+                <button id="mappingServerSaveButton" class="btn btn-primary" type="submit">
+                    <i class="fas fa-floppy-disk"></i> Simpan Server
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script th:src="@{/js/mapping-page.js(v='20260402-1')}"></script>
+</div>
+

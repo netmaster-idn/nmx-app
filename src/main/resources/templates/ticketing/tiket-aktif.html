@@ -1,0 +1,722 @@
+<div th:fragment="content">
+    <style>
+        /* Page Header */
+        .page-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+.header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        /* Search Box */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all var(--transition-fast);
+        }
+        
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--nmx-orange);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+        
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--status-info);
+        }
+        
+        .stat-icon.green {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--status-success);
+        }
+        
+        .stat-icon.yellow {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--status-warning);
+        }
+        
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--status-danger);
+        }
+        
+        .stat-info h4 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .stat-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+        
+        /* Table Container */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .table-scroll {
+            max-height: calc(100vh - 320px);
+            overflow-y: auto;
+        }
+        
+        .table-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .table-scroll::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+        
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: var(--radius-full);
+        }
+        
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table thead {
+            background: #161616;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            color: var(--text-secondary);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        
+        .data-table tbody tr {
+            transition: background var(--transition-fast);
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        /* Ticket Number */
+        .ticket-number {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--nmx-orange);
+            font-weight: 500;
+        }
+        
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .priority-badge.high {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+        
+        .priority-badge.medium {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+        
+        .priority-badge.low {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.in-progress {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+        
+        .status-badge.waiting {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .status-badge.completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        
+        .status-badge.overdue {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        /* Action Button */
+        .action-btn {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .action-btn button {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .action-btn button:hover {
+            border-color: var(--nmx-orange);
+            color: var(--nmx-orange);
+        }
+        
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 160px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-fast);
+            margin-top: 4px;
+        }
+        
+        .action-btn:hover .dropdown-menu,
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        
+        .dropdown-item i {
+            width: 16px;
+            text-align: center;
+            color: var(--text-dim);
+        }
+        
+        .dropdown-item:hover i {
+            color: var(--nmx-orange);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header-custom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+    <div><div class="page-header-custom"><div class="header-actions">
+                <a href="/ticketing/baru" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Buat Tiket Baru
+                </a>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="inProgressCount">0</h4>
+                    <p>Sedang Dikerjakan</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon yellow">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="waitingCount">0</h4>
+                    <p>Menunggu Tindakan</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="completedTodayCount">0</h4>
+                    <p>Selesai Hari Ini</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="overdueCount">0</h4>
+                    <p>Overdue</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Cari berdasarkan nomor ticket, subjek, atau pelanggan...">
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <div class="table-scroll" id="tableScroll">
+                <table class="data-table" id="ticketTable">
+                    <thead>
+                        <tr>
+                            <th>No. Tiket</th>
+                            <th>Subjek</th>
+                            <th>Pelanggan</th>
+                            <th>Prioritas</th>
+                            <th>Status</th>
+                            <th>Tanggal</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticketTableBody">
+                        <!-- Ticket data will be loaded here -->
+                    </tbody>
+                </table>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>Tidak Ada Tiket Aktif</h3>
+                    <p>Belum ada ticket yang sedang berlangsung.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Global data
+        let tickets = [];
+        let filteredTickets = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTickets();
+            setupSearch();
+        });
+        
+        // Load tickets from API
+        async function loadTickets() {
+            try {
+                const response = await fetch('/ticketing/api/tickets');
+                const result = await response.json();
+                
+                if (result.success) {
+                    tickets = result.data;
+                    filteredTickets = tickets;
+                    renderTable();
+                    updateStats();
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                tickets = [];
+                filteredTickets = [];
+                renderTable();
+                updateStats();
+            }
+        }
+        
+        // Render ticket table
+        function renderTable() {
+            const tbody = document.getElementById('ticketTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredTickets.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            tbody.innerHTML = filteredTickets.map(ticket => {
+                const priorityClass = getPriorityClass(ticket.priority);
+                const priorityText = getPriorityText(ticket.priority);
+                const statusClass = getStatusClass(ticket.status);
+                const statusText = getStatusText(ticket.status);
+                
+                return `
+                    <tr>
+                        <td><span class="ticket-number">${ticket.ticketNumber || '-'}</span></td>
+                        <td>${ticket.subject || '-'}</td>
+                        <td>${ticket.customer || '-'}</td>
+                        <td><span class="priority-badge ${priorityClass}">${priorityText}</span></td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${formatDate(ticket.createdAt)}</td>
+                        <td>
+                            <div class="action-btn">
+                                <button>
+                                    <i class="fas fa-cog"></i>
+                                    Aksi
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item" onclick="viewDetail(${ticket.id})">
+                                        <i class="fas fa-eye"></i>
+                                        Detail
+                                    </button>
+                                    <button class="dropdown-item" onclick="editTicket(${ticket.id})">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                    <div class="dropdown-divider"></div>
+                                    <button class="dropdown-item" onclick="updateStatus(${ticket.id}, 'in_progress')">
+                                        <i class="fas fa-play"></i>
+                                        Kerjakan
+                                    </button>
+                                    <button class="dropdown-item" onclick="updateStatus(${ticket.id}, 'completed')">
+                                        <i class="fas fa-check"></i>
+                                        Selesaikan
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Update statistics
+        function updateStats() {
+            document.getElementById('inProgressCount').textContent = tickets.filter(t => t.status === 'in_progress').length;
+            document.getElementById('waitingCount').textContent = tickets.filter(t => t.status === 'waiting').length;
+            document.getElementById('completedTodayCount').textContent = tickets.filter(t => t.status === 'completed' && isToday(t.updatedAt)).length;
+            document.getElementById('overdueCount').textContent = tickets.filter(t => t.status === 'overdue').length;
+        }
+        
+        // Setup search
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function(e) {
+                const keyword = e.target.value.toLowerCase();
+                
+                if (keyword === '') {
+                    filteredTickets = tickets;
+                } else {
+                    filteredTickets = tickets.filter(ticket => {
+                        return (ticket.ticketNumber && ticket.ticketNumber.toLowerCase().includes(keyword)) ||
+                               (ticket.subject && ticket.subject.toLowerCase().includes(keyword)) ||
+                               (ticket.customer && ticket.customer.toLowerCase().includes(keyword));
+                    });
+                }
+                
+                renderTable();
+            });
+        }
+        
+        // Get priority class
+        function getPriorityClass(priority) {
+            switch(priority) {
+                case 'critical': return 'critical';
+                case 'high': return 'high';
+                case 'medium': return 'medium';
+                default: return 'low';
+            }
+        }
+        
+        // Get priority text
+        function getPriorityText(priority) {
+            switch(priority) {
+                case 'critical': return 'Critical';
+                case 'high': return 'High';
+                case 'medium': return 'Medium';
+                default: return 'Low';
+            }
+        }
+        
+        // Get status class
+        function getStatusClass(status) {
+            switch(status) {
+                case 'in_progress': return 'in-progress';
+                case 'waiting': return 'waiting';
+                case 'completed': return 'completed';
+                case 'overdue': return 'overdue';
+                default: return 'waiting';
+            }
+        }
+        
+        // Get status text
+        function getStatusText(status) {
+            switch(status) {
+                case 'in_progress': return 'Dikerjakan';
+                case 'waiting': return 'Menunggu';
+                case 'completed': return 'Selesai';
+                case 'overdue': return 'Overdue';
+                default: return 'Menunggu';
+            }
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        
+        // Check if date is today
+        function isToday(dateString) {
+            if (!dateString) return false;
+            const date = new Date(dateString);
+            const today = new Date();
+            return date.toDateString() === today.toDateString();
+        }
+        
+        // View ticket detail
+        function viewDetail(ticketId) {
+            console.log('View detail:', ticketId);
+            showAlert('info', 'Fitur detail ticket akan segera tersedia');
+        }
+        
+        // Edit ticket
+        function editTicket(ticketId) {
+            console.log('Edit ticket:', ticketId);
+            showAlert('info', 'Fitur edit ticket akan segera tersedia');
+        }
+        
+        // Update status
+        async function updateStatus(ticketId, newStatus) {
+            try {
+                const response = await fetch(`/ticketing/api/tickets/${ticketId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', 'Status ticket berhasil diperbarui!');
+                    loadTickets();
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                // Demo mode - update locally
+                const ticket = tickets.find(t => t.id === ticketId);
+                if (ticket) {
+                    ticket.status = newStatus;
+                    renderTable();
+                    updateStats();
+                    showAlert('success', 'Status ticket berhasil diperbarui!');
+                }
+            }
+        }
+        
+        // Show alert
+        function showAlert(type, message) {
+            if (window.nmxNotify) {
+                window.nmxNotify({
+                    type: type,
+                    message: message
+                });
+                return;
+            }
+
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-message ${type}`;
+            
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            
+            alertDiv.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</div>
+
+

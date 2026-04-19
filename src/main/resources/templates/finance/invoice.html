@@ -1,0 +1,2963 @@
+<div th:fragment="content">
+    <style>
+            .invoice-header {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .invoice-header .stats-row {
+                flex: 1 1 720px;
+                display: grid !important;
+                grid-template-columns: repeat(4, minmax(150px, 1fr));
+                gap: 12px;
+                margin-bottom: 0;
+            }
+
+            .invoice-header .stats-row .stat-card {
+                min-width: 0;
+                min-height: 94px;
+                padding: 12px 16px;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .invoice-header .stats-row .stat-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
+            }
+
+            .invoice-header .stats-row .stat-info h4 {
+                font-size: 19px;
+                line-height: 1.1;
+            }
+
+            .invoice-header .stats-row .stat-info p {
+                font-size: 11px;
+                line-height: 1.2;
+            }
+
+
+            .bot-toggle-switch input:checked + .bot-toggle-slider {
+                background: rgba(34, 197, 94, 0.28);
+                border-color: rgba(34, 197, 94, 0.3);
+            }
+
+            .bot-toggle-switch input:checked + .bot-toggle-slider::before {
+                transform: translateX(22px);
+            }
+
+            .invoice-toolbar-stack {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                max-width: 420px;
+                margin-left: auto;
+                align-self: flex-start;
+            }
+
+            .invoice-toolbar-stack .toolbar-search-group {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                order: 2;
+            }
+
+            .invoice-toolbar-stack .toolbar-search-group .search-container {
+                flex: 1 1 auto;
+                width: 100%;
+                max-width: none;
+            }
+
+            .invoice-toolbar-stack .quick-action-bar {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+                gap: 10px;
+                width: 100%;
+                align-items: center;
+                order: 1;
+            }
+
+            .invoice-toolbar-stack .quick-action-bar .filter-dropdown {
+                min-width: 0;
+            }
+
+            .invoice-toolbar-stack .quick-action-bar .filter-dropdown select {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .quick-action-bar .btn { padding: 8px 14px; font-size: 12px; border-radius: 999px; }
+            .filter-dropdown select { min-width: 0; width: 100%; padding: 10px 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-secondary); font-size: 12px; }
+            
+            .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+            .filter-tab { padding: 8px 16px; background: transparent; border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all var(--transition-fast); }
+            .filter-tab:hover, .filter-tab.active { background: var(--nmx-orange); border-color: var(--nmx-orange); color: white; }
+            
+            .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: visible; }
+            .table-scroll { max-height: calc(100vh - 380px); overflow-y: auto; overflow-x: visible; position: relative; }
+            .data-table { width: 100%; border-collapse: collapse; }
+            .data-table thead { background: #161616; position: sticky; top: 0; z-index: 5; }
+            .data-table th { padding: 14px 16px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; position: relative; }
+            .data-table td { padding: 14px 16px; border-bottom: 1px solid #1a1a1a; color: var(--text-secondary); font-size: 13px; position: relative; overflow: visible; }
+            .data-table tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+            
+            .invoice-number,
+            .customer-code { font-family: var(--font-mono); font-size: 12px; color: var(--nmx-orange); font-weight: 500; }
+            
+            .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+            .status-badge.paid { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+            .status-badge.partial { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+            .status-badge.pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+            .status-badge.overdue { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+            .status-badge.cancelled { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
+            .status-badge.no-payment {
+                background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(120, 53, 15, 0.18));
+                color: #fcd34d;
+                border: 1px dashed rgba(251, 191, 36, 0.38);
+                box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.08);
+            }
+            .status-badge.no-payment::before {
+                content: "!";
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 14px;
+                height: 14px;
+                border-radius: 999px;
+                background: rgba(251, 191, 36, 0.18);
+                color: #fde68a;
+                font-size: 9px;
+                font-weight: 800;
+                line-height: 1;
+            }
+            .payment-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 500; }
+            .payment-badge.paid { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+            .payment-badge.unpaid,
+            .payment-badge.pending { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+            .payment-badge.partial { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+            .payment-badge.overdue { background: rgba(239, 68, 68, 0.2); color: #ef4444; animation: pulse 2s infinite; }
+            .payment-badge.cancelled { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+            .payment-badge.no-payment {
+                background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(120, 53, 15, 0.18));
+                color: #fcd34d;
+                border: 1px dashed rgba(251, 191, 36, 0.36);
+                box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.08);
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
+            .payment-badge.no-payment::before {
+                content: "!";
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 12px;
+                height: 12px;
+                border-radius: 999px;
+                background: rgba(251, 191, 36, 0.18);
+                color: #fde68a;
+                font-size: 8px;
+                font-weight: 800;
+                line-height: 1;
+            }
+            @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+            
+            .action-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: nowrap;
+            }
+            .action-btn button {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                background: transparent;
+                border: 1px solid var(--border);
+                color: var(--text-muted);
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 13px;
+                transition: all var(--transition-fast);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .action-btn button:hover {
+                border-color: var(--nmx-orange);
+                color: var(--nmx-orange);
+                background: rgba(249, 115, 22, 0.08);
+            }
+            .action-btn button.success:hover {
+                border-color: var(--status-success);
+                color: var(--status-success);
+                background: rgba(34, 197, 94, 0.08);
+            }
+            .action-btn button.danger:hover {
+                border-color: #ef4444;
+                color: #ef4444;
+                background: rgba(239, 68, 68, 0.08);
+            }
+
+            .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+            .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+            .empty-state h3 { font-size: 16px; color: var(--text-primary); margin-bottom: 8px; }
+            .history-modal-filters { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+            .history-modal-filters .filter-dropdown { min-width: 180px; }
+            .history-modal-wrap { max-height: 48vh; overflow-y: auto; }
+            .table-empty { text-align: center; color: var(--text-muted); padding: 16px; }
+            .invoice-summary { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 14px; }
+            .invoice-summary p { margin: 6px 0; font-size: 13px; color: var(--text-secondary); }
+            .invoice-summary strong { color: var(--text-primary); }
+            .print-filter-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+            .print-filter-group label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+            @media (max-width: 768px) {
+                .invoice-header {
+                    align-items: stretch;
+                }
+                .invoice-header .stats-row,
+                .invoice-toolbar-stack,
+                .filter-dropdown,
+                .filter-dropdown select,
+                .invoice-toolbar-stack .search-container { width: 100%; max-width: none; }
+                .invoice-toolbar-stack .toolbar-search-group {
+                    flex-wrap: wrap;
+                }
+                .invoice-toolbar-stack .quick-action-bar { grid-template-columns: 1fr; }
+                .invoice-bot-buttons {
+                    justify-content: flex-start;
+                    min-width: 0;
+                }
+                .invoice-header .stats-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            .modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all var(--transition-fast); }
+            .modal.open { opacity: 1; visibility: visible; }
+            .modal-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.7); }
+            .modal-content { position: relative; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+            .modal-content-sm { max-width: 420px; }
+            .modal-content-lg { max-width: 720px; }
+            .modal-content-xl { max-width: 1080px; }
+            .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+            .modal-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+            .modal-subtitle { font-size: 13px; color: var(--text-muted); margin: 4px 0 0; }
+            .modal-close { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+            .modal-body { padding: 24px; }
+            .modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid var(--border); }
+            .modal-grid { display: grid; gap: 14px; }
+            .modal-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .modal-info { padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 12px; }
+            .modal-info-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 6px; }
+            .modal-info-value { font-size: 13px; color: var(--text-primary); word-break: break-word; }
+            .confirm-modal { text-align: center; }
+            .confirm-icon { width: 64px; height: 64px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; }
+            .confirm-icon.warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+            .confirm-icon.success { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+            .confirm-icon.danger { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+            .confirm-title { font-size: 18px; color: var(--text-primary); margin: 0 0 8px; }
+            .confirm-message { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+            
+            .form-group { margin-bottom: 16px; }
+            .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+            .form-input, .form-select { width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-size: 13px; }
+            .form-input:focus, .form-select:focus { outline: none; border-color: var(--nmx-orange); }
+            .filter-hint { margin-top: 10px; font-size: 12px; color: var(--text-muted); }
+            
+            .alert-message { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 13px; }
+            .alert-message.success { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+            .alert-message.error { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+            .delete-auth-warning {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 12px 14px;
+                margin-bottom: 16px;
+                border-radius: var(--radius-md);
+                border: 1px solid rgba(239, 68, 68, 0.22);
+                background: rgba(239, 68, 68, 0.08);
+                color: var(--text-secondary);
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            .delete-auth-warning i {
+                color: #ef4444;
+                margin-top: 2px;
+            }
+            .form-hint {
+                margin-top: 6px;
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+            .form-error {
+                margin-top: 10px;
+                color: #ef4444;
+                font-size: 12px;
+                display: none;
+            }
+        </style>
+    
+                    <div id="alertContainer"></div>
+        
+                    <div class="invoice-header">
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-icon blue"><i class="fas fa-file-invoice"></i></div>
+                                <div class="stat-info"><h4 id="totalInvoice" th:text="${invoiceTotalCount}">0</h4><p>Total Invoice</p></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+                                <div class="stat-info"><h4 id="pendingInvoice" th:text="${invoicePendingCount}">0</h4><p>Pending</p></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                                <div class="stat-info"><h4 id="paidInvoice" th:text="${invoicePaidCount}">0</h4><p>Lunas</p></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="stat-info"><h4 id="overdueInvoice" th:text="${invoiceOverdueCount}">0</h4><p>Jatuh Tempo</p></div>
+                            </div>
+                        </div>
+
+                        <div class="invoice-toolbar-stack">
+                            <div class="toolbar-search-group">
+                                <div class="search-container">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="searchInput" placeholder="Cari invoice number, pelanggan..." th:value="${currentInvoiceSearch}" oninput="window.handleInvoiceSearchInput && window.handleInvoiceSearchInput(event)" onkeyup="window.handleInvoiceSearchInput && window.handleInvoiceSearchInput(event)" onchange="window.handleInvoiceSearchInput && window.handleInvoiceSearchInput(event)">
+                                </div>
+                            </div>
+
+                            <form class="quick-action-bar" id="invoiceFilterForm" method="get" action="/finance/invoice">
+                            <input type="hidden" id="searchFilter" name="search" th:value="${currentInvoiceSearch}">
+                            <div class="filter-dropdown">
+                                <select id="dueDayFilter" name="dueDay" onchange="this.form.submit()">
+                                    <option value="all" th:selected="${currentInvoiceDueDay == 'all'}">Semua Tanggal</option>
+                                    <option th:each="day : ${#numbers.sequence(1,31)}"
+                                            th:value="${day}"
+                                            th:text="${day}"
+                                            th:selected="${#strings.equals(currentInvoiceDueDay, #strings.toString(day))}">1</option>
+                                </select>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select id="monthFilter" name="month" onchange="this.form.submit()">
+                                    <option value="">Semua Bulan</option>
+                                    <option th:each="month : ${invoiceMonths}"
+                                            th:value="${month}"
+                                            th:text="${month == '1' ? 'Januari' : (month == '2' ? 'Februari' : (month == '3' ? 'Maret' : (month == '4' ? 'April' : (month == '5' ? 'Mei' : (month == '6' ? 'Juni' : (month == '7' ? 'Juli' : (month == '8' ? 'Agustus' : (month == '9' ? 'September' : (month == '10' ? 'Oktober' : (month == '11' ? 'November' : 'Desember'))))))))))}"
+                                            th:selected="${month == currentInvoiceMonth}">Januari</option>
+                                </select>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select id="yearFilter" name="year" onchange="this.form.submit()">
+                                    <option value="">Semua Tahun</option>
+                                    <option th:each="year : ${invoiceYears}"
+                                            th:value="${year}"
+                                            th:text="${year}"
+                                            th:selected="${year == currentInvoiceYear}">2026</option>
+                                </select>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select id="statusFilter" name="status" onchange="this.form.submit()">
+                                    <option value="all">Semua Status</option>
+                                    <option th:each="status : ${invoiceStatuses}"
+                                            th:value="${status}"
+                                            th:selected="${status == currentInvoiceStatus}"
+                                            th:text="${status == 'unpaid' ? 'Belum Bayar' : (status == 'overdue' ? 'Jatuh Tempo' : (status == 'paid' ? 'Sudah Bayar' : status))}">Belum Bayar</option>
+                                </select>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No. Invoice</th>
+                                        <th>Pelanggan</th>
+                                        <th>Jenis Pembayaran</th>
+                                        <th>Jumlah</th>
+                                        <th>Jatuh Tempo</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoiceTableBody">
+                                    <tr th:each="invoice : ${invoiceRows}"
+                                     th:attr="data-id=${invoice.id},
+                                                 data-customer-id=${invoice.customerId},
+                                                 data-customer-code=${invoice.customerCode},
+                                                 data-customer-name=${invoice.customerName},
+                                                 data-service-id=${invoice.customerServiceId},
+                                                 data-invoice-number=${invoice.invoiceNumber},
+                                                 data-invoice-type=${invoice.invoiceType},
+                                                 data-invoice-type-label=${invoice.invoiceTypeLabel},
+                                                 data-total-amount=${invoice.totalAmount},
+                                                 data-amount-paid=${invoice.amountPaid},
+                                                 data-outstanding-amount=${invoice.outstandingAmount},
+                                                 data-billing-month=${invoice.billingMonth},
+                                                 data-due-date=${invoice.dueDate},
+                                                 data-payment-date=${invoice.paymentDate},
+                                                 data-status=${invoice.status},
+                                                 data-payment-method=${invoice.paymentMethod}">
+                                        <td><span class="invoice-number" th:text="${invoice.invoiceNumber ?: '-'}">INV-0001</span></td>
+                                        <td th:text="${invoice.customerName ?: '-'}">Nama Pelanggan</td>
+                                        <td th:text="${invoice.invoiceTypeLabel ?: 'Pembayaran Langganan Bulanan'}">Pembayaran Langganan Bulanan</td>
+                                        <td th:text="${invoice.totalAmount != null ? 'Rp. ' + #numbers.formatDecimal(invoice.totalAmount, 0, 'POINT', 0, 'COMMA') : 'Rp. 0'}">Rp. 0</td>
+                                        <td th:text="${invoice.dueDate != null ? #temporals.format(invoice.dueDate, 'dd MMM yyyy', #locale) : '-'}">17 Mar 2026</td>
+                                        <td>
+                                            <span class="payment-badge"
+                                                  th:classappend="${#strings.equalsIgnoreCase(invoice.status, 'paid') ? ' paid' : (#strings.equalsIgnoreCase(invoice.status, 'overdue') ? ' overdue' : (#strings.equalsIgnoreCase(invoice.status, 'cancelled') ? ' cancelled' : (#strings.equalsIgnoreCase(invoice.status, 'no_payment') ? ' no-payment' : ' unpaid')))}"
+                                                  th:text="${#strings.equalsIgnoreCase(invoice.status, 'paid') ? 'Lunas' : (#strings.equalsIgnoreCase(invoice.status, 'overdue') ? 'Jatuh Tempo' : (#strings.equalsIgnoreCase(invoice.status, 'cancelled') ? 'Dibatalkan' : (#strings.equalsIgnoreCase(invoice.status, 'no_payment') ? 'Tidak Bayar' : 'Belum Lunas')))}">
+                                                Belum Lunas
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="action-btn">
+                                                <button type="button" title="Lihat Invoice" th:onclick="|window.viewInvoiceDetail && window.viewInvoiceDetail(${invoice.id})|">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" title="Dokumen Invoice" th:onclick="|window.openInvoiceDocument && window.openInvoiceDocument(${invoice.id})|">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                                <button type="button"
+                                                        th:title="${#strings.equalsIgnoreCase(invoice.status, 'paid') ? 'Kirim Struk Pembayaran Manual' : 'Kirim Invoice/Tagihan Manual'}"
+                                                        th:attr="data-manual-send-id=${invoice.id},data-manual-send-type=${#strings.equalsIgnoreCase(invoice.status, 'paid') ? 'receipt' : 'invoice'},onclick=|window.handleManualInvoiceOrReceipt && window.handleManualInvoiceOrReceipt(${invoice.id}, '${#strings.equalsIgnoreCase(invoice.status, 'paid') ? 'receipt' : 'invoice'}'); return false;|">
+                                                    <i th:class="${#strings.equalsIgnoreCase(invoice.status, 'paid') ? 'fas fa-receipt' : 'fas fa-paper-plane'}"></i>
+                                                </button>
+                                                <button class="success" type="button" title="Tandai Lunas" th:onclick="|window.openPayInvoiceFromHistory && window.openPayInvoiceFromHistory(${invoice.id})|">
+                                                    <i class="fas fa-credit-card"></i>
+                                                </button>
+                                                <button class="danger" type="button" title="Hapus Data Pembayaran"
+                                                        th:attr="data-delete-payment-id=${invoice.id},data-invoice-number=${invoice.invoiceNumber}"
+                                                        th:onclick="|return window.deleteInvoicePayment ? window.deleteInvoicePayment(${invoice.id}) : false;|"
+                                                        th:if="${invoice.amountPaid != null and invoice.amountPaid > 0}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="empty-state" id="emptyState" th:style="${#lists.isEmpty(invoiceRows)} ? 'display: block;' : 'display: none;'">
+                                <i class="fas fa-file-invoice"></i>
+                                <h3>Tidak Ada Invoice</h3>
+                                <p>Belum ada invoice.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="historyModal">
+                        <div class="modal-backdrop" onclick="closeModal('historyModal')"></div>
+                        <div class="modal-content modal-content-xl">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Riwayat Pembayaran</h3>
+                                    <p class="modal-subtitle" id="historyCustomerName">-</p>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('historyModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="history-modal-filters">
+                                    <div class="filter-dropdown">
+                                        <select id="historyYearFilter" onchange="loadFilteredHistory()">
+                                            <option value="">Semua Tahun</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-dropdown">
+                                        <select id="historyMonthFilter" onchange="loadFilteredHistory()" disabled>
+                                            <option value="">Semua Bulan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="history-modal-wrap">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>No Invoice</th>
+                                                <th>Jenis Pembayaran</th>
+                                                <th>Jatuh Tempo</th>
+                                                <th>Total</th>
+                                                <th>Terbayar</th>
+                                                <th>Tanggal Bayar</th>
+                                                <th>Metode</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historyTableBody">
+                                            <tr>
+                                                <td colspan="9" class="table-empty">Pilih pelanggan untuk melihat riwayat pembayaran.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('historyModal')">Tutup</button>
+                                <button type="button" class="btn btn-primary" onclick="printCurrentHistory()">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="invoiceModal">
+                        <div class="modal-backdrop" onclick="closeModal('invoiceModal')"></div>
+                        <div class="modal-content modal-content-lg">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Buat Invoice</h3>
+                                    <p class="modal-subtitle">Pelanggan: <span id="invoiceCustomerName">-</span></p>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('invoiceModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="invoiceCustomerId">
+                                <div class="form-group">
+                                    <label>Periode Tagihan</label>
+                                    <input type="month" id="invoiceBillingMonth" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Jatuh Tempo</label>
+                                    <input type="date" id="invoiceDueDate" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Biaya Bulanan</label>
+                                    <input type="number" id="invoiceMonthlyFee" class="form-input" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Biaya Instalasi</label>
+                                    <input type="number" id="invoiceInstallationFee" class="form-input" min="0" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Catatan</label>
+                                    <textarea id="invoiceNotes" class="form-input" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceModal')">Batal</button>
+                                <button type="button" class="btn btn-primary" onclick="saveInvoice()">
+                                    <i class="fas fa-save"></i> Simpan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="payModal">
+                        <div class="modal-backdrop" onclick="closeModal('payModal')"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Pembayaran Invoice</h3>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('payModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="payInvoiceId">
+                                <div class="invoice-summary">
+                                    <p>No Invoice: <strong id="payInvoiceNumber">-</strong></p>
+                                    <p>Total Tagihan: <strong id="payTotalAmount">Rp. 0</strong></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Jumlah Bayar</label>
+                                    <input type="text" id="payAmount" class="form-input" inputmode="numeric" placeholder="Rp. 0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal Bayar</label>
+                                    <input type="date" id="payDate" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Metode Pembayaran</label>
+                                    <select id="payMethod" class="form-select">
+                                        <option value="cash">Cash</option>
+                                        <option value="transfer">Transfer</option>
+                                        <option value="qris">QRIS</option>
+                                        <option value="ewallet">E-Wallet</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Catatan</label>
+                                    <textarea id="payNotes" class="form-input" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" id="payPrintReceiptBtn" onclick="printCurrentPaymentReceipt()" style="display:none;">
+                                    <i class="fas fa-print"></i> Print Bukti
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('payModal')">Batal</button>
+                                <button type="button" class="btn btn-success" id="paySubmitBtn" onclick="processPayment()">
+                                    <i class="fas fa-check"></i> Proses Pembayaran
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="invoiceDetailModal">
+                        <div class="modal-backdrop" onclick="closeModal('invoiceDetailModal')"></div>
+                        <div class="modal-content modal-content-lg">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Detail Invoice</h3>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('invoiceDetailModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-grid modal-grid-2">
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">No Invoice</div>
+                                        <div class="modal-info-value" id="detailInvoiceNumber">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Status</div>
+                                        <div class="modal-info-value" id="detailInvoiceStatus">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Jenis Pembayaran</div>
+                                        <div class="modal-info-value" id="detailBillingMonth">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Jatuh Tempo</div>
+                                        <div class="modal-info-value" id="detailDueDate">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Total Tagihan</div>
+                                        <div class="modal-info-value" id="detailTotalAmount">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Terbayar</div>
+                                        <div class="modal-info-value" id="detailAmountPaid">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Tanggal Bayar</div>
+                                        <div class="modal-info-value" id="detailPaymentDate">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Metode Bayar</div>
+                                        <div class="modal-info-value" id="detailPaymentMethod">-</div>
+                                    </div>
+                                </div>
+                                <div class="modal-info">
+                                    <div class="modal-info-label">Catatan</div>
+                                    <div class="modal-info-value" id="detailInvoiceNotes">-</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="detailPrintReceiptBtn" onclick="printInvoiceReceiptFromDetail()" style="display:none;">
+                                    <i class="fas fa-print"></i> Print Bukti
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceDetailModal')">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="printModal">
+                        <div class="modal-backdrop" onclick="closeModal('printModal')"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Cetak History Pembayaran</h3>
+                                    <p class="modal-subtitle" id="printCustomerName">-</p>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('printModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="print-filter-group">
+                                    <label><input type="radio" name="printFilter" value="all" checked onchange="updatePrintOptions()"> Semua</label>
+                                    <label><input type="radio" name="printFilter" value="year" onchange="updatePrintOptions()"> Per Tahun</label>
+                                    <label><input type="radio" name="printFilter" value="month" onchange="updatePrintOptions()"> Per Bulan</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tahun</label>
+                                    <select id="printYear" class="form-select" onchange="updatePrintMonthOptions()" disabled>
+                                        <option value="">Pilih Tahun</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Bulan</label>
+                                    <select id="printMonth" class="form-select" disabled>
+                                        <option value="">Pilih Bulan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('printModal')">Batal</button>
+                                <button type="button" class="btn btn-primary" onclick="executePrint()">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="confirmModal">
+                        <div class="modal-backdrop" onclick="closeModal('confirmModal')"></div>
+                        <div class="modal-content modal-content-sm">
+                            <div class="modal-body confirm-modal">
+                                <div class="confirm-icon warning" id="confirmIcon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h3 class="confirm-title" id="confirmTitle">Konfirmasi</h3>
+                                <p class="confirm-message" id="confirmMessage">Apakah Anda yakin?</p>
+                            </div>
+                            <div class="modal-footer" style="justify-content:center;">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('confirmModal')">Batal</button>
+                                <button type="button" class="btn btn-primary" id="confirmBtn" onclick="executeConfirm()">Ya, Lanjutkan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+    </div>
+    <script th:inline="javascript">
+            window.financeInvoiceInitialRows = /*[[${invoiceAllRows}]]*/ [];
+    </script>
+    <script>
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+
+            var allInvoices = [];
+            var invoices = [];
+            var filteredInvoices = [];
+            var customerContextById = new Map();
+            var searchKeyword = '';
+            var selectedDueDay = '';
+            var selectedYear = '';
+            var selectedMonth = '';
+            var selectedStatus = 'all';
+            var currentCustomerId = null;
+            var currentServiceId = null;
+            var confirmCallback = null;
+            var currentHistoryData = [];
+            var currentPayInvoice = null;
+            var currentPaymentReceipt = null;
+            var isProcessingPayment = false;
+            var manualSendInFlight = new Set();
+            var deletePaymentActionBound = false;
+
+            async function initializeInvoicePage() {
+                if (window.__financeInvoicePageInitialized) {
+                    if (Array.isArray(window.financeInvoiceInitialRows) && window.financeInvoiceInitialRows.length) {
+                        allInvoices = window.financeInvoiceInitialRows
+                            .map(mapInvoiceRow)
+                            .filter(invoice => invoice && invoice.invoiceNumber);
+                    } else {
+                        allInvoices = readInvoicesFromTable();
+                    }
+                    initializeFilterStateFromDom();
+                    syncSearchFilterField();
+                    applyFilter();
+                    setupSearch();
+                    setupDeletePaymentAction();
+                    return;
+                }
+                window.__financeInvoicePageInitialized = true;
+
+                if (Array.isArray(window.financeInvoiceInitialRows) && window.financeInvoiceInitialRows.length) {
+                    allInvoices = window.financeInvoiceInitialRows
+                        .map(mapInvoiceRow)
+                        .filter(invoice => invoice && invoice.invoiceNumber);
+                } else {
+                    allInvoices = readInvoicesFromTable();
+                }
+
+                initializeFilterStateFromDom();
+                setupSearch();
+                setupFilterControls();
+                setupManualSendButtons();
+                setupDeletePaymentAction();
+                await loadCustomerContexts();
+                await applyDefaultCurrentPeriodFilter();
+                if (window.nmxBilling) {
+                    window.nmxBilling.onRefresh(() => window.location.reload());
+                }
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        ['historyModal', 'invoiceModal', 'payModal', 'printModal', 'confirmModal', 'invoiceDetailModal']
+                            .forEach(closeModal);
+                    }
+                });
+                setupPaymentAmountInput();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeInvoicePage);
+            } else {
+                initializeInvoicePage();
+            }
+
+            function mapInvoiceRow(invoice, index = 0) {
+                if (!invoice) {
+                    return null;
+                }
+
+                return {
+                    id: Number(invoice.id || index + 1),
+                    customerId: Number(invoice.customerId || 0),
+                    customerCode: invoice.customerCode || '',
+                    customerName: (invoice.customerName || '').trim(),
+                    serviceId: Number(invoice.customerServiceId || invoice.serviceId || 0),
+                    invoiceNumber: (invoice.invoiceNumber || '').trim(),
+                    invoiceType: normalizeInvoiceType(invoice.invoiceType || ''),
+                    invoiceTypeLabel: (invoice.invoiceTypeLabel || '').trim() || 'Pembayaran Langganan Bulanan',
+                    totalAmount: asNumber(invoice.totalAmount || 0),
+                    amountPaid: asNumber(invoice.amountPaid || 0),
+                    outstandingAmount: asNumber(invoice.outstandingAmount || 0),
+                    billingMonth: invoice.billingMonth || '',
+                    dueDate: invoice.dueDate || '',
+                    paymentDate: invoice.paymentDate || '',
+                    status: invoice.status || 'unpaid',
+                    paymentMethod: invoice.paymentMethod || '',
+                    customerStatus: invoice.customerStatus || 'active'
+                };
+            }
+
+            async function loadCustomerContexts() {
+                try {
+                    const response = await fetch('/pelanggan/api/customers/summary');
+                    const result = await response.json();
+                    if (!result.success || !Array.isArray(result.data)) {
+                        throw new Error(result.message || 'Gagal memuat context pelanggan');
+                    }
+
+                    customerContextById = new Map(
+                        result.data.map(customer => [Number(customer.id), customer])
+                    );
+                } catch (error) {
+                    console.warn('Error loading customer contexts:', error);
+                    customerContextById = new Map();
+                }
+            }
+
+            function readInvoicesFromTable() {
+                const rows = Array.from(document.querySelectorAll('#invoiceTableBody tr'));
+                return rows.map((row, index) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length < 6) {
+                        return null;
+                    }
+
+                    const invoiceNumber = (row.dataset.invoiceNumber || cells[0]?.textContent || '').trim();
+                    const customerName = (row.dataset.customerName || cells[1]?.textContent || '').trim();
+                    const invoiceType = (row.dataset.invoiceType || '').trim();
+                    const invoiceTypeLabel = (row.dataset.invoiceTypeLabel || cells[2]?.textContent || '').trim();
+                    const totalAmount = row.dataset.totalAmount || cells[3]?.textContent || '0';
+                    const dueDate = row.dataset.dueDate || cells[4]?.textContent || '';
+                    const statusText = row.dataset.status || cells[5]?.textContent || 'unpaid';
+                    const actionButtons = row.querySelectorAll('button[onclick]');
+                    const detailOnclick = actionButtons[0]?.getAttribute('onclick') || '';
+                    const createOnclick = actionButtons[2]?.getAttribute('onclick') || '';
+                    const idMatch = detailOnclick.match(/\((\d+)\)/);
+                    const customerIdMatch = createOnclick.match(/\((\d+)\)/);
+
+                    return mapInvoiceRow({
+                        id: row.dataset.id || idMatch?.[1] || index + 1,
+                        customerId: row.dataset.customerId || customerIdMatch?.[1] || 0,
+                        customerCode: row.dataset.customerCode || '',
+                        customerName: customerName,
+                        serviceId: row.dataset.serviceId || 0,
+                        invoiceNumber: invoiceNumber,
+                        invoiceType: invoiceType,
+                        invoiceTypeLabel: invoiceTypeLabel || 'Pembayaran Langganan Bulanan',
+                        totalAmount: totalAmount,
+                        amountPaid: row.dataset.amountPaid || 0,
+                        outstandingAmount: row.dataset.outstandingAmount || 0,
+                        billingMonth: row.dataset.billingMonth || '',
+                        dueDate: dueDate,
+                        paymentDate: row.dataset.paymentDate || '',
+                        status: statusText,
+                        paymentMethod: row.dataset.paymentMethod || '',
+                        customerStatus: row.dataset.customerStatus || 'active'
+                    }, index);
+                }).filter(invoice => invoice && invoice.invoiceNumber);
+            }
+
+            function applyFilter() {
+                let rows = getScopedInvoices();
+                const scopedCount = rows.length;
+
+                rows = rows.filter(invoice => invoiceMatchesSearch(invoice));
+
+                invoices = rows;
+                filteredInvoices = rows;
+                updateFilterDebug(scopedCount, filteredInvoices.length);
+                renderTable();
+                updateStats();
+            }
+
+            function initializeFilterStateFromDom() {
+                const dueDayFilter = document.getElementById('dueDayFilter');
+                const yearFilter = document.getElementById('yearFilter');
+                const monthFilter = document.getElementById('monthFilter');
+                const statusFilter = document.getElementById('statusFilter');
+                const searchInput = document.getElementById('searchInput');
+
+                selectedDueDay = dueDayFilter ? String(dueDayFilter.value || '') : selectedDueDay;
+                selectedYear = yearFilter ? String(yearFilter.value || '') : selectedYear;
+                selectedMonth = monthFilter ? String(monthFilter.value || '') : selectedMonth;
+                selectedStatus = statusFilter ? String(statusFilter.value || 'all') : selectedStatus;
+                searchKeyword = searchInput ? normalizeSearchKeyword(searchInput.value || '') : searchKeyword;
+                syncSearchFilterField();
+            }
+
+            function updateStats() {
+                document.getElementById('totalInvoice').textContent = filteredInvoices.length;
+                document.getElementById('pendingInvoice').textContent = countCustomersByInvoiceStatus(filteredInvoices, 'unpaid');
+                document.getElementById('paidInvoice').textContent = countCustomersByInvoiceStatus(filteredInvoices, 'paid');
+                document.getElementById('overdueInvoice').textContent = countCustomersByInvoiceStatus(filteredInvoices, 'overdue');
+            }
+
+            function countCustomersByInvoiceStatus(invoiceRows, targetStatus) {
+                const customerKeys = new Set();
+                (Array.isArray(invoiceRows) ? invoiceRows : []).forEach(invoice => {
+                    if (resolveInvoicePaymentStatus(invoice) !== targetStatus) {
+                        return;
+                    }
+                    const customerKey = getInvoiceCustomerKey(invoice);
+                    if (customerKey) {
+                        customerKeys.add(customerKey);
+                    }
+                });
+                return customerKeys.size;
+            }
+
+            function getInvoiceCustomerKey(invoice) {
+                if (!invoice) {
+                    return '';
+                }
+                const customerId = Number(invoice.customerId || 0);
+                if (customerId > 0) {
+                    return `customer:${customerId}`;
+                }
+                const normalizedCustomerName = normalizeSearchKeyword(invoice.customerName || '');
+                return normalizedCustomerName ? `name:${normalizedCustomerName}` : '';
+            }
+
+            function setupFilterControls() {
+                const dueDayFilter = document.getElementById('dueDayFilter');
+                const yearFilter = document.getElementById('yearFilter');
+                const monthFilter = document.getElementById('monthFilter');
+                const statusFilter = document.getElementById('statusFilter');
+
+                syncDateFilterControls();
+
+                if (dueDayFilter) {
+                    dueDayFilter.value = selectedDueDay || String(new Date().getDate());
+                    dueDayFilter.addEventListener('change', async function(event) {
+                        selectedDueDay = event.target.value || '';
+                        syncDateFilterControls();
+                        await loadInvoicePageData(true);
+                    });
+                }
+
+                if (statusFilter) {
+                    statusFilter.value = selectedStatus;
+                    statusFilter.addEventListener('change', function(event) {
+                        filterByPaymentStatus(event.target.value);
+                    });
+                }
+
+                if (yearFilter) {
+                    yearFilter.addEventListener('change', async function(event) {
+                        await filterByYear(event.target.value);
+                    });
+                }
+
+                if (monthFilter) {
+                    monthFilter.addEventListener('change', function(event) {
+                        filterByMonth(event.target.value);
+                    });
+                }
+            }
+
+            async function fetchAvailableYears() {
+                try {
+                    const response = await fetch('/api/invoices/years');
+                    const result = await response.json();
+                    if (response.ok && result.success && Array.isArray(result.data)) {
+                        return result.data.map(year => String(year));
+                    }
+                } catch (error) {
+                    console.warn('Error loading invoice years from database:', error);
+                }
+                return getAvailableInvoiceYears();
+            }
+
+            async function fetchAvailableMonths(year) {
+                if (!year) {
+                    return [];
+                }
+
+                try {
+                    const response = await fetch(`/api/invoices/months?year=${encodeURIComponent(year)}`);
+                    const result = await response.json();
+                    if (response.ok && result.success && Array.isArray(result.data)) {
+                        return result.data.map(month => String(month));
+                    }
+                } catch (error) {
+                    console.warn('Error loading invoice months from database:', error);
+                }
+                return getAvailableInvoiceMonthsByYear(year);
+            }
+
+            async function loadInvoiceYears() {
+                const yearSelect = document.getElementById('yearFilter');
+                yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+                const currentYear = String(new Date().getFullYear());
+                const years = await fetchAvailableYears();
+                const normalizedYears = Array.isArray(years) ? years.map(year => String(year)) : [];
+                const yearOptions = normalizedYears.includes(currentYear)
+                    ? normalizedYears
+                    : [currentYear, ...normalizedYears];
+
+                yearOptions.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                });
+
+                return yearOptions;
+            }
+
+            async function loadMonthsForYear(year, monthFilter) {
+                monthFilter.innerHTML = '<option value="">Semua Bulan</option>';
+                const availableMonths = await fetchAvailableMonths(year);
+                const currentDate = new Date();
+                const currentYear = String(currentDate.getFullYear());
+                const currentMonth = String(currentDate.getMonth() + 1);
+                const monthOptions = String(year) === currentYear && !availableMonths.includes(currentMonth)
+                    ? [currentMonth, ...availableMonths]
+                    : availableMonths;
+                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+                monthOptions.forEach(month => {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = monthNames[month - 1] || String(month);
+                    monthFilter.appendChild(option);
+                });
+
+                return monthOptions;
+            }
+
+            async function filterByYear(year) {
+                selectedYear = year || '';
+                const monthFilter = document.getElementById('monthFilter');
+                if (selectedYear) {
+                    monthFilter.disabled = false;
+                    const availableMonths = await loadMonthsForYear(selectedYear, monthFilter);
+                    selectedMonth = resolvePreferredFilterValue(
+                        availableMonths,
+                        selectedMonth
+                    );
+                    monthFilter.value = selectedMonth;
+                } else {
+                    selectedMonth = '';
+                    monthFilter.disabled = true;
+                    monthFilter.innerHTML = '<option value="">Semua Bulan</option>';
+                }
+                await loadInvoicePageData(true);
+            }
+
+            function filterByMonth(month) {
+                selectedMonth = month || '';
+                const monthFilter = document.getElementById('monthFilter');
+                if (monthFilter) {
+                    monthFilter.value = selectedMonth;
+                }
+                return loadInvoicePageData(true);
+            }
+
+            function filterByPaymentStatus(status) {
+                selectedStatus = status || 'all';
+                const statusFilter = document.getElementById('statusFilter');
+                if (statusFilter) {
+                    statusFilter.value = selectedStatus;
+                }
+                return loadInvoicePageData(true);
+            }
+
+            async function applyDefaultCurrentPeriodFilter() {
+                const dueDayFilter = document.getElementById('dueDayFilter');
+                if (!selectedDueDay) {
+                    selectedDueDay = String(new Date().getDate());
+                }
+                if (dueDayFilter) {
+                    dueDayFilter.value = selectedDueDay;
+                }
+                syncDateFilterControls();
+                await syncInvoiceFilters(false);
+            }
+
+            async function syncInvoiceFilters(preserveSelection = false) {
+                const now = new Date();
+                const currentYear = String(now.getFullYear());
+                const currentMonth = String(now.getMonth() + 1);
+                const yearSelect = document.getElementById('yearFilter');
+                const monthSelect = document.getElementById('monthFilter');
+                const previousYear = selectedYear;
+                const previousMonth = selectedMonth;
+                const availableYears = await loadInvoiceYears();
+                const preferredYear = preserveSelection
+                    ? resolvePreferredFilterValue(availableYears, previousYear || currentYear)
+                    : currentYear;
+
+                if (!preferredYear) {
+                    selectedYear = '';
+                    selectedMonth = '';
+                    if (yearSelect) {
+                        yearSelect.value = '';
+                    }
+                    if (monthSelect) {
+                        monthSelect.disabled = true;
+                        monthSelect.innerHTML = '<option value="">Semua Bulan</option>';
+                        monthSelect.value = '';
+                    }
+                    applyFilter();
+                    return;
+                }
+
+                selectedYear = preferredYear;
+                if (yearSelect) {
+                    yearSelect.value = preferredYear;
+                }
+
+                if (monthSelect) {
+                    monthSelect.disabled = false;
+                }
+
+                const availableMonths = await loadMonthsForYear(preferredYear, monthSelect);
+                const monthPreference = preserveSelection && previousYear === preferredYear
+                    ? (previousMonth || currentMonth)
+                    : currentMonth;
+                selectedMonth = resolvePreferredFilterValue(availableMonths, monthPreference);
+
+                if (monthSelect) {
+                    monthSelect.value = selectedMonth;
+                }
+
+                applyFilter();
+            }
+
+            function resolvePreferredFilterValue(values, preferredValue) {
+                const normalizedValues = Array.isArray(values) ? values.map(value => String(value)) : [];
+                const preferred = String(preferredValue || '');
+                if (preferred && normalizedValues.includes(preferred)) {
+                    return preferred;
+                }
+                if (!preferred) {
+                    return '';
+                }
+                return normalizedValues.length > 0 ? normalizedValues[0] : '';
+            }
+
+            function setupSearch() {
+                const searchInput = document.getElementById('searchInput');
+                if (!searchInput || searchInput.dataset.bound === 'true') {
+                    return;
+                }
+                searchInput.dataset.bound = 'true';
+                const updateSearchState = function(event) {
+                    const directValue = searchInput.value || '';
+                    const eventValue = event && event.target ? event.target.value : directValue;
+                    searchKeyword = normalizeSearchKeyword(eventValue || directValue);
+                    syncSearchFilterField();
+                    applyFilter();
+                    applySearchFallbackToRenderedRows();
+                };
+                searchInput.addEventListener('input', updateSearchState);
+                searchInput.addEventListener('keyup', updateSearchState);
+                searchInput.addEventListener('change', updateSearchState);
+            }
+
+            function syncSearchFilterField() {
+                const searchFilter = document.getElementById('searchFilter');
+                if (searchFilter) {
+                    searchFilter.value = searchKeyword || '';
+                }
+            }
+
+            function setupManualSendButtons() {
+                const tableBody = document.getElementById('invoiceTableBody');
+                if (!tableBody || tableBody.dataset.manualSendBound === 'true') {
+                    return;
+                }
+
+                tableBody.dataset.manualSendBound = 'true';
+                tableBody.addEventListener('click', function(event) {
+                    const button = event.target && event.target.closest
+                        ? event.target.closest('button[data-manual-send-id]')
+                        : null;
+                    if (!button) {
+                        return;
+                    }
+                    if (button.hasAttribute('onclick')) {
+                        return;
+                    }
+
+                    const invoiceId = Number(button.getAttribute('data-manual-send-id') || 0);
+                    if (!Number.isFinite(invoiceId) || invoiceId <= 0) {
+                        showAlert('error', 'Invoice tidak ditemukan');
+                        return;
+                    }
+                    const manualSendType = String(button.getAttribute('data-manual-send-type') || '').toLowerCase() === 'receipt'
+                        ? 'receipt'
+                        : 'invoice';
+
+                    if (window.handleManualInvoiceOrReceipt) {
+                        window.handleManualInvoiceOrReceipt(invoiceId, manualSendType);
+                    } else if (window.sendManualInvoiceOrReceipt) {
+                        window.sendManualInvoiceOrReceipt(invoiceId, manualSendType);
+                    }
+                });
+            }
+
+            function normalizeSearchKeyword(value) {
+                return String(value || '')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, ' ');
+            }
+
+            function invoiceMatchesSearch(invoice) {
+                if (!invoice) {
+                    return false;
+                }
+                if (!searchKeyword) {
+                    return true;
+                }
+
+                const invoiceNumber = normalizeSearchKeyword(invoice.invoiceNumber || '');
+                const customerName = normalizeSearchKeyword(invoice.customerName || '');
+                const customerCode = normalizeSearchKeyword(invoice.customerCode || '');
+                const paymentMethod = normalizeSearchKeyword(invoice.paymentMethod || '');
+                const invoiceTypeLabel = normalizeSearchKeyword(invoice.invoiceTypeLabel || '');
+                return invoiceNumber.includes(searchKeyword)
+                    || customerName.includes(searchKeyword)
+                    || customerCode.includes(searchKeyword)
+                    || paymentMethod.includes(searchKeyword)
+                    || invoiceTypeLabel.includes(searchKeyword);
+            }
+
+            function getScopedInvoices() {
+                return allInvoices.filter(invoice => invoiceMatchesDate(invoice) && invoiceMatchesStatus(invoice));
+            }
+
+            function invoiceMatchesDate(invoice) {
+                if (!invoice) {
+                    return false;
+                }
+                if (selectedDueDay === 'all') {
+                    return invoiceMatchesPeriod(invoice);
+                }
+                if (!invoiceMatchesPeriod(invoice)) {
+                    return false;
+                }
+                if (!selectedDueDay) {
+                    return true;
+                }
+                const dueDate = parseFlexibleDate(invoice.dueDate);
+                return Boolean(dueDate && String(dueDate.getDate()) === String(selectedDueDay));
+            }
+
+            function invoiceMatchesPeriod(invoice) {
+                if (!invoice) {
+                    return false;
+                }
+                if (!selectedYear && !selectedMonth) {
+                    return true;
+                }
+
+                const referenceDate = getInvoiceReferenceDate(invoice);
+                if (!referenceDate) {
+                    return false;
+                }
+                if (selectedYear && String(referenceDate.getFullYear()) !== String(selectedYear)) {
+                    return false;
+                }
+                return !selectedMonth || String(referenceDate.getMonth() + 1) === String(selectedMonth);
+            }
+
+            function invoiceMatchesStatus(invoice) {
+                if (!invoice || !selectedStatus || selectedStatus === 'all') {
+                    return true;
+                }
+                return resolveInvoicePaymentStatus(invoice) === normalizePaymentStatus(selectedStatus);
+            }
+
+            function getInvoiceReferenceDate(invoice) {
+                if (!invoice) {
+                    return null;
+                }
+
+                const normalizedStatus = resolveInvoicePaymentStatus(invoice);
+                const rawDate = normalizedStatus === 'paid'
+                    ? (invoice.paymentDate || invoice.billingMonth || invoice.dueDate)
+                    : (invoice.billingMonth || invoice.dueDate || invoice.paymentDate);
+                return parseFlexibleDate(rawDate);
+            }
+
+            function getAvailableInvoiceYears() {
+                return [...new Set(allInvoices
+                    .map(invoice => getInvoiceReferenceDate(invoice))
+                    .filter(referenceDate => referenceDate !== null)
+                    .map(referenceDate => String(referenceDate.getFullYear())))]
+                    .sort((left, right) => Number(right) - Number(left));
+            }
+
+            function getAvailableInvoiceMonthsByYear(year) {
+                if (!year) {
+                    return [];
+                }
+
+                const normalizedYear = Number(year);
+                return [...new Set(allInvoices
+                    .map(invoice => getInvoiceReferenceDate(invoice))
+                    .filter(referenceDate => referenceDate !== null && referenceDate.getFullYear() === normalizedYear)
+                    .map(referenceDate => String(referenceDate.getMonth() + 1)))]
+                    .sort((left, right) => Number(right) - Number(left));
+            }
+
+            function updateFilterDebug(scopedCount = 0, filteredCount = 0) {
+                void scopedCount;
+                void filteredCount;
+            }
+
+            function normalizeInvoiceType(invoiceType) {
+                return String(invoiceType || '').trim().toLowerCase() === 'activation'
+                    ? 'activation'
+                    : 'subscription';
+            }
+
+            function buildInvoiceQuery() {
+                const params = new URLSearchParams();
+                if (selectedYear) {
+                    params.set('year', selectedYear);
+                }
+                if (selectedMonth) {
+                    params.set('month', selectedMonth);
+                }
+                if (selectedDueDay) {
+                    params.set('dueDay', selectedDueDay);
+                }
+                if (selectedStatus && selectedStatus !== 'all') {
+                    params.set('status', selectedStatus);
+                }
+                if (searchKeyword) {
+                    params.set('search', searchKeyword);
+                }
+                const query = params.toString();
+                return query ? `?${query}` : '';
+            }
+
+            async function loadInvoicePageData(preserveSelection = true) {
+                try {
+                    const response = await fetch(`/api/invoices${buildInvoiceQuery()}`, {
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success || !Array.isArray(result.data)) {
+                        throw new Error(result.message || 'Gagal memuat data invoice');
+                    }
+
+                    allInvoices = result.data
+                        .map(mapInvoiceRow)
+                        .filter(invoice => invoice && invoice.invoiceNumber)
+                        .sort((left, right) =>
+                            toDateMillis(right.paymentDate || right.billingMonth || right.dueDate)
+                            - toDateMillis(left.paymentDate || left.billingMonth || left.dueDate)
+                        );
+                    window.financeInvoiceInitialRows = result.data;
+                    await syncInvoiceFilters(preserveSelection);
+                } catch (error) {
+                    console.error('Error loading invoice page data:', error);
+                    applyFilter();
+                    showAlert('error', 'Gagal memuat data invoice');
+                }
+            }
+
+            async function loadInvoices() {
+                await loadInvoicePageData(true);
+            }
+
+            function syncDateFilterControls() {
+                const dueDayFilter = document.getElementById('dueDayFilter');
+                const currentDay = String(new Date().getDate());
+
+                if (dueDayFilter) {
+                    dueDayFilter.value = selectedDueDay || currentDay;
+                }
+            }
+
+            function renderTable() {
+                const tbody = document.getElementById('invoiceTableBody');
+                const emptyState = document.getElementById('emptyState');
+
+                if (!filteredInvoices.length) {
+                    tbody.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                tbody.innerHTML = filteredInvoices.map(inv => {
+                    const paymentStatus = resolveInvoicePaymentStatus(inv);
+                    const paymentBadgeClass = getPaymentBadgeClass(paymentStatus);
+                    const paymentText = getPaymentText(paymentStatus);
+
+                    return `
+                        <tr>
+                            <td><span class="invoice-number">${escapeHtml(inv.invoiceNumber || '-')}</span></td>
+                            <td>${escapeHtml(inv.customerName || '-')}</td>
+                            <td>${escapeHtml(inv.invoiceTypeLabel || 'Pembayaran Langganan Bulanan')}</td>
+                            <td>${formatRupiah(inv.totalAmount || 0)}</td>
+                            <td>${formatDate(inv.dueDate)}</td>
+                            <td>
+                                <span class="payment-badge ${paymentBadgeClass}">
+                                    ${paymentText}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-btn">
+                                    <button type="button" title="Lihat Invoice" onclick="window.viewInvoiceDetail && window.viewInvoiceDetail(${Number(inv.id || 0)})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" title="Dokumen Invoice" onclick="window.openInvoiceDocument && window.openInvoiceDocument(${Number(inv.id || 0)})">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    ${getManualSendButtonHtml(inv)}
+                                    ${getPayActionButtonHtml(inv)}
+                                    ${getDeletePaymentButtonHtml(inv)}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            }
+
+            function resolveCustomerContext(customerId, invoice = null) {
+                const normalizedCustomerId = Number(customerId || (invoice && invoice.customerId) || 0);
+                const context = customerContextById.get(normalizedCustomerId);
+                if (context) {
+                    return context;
+                }
+
+                return {
+                    id: normalizedCustomerId || null,
+                    customerCode: invoice && invoice.customerCode,
+                    fullName: invoice && invoice.customerName,
+                    status: invoice && invoice.customerStatus,
+                    serviceId: invoice && invoice.serviceId,
+                    monthlyFee: invoice && invoice.monthlyFee
+                };
+            }
+
+            function resolveCustomerStatus(customerContext, invoice = null) {
+                const normalized = String(
+                    (customerContext && customerContext.status) ||
+                    (invoice && invoice.customerStatus) ||
+                    'active'
+                ).toLowerCase();
+
+                if (normalized === 'suspended' || normalized === 'inactive' || normalized === 'nonaktif') {
+                    return 'suspended';
+                }
+                if (normalized === 'pending') {
+                    return 'pending';
+                }
+                return 'active';
+            }
+
+            function resolveCustomerServiceId(customerContext, invoice = null) {
+                return Number(
+                    (customerContext && customerContext.serviceId) ||
+                    (invoice && invoice.serviceId) ||
+                    0
+                );
+            }
+
+            function asNumber(value) {
+                const parsed = Number(value);
+                return Number.isFinite(parsed) ? parsed : 0;
+            }
+
+            function getOutstandingAmount(invoice) {
+                const explicitOutstanding = asNumber(invoice && invoice.outstandingAmount);
+                if (explicitOutstanding > 0) {
+                    return explicitOutstanding;
+                }
+                return Math.max(0, asNumber(invoice && invoice.totalAmount) - asNumber(invoice && invoice.amountPaid));
+            }
+
+            function getPaymentBadgeClass(status) {
+                const normalizedStatus = normalizePaymentStatus(status);
+                return window.nmxBilling
+                    ? window.nmxBilling.getStatusClass(normalizedStatus)
+                    : (normalizedStatus === 'paid'
+                        ? 'paid'
+                        : (normalizedStatus === 'no-payment'
+                            ? 'no-payment'
+                        : (normalizedStatus === 'overdue'
+                            ? 'overdue'
+                            : (normalizedStatus === 'cancelled' ? 'cancelled' : 'pending'))));
+            }
+
+            function getPaymentText(status) {
+                const normalizedStatus = normalizePaymentStatus(status);
+                return window.nmxBilling
+                    ? window.nmxBilling.getStatusLabel(normalizedStatus)
+                    : (normalizedStatus === 'paid'
+                        ? 'Lunas'
+                        : (normalizedStatus === 'no-payment'
+                            ? 'Tidak Bayar'
+                        : (normalizedStatus === 'overdue'
+                            ? 'Jatuh Tempo'
+                            : (normalizedStatus === 'cancelled' ? 'Dibatalkan' : 'Belum Lunas'))));
+            }
+
+            function getManualSendConfig(invoice) {
+                const paymentStatus = resolveInvoicePaymentStatus(invoice);
+                if (paymentStatus === 'paid') {
+                    return {
+                        title: 'Kirim Struk Pembayaran Manual',
+                        icon: 'fa-receipt'
+                    };
+                }
+
+                return {
+                    title: 'Kirim Invoice/Tagihan Manual',
+                    icon: 'fa-paper-plane'
+                };
+            }
+
+            function getManualSendButtonHtml(invoice) {
+                const config = getManualSendConfig(invoice);
+                const paymentStatus = resolveInvoicePaymentStatus(invoice);
+                const manualSendType = paymentStatus === 'paid' ? 'receipt' : 'invoice';
+                return `
+                    <button type="button" title="${escapeHtml(config.title)}" data-manual-send-id="${Number(invoice.id || 0)}" data-manual-send-type="${manualSendType}" onclick="window.handleManualInvoiceOrReceipt && window.handleManualInvoiceOrReceipt(${Number(invoice.id || 0)}, '${manualSendType}'); return false;">
+                        <i class="fas ${config.icon}"></i>
+                    </button>
+                `;
+            }
+
+            function canDeleteInvoicePayment(invoice) {
+                if (!invoice) {
+                    return false;
+                }
+                return asNumber(invoice.amountPaid) > 0 || Boolean(invoice.paymentDate);
+            }
+
+            function getDeletePaymentButtonHtml(invoice) {
+                if (!canDeleteInvoicePayment(invoice)) {
+                    return '';
+                }
+
+                return `
+                    <button class="danger" type="button" title="Hapus Data Pembayaran" data-delete-payment-id="${Number(invoice.id || 0)}" data-invoice-number="${escapeHtml(invoice.invoiceNumber || '-')}" onclick="return window.deleteInvoicePayment ? window.deleteInvoicePayment(${Number(invoice.id || 0)}) : false;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+            }
+
+            function setupDeletePaymentAction() {
+                if (deletePaymentActionBound) {
+                    return;
+                }
+
+                document.addEventListener('click', function(event) {
+                    const targetButton = event.target && event.target.closest
+                        ? event.target.closest('button[data-delete-payment-id]')
+                        : null;
+                    if (!targetButton) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const invoiceId = Number(targetButton.getAttribute('data-delete-payment-id') || 0);
+                    if (!invoiceId) {
+                        showAlert('error', 'Invoice tidak valid.');
+                        return;
+                    }
+                    deleteInvoicePayment(invoiceId);
+                });
+
+                deletePaymentActionBound = true;
+            }
+
+            function canProcessInvoicePayment(invoice) {
+                if (!invoice) {
+                    return false;
+                }
+
+                const paymentStatus = resolveInvoicePaymentStatus(invoice);
+                if (paymentStatus === 'paid' || paymentStatus === 'cancelled' || paymentStatus === 'no-payment') {
+                    return false;
+                }
+
+                return getOutstandingAmount(invoice) > 0;
+            }
+
+            function getPayActionButtonHtml(invoice) {
+                if (!canProcessInvoicePayment(invoice)) {
+                    return `
+                        <button class="success" type="button" title="Invoice sudah tidak bisa dibayar lagi" disabled style="opacity:0.45; cursor:not-allowed;">
+                            <i class="fas fa-credit-card"></i>
+                        </button>
+                    `;
+                }
+
+                return `
+                    <button class="success" type="button" title="Tandai Lunas" onclick="window.openPayInvoiceFromHistory && window.openPayInvoiceFromHistory(${Number(invoice.id || 0)})">
+                        <i class="fas fa-credit-card"></i>
+                    </button>
+                `;
+            }
+
+            function normalizeCurrencyValue(value) {
+                if (value === null || value === undefined) {
+                    return 0;
+                }
+                if (typeof value === 'number') {
+                    return Number.isFinite(value) ? value : 0;
+                }
+                const cleaned = String(value).replace(/[^0-9,-]/g, '').replace(/\./g, '').replace(',', '.');
+                const parsed = Number(cleaned);
+                return Number.isFinite(parsed) ? parsed : 0;
+            }
+
+            function formatCurrencyInputValue(value) {
+                const amount = Math.max(0, Math.round(normalizeCurrencyValue(value)));
+                return formatRupiah(amount);
+            }
+
+            function setupPaymentAmountInput() {
+                const payAmountInput = document.getElementById('payAmount');
+                if (!payAmountInput) {
+                    return;
+                }
+
+                payAmountInput.addEventListener('focus', function() {
+                    const numericValue = normalizeCurrencyValue(payAmountInput.value);
+                    payAmountInput.value = numericValue > 0 ? String(Math.round(numericValue)) : '';
+                });
+
+                payAmountInput.addEventListener('blur', function() {
+                    const numericValue = normalizeCurrencyValue(payAmountInput.value);
+                    payAmountInput.value = numericValue > 0 ? formatCurrencyInputValue(numericValue) : '';
+                });
+            }
+
+            function setPaymentReceiptButtonsVisibility(visible) {
+                const shouldShow = Boolean(visible);
+                const payPrintButton = document.getElementById('payPrintReceiptBtn');
+                const detailPrintButton = document.getElementById('detailPrintReceiptBtn');
+                if (payPrintButton) {
+                    payPrintButton.style.display = shouldShow ? 'inline-flex' : 'none';
+                }
+                if (detailPrintButton) {
+                    detailPrintButton.style.display = shouldShow ? 'inline-flex' : 'none';
+                }
+            }
+
+            async function deleteInvoicePayment(invoiceId) {
+                const normalizedInvoiceId = Number(invoiceId);
+                if (!Number.isFinite(normalizedInvoiceId) || normalizedInvoiceId <= 0) {
+                    showAlert('error', 'Invoice tidak valid.');
+                    return false;
+                }
+
+                const invoice = findInvoiceById(normalizedInvoiceId);
+                if (invoice && !canDeleteInvoicePayment(invoice)) {
+                    showAlert('error', 'Invoice ini belum memiliki data pembayaran yang bisa dihapus.');
+                    return false;
+                }
+
+                const invoiceLabel = invoice && invoice.invoiceNumber ? invoice.invoiceNumber : `#${normalizedInvoiceId}`;
+
+                const confirmed = typeof window.nmxConfirm === 'function'
+                    ? await window.nmxConfirm(`Hapus data pembayaran untuk invoice ${invoiceLabel}?`, {
+                        title: 'Konfirmasi Hapus Pembayaran',
+                        confirmText: 'Ya, Hapus',
+                        confirmClass: 'btn btn-danger'
+                    })
+                    : window.confirm(`Hapus data pembayaran untuk invoice ${invoiceLabel}?`);
+
+                if (!confirmed) {
+                    return false;
+                }
+
+                try {
+                    const response = await fetch(`/api/invoices/${normalizedInvoiceId}/payments/delete`, {
+                        method: 'POST',
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Gagal menghapus data pembayaran.');
+                    }
+
+                    if (window.nmxBilling) {
+                        window.nmxBilling.emit('payment');
+                    }
+                    showAlert('success', result.message || 'Data pembayaran berhasil dihapus.');
+                    await loadInvoicePageData();
+                } catch (error) {
+                    showAlert('error', error.message || 'Gagal menghapus data pembayaran.');
+                }
+                return false;
+            }
+
+            function setPayModalSubmitState(isPaid) {
+                const paySubmitButton = document.getElementById('paySubmitBtn');
+                if (!paySubmitButton) {
+                    return;
+                }
+                paySubmitButton.disabled = Boolean(isPaid);
+                paySubmitButton.style.opacity = isPaid ? '0.6' : '1';
+                paySubmitButton.style.cursor = isPaid ? 'not-allowed' : 'pointer';
+            }
+
+            function getCompanyBrandingSnapshot() {
+                const readText = (selector, fallback = '-') => {
+                    const element = document.querySelector(selector);
+                    return element ? (element.textContent || '').trim() || fallback : fallback;
+                };
+
+                return {
+                    name: readText('[data-company-name]', 'NetMaster'),
+                    tagline: readText('[data-company-tagline]', ''),
+                    address: readText('[data-company-address]', '-'),
+                    contact: readText('[data-company-contact]', '-'),
+                    logo: readText('[data-company-logo]', 'NM')
+                };
+            }
+
+            function buildPaymentReceiptData(invoice) {
+                if (!invoice) {
+                    return null;
+                }
+
+                return {
+                    invoiceId: invoice.invoiceId || invoice.id || null,
+                    invoiceNumber: invoice.invoiceNumber || '-',
+                    customerName: invoice.customerName || '-',
+                    customerCode: invoice.customerCode || '-',
+                    paymentMethod: invoice.paymentMethod || '-',
+                    paymentDate: invoice.paymentDate || null,
+                    dueDate: invoice.dueDate || null,
+                    amountPaid: asNumber(invoice.amountPaid || invoice.totalAmount || 0),
+                    totalAmount: asNumber(invoice.totalAmount || 0),
+                    notes: invoice.paymentNotes || invoice.notes || '-'
+                };
+            }
+
+            function openPaymentReceiptWindow(receiptData) {
+                if (!receiptData) {
+                    showAlert('error', 'Bukti pembayaran belum tersedia');
+                    return;
+                }
+
+                const printWindow = window.open('', '_blank', 'width=900,height=720');
+                if (!printWindow) {
+                    showAlert('error', 'Popup diblokir browser. Izinkan popup untuk mencetak bukti pembayaran.');
+                    return;
+                }
+
+                const brand = getCompanyBrandingSnapshot();
+                const customerLabel = receiptData.customerCode && receiptData.customerCode !== '-'
+                    ? `${escapeHtml(receiptData.customerName)} (${escapeHtml(receiptData.customerCode)})`
+                    : escapeHtml(receiptData.customerName);
+
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="id">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Bukti Pembayaran ${escapeHtml(receiptData.invoiceNumber)}</title>
+                        <style>
+                            body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 32px; color: #111827; background: #f8fafc; }
+                            .sheet { max-width: 760px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 18px; padding: 32px; box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08); }
+                            .header { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+                            .brand { display: flex; gap: 14px; align-items: center; }
+                            .brand-logo { width: 56px; height: 56px; border-radius: 16px; background: #111827; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; }
+                            .brand h1 { font-size: 22px; margin: 0 0 4px; }
+                            .brand p { margin: 0; color: #6b7280; font-size: 13px; }
+                            .title { text-align: right; }
+                            .title h2 { margin: 0; font-size: 28px; }
+                            .title p { margin: 6px 0 0; color: #6b7280; }
+                            .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 24px; }
+                            .card { border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px 18px; background: #fff; }
+                            .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin-bottom: 8px; }
+                            .value { font-size: 16px; font-weight: 600; color: #111827; }
+                            .amount { font-size: 26px; font-weight: 700; color: #059669; }
+                            .note { border: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 14px; padding: 16px 18px; color: #334155; line-height: 1.6; }
+                            .footer { margin-top: 24px; font-size: 13px; color: #64748b; display: flex; justify-content: space-between; gap: 20px; }
+                            @media print {
+                                body { padding: 0; background: #fff; }
+                                .sheet { box-shadow: none; border: none; border-radius: 0; max-width: none; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="sheet">
+                            <div class="header">
+                                <div class="brand">
+                                    <div class="brand-logo">${escapeHtml(brand.logo)}</div>
+                                    <div>
+                                        <h1>${escapeHtml(brand.name)}</h1>
+                                        <p>${escapeHtml(brand.tagline)}</p>
+                                        <p>${escapeHtml(brand.address)}</p>
+                                        <p>${escapeHtml(brand.contact)}</p>
+                                    </div>
+                                </div>
+                                <div class="title">
+                                    <h2>Bukti Pembayaran</h2>
+                                    <p>${escapeHtml(receiptData.invoiceNumber)}</p>
+                                </div>
+                            </div>
+                            <div class="grid">
+                                <div class="card">
+                                    <div class="label">Pelanggan</div>
+                                    <div class="value">${customerLabel}</div>
+                                </div>
+                                <div class="card">
+                                    <div class="label">Tanggal Bayar</div>
+                                    <div class="value">${escapeHtml(formatDate(receiptData.paymentDate))}</div>
+                                </div>
+                                <div class="card">
+                                    <div class="label">Jatuh Tempo Invoice</div>
+                                    <div class="value">${escapeHtml(formatDate(receiptData.dueDate))}</div>
+                                </div>
+                                <div class="card">
+                                    <div class="label">Metode Pembayaran</div>
+                                    <div class="value">${escapeHtml(receiptData.paymentMethod)}</div>
+                                </div>
+                                <div class="card" style="grid-column: 1 / -1;">
+                                    <div class="label">Jumlah Dibayar</div>
+                                    <div class="amount">${escapeHtml(formatRupiah(receiptData.amountPaid))}</div>
+                                </div>
+                            </div>
+                            <div class="note">
+                                <strong>Catatan:</strong><br>
+                                ${escapeHtml(receiptData.notes || '-')}
+                            </div>
+                            <div class="footer">
+                                <div>Dokumen ini dicetak otomatis dari sistem billing.</div>
+                                <div>Total invoice: ${escapeHtml(formatRupiah(receiptData.totalAmount))}</div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.focus();
+                setTimeout(() => printWindow.print(), 250);
+            }
+
+            function normalizePaymentStatus(status) {
+                const normalized = String(status || '')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[_-]+/g, ' ')
+                    .replace(/\s+/g, ' ');
+
+                if (normalized === 'paid' || normalized === 'lunas' || normalized === 'sudah bayar') {
+                    return 'paid';
+                }
+                if (normalized === 'cancelled' || normalized === 'dibatalkan' || normalized === 'batal') {
+                    return 'cancelled';
+                }
+                if (normalized === 'no payment' || normalized === 'tidak bayar') {
+                    return 'no-payment';
+                }
+                if (normalized === 'overdue' || normalized === 'jatuh tempo') {
+                    return 'overdue';
+                }
+                if (
+                    normalized === 'partial' ||
+                    normalized === 'pending' ||
+                    normalized === 'unpaid' ||
+                    normalized === 'belum bayar' ||
+                    normalized === 'belum lunas'
+                ) {
+                    return 'unpaid';
+                }
+                return 'unpaid';
+            }
+
+            function resolveInvoicePaymentStatus(invoice) {
+                if (!invoice) {
+                    return 'unpaid';
+                }
+
+                const normalizedStatus = normalizePaymentStatus(invoice.status);
+                if (normalizedStatus === 'paid' || normalizedStatus === 'cancelled' || normalizedStatus === 'no-payment') {
+                    return normalizedStatus;
+                }
+
+                const dueDate = parseFlexibleDate(invoice.dueDate);
+                if (dueDate) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    dueDate.setHours(0, 0, 0, 0);
+                    if (dueDate < today) {
+                        return 'overdue';
+                    }
+                }
+
+                return normalizedStatus === 'overdue' ? 'overdue' : 'unpaid';
+            }
+
+            function parseFlexibleDate(value) {
+                if (!value) {
+                    return null;
+                }
+
+                if (value instanceof Date) {
+                    return Number.isNaN(value.getTime()) ? null : value;
+                }
+
+                if (Array.isArray(value) && value.length >= 3) {
+                    const year = Number(value[0]);
+                    const month = Number(value[1]);
+                    const day = Number(value[2]);
+                    if (Number.isFinite(year) && Number.isFinite(month) && Number.isFinite(day)) {
+                        const parsedArrayDate = new Date(year, month - 1, day);
+                        return Number.isNaN(parsedArrayDate.getTime()) ? null : parsedArrayDate;
+                    }
+                }
+
+                if (typeof value === 'object') {
+                    const year = Number(value.year);
+                    const month = Number(value.monthValue || value.month);
+                    const day = Number(value.dayOfMonth || value.day);
+                    if (Number.isFinite(year) && Number.isFinite(month) && Number.isFinite(day)) {
+                        const parsedObjectDate = new Date(year, month - 1, day);
+                        return Number.isNaN(parsedObjectDate.getTime()) ? null : parsedObjectDate;
+                    }
+                }
+
+                const parsedDate = new Date(value);
+                return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+            }
+
+            function toDateMillis(value) {
+                const parsedDate = parseFlexibleDate(value);
+                return parsedDate ? parsedDate.getTime() : 0;
+            }
+
+            function addMonthsSameDay(baseDate, monthCount = 1) {
+                if (!(baseDate instanceof Date) || Number.isNaN(baseDate.getTime())) {
+                    return new Date();
+                }
+
+                const year = baseDate.getFullYear();
+                const month = baseDate.getMonth() + monthCount;
+                const day = baseDate.getDate();
+                const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate();
+
+                return new Date(year, month, Math.min(day, lastDayOfTargetMonth));
+            }
+
+            function formatDateInput(date) {
+                if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+                    return '';
+                }
+
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            function requestHeaders(includeJson = false) {
+                const headers = {};
+                if (includeJson) {
+                    headers['Content-Type'] = 'application/json';
+                }
+                headers[window.csrfHeader || 'X-CSRF-TOKEN'] = window.csrfToken || '';
+                return headers;
+            }
+
+            async function viewInvoiceDetail(invoiceId) {
+                try {
+                    const response = await fetch(`/api/invoices/${invoiceId}`);
+                    const result = await response.json();
+
+                    if (!result.success || !result.data) {
+                        showAlert('error', result.message || 'Detail invoice tidak ditemukan');
+                        return;
+                    }
+
+                    const invoice = result.data;
+                    document.getElementById('detailInvoiceNumber').textContent = invoice.invoiceNumber || '-';
+                    document.getElementById('detailInvoiceStatus').textContent = getPaymentText(invoice.status || 'unpaid');
+                    document.getElementById('detailBillingMonth').textContent = invoice.invoiceTypeLabel || 'Pembayaran Langganan Bulanan';
+                    document.getElementById('detailDueDate').textContent = formatDate(invoice.dueDate);
+                    document.getElementById('detailTotalAmount').textContent = formatRupiah(invoice.totalAmount);
+                    document.getElementById('detailAmountPaid').textContent = formatRupiah(invoice.amountPaid || 0);
+                    document.getElementById('detailPaymentDate').textContent = formatDate(invoice.paymentDate);
+                    document.getElementById('detailPaymentMethod').textContent = invoice.paymentMethod || '-';
+                    document.getElementById('detailInvoiceNotes').textContent = invoice.notes || invoice.paymentNotes || '-';
+                    currentPaymentReceipt = normalizePaymentStatus(invoice.status) === 'paid' ? buildPaymentReceiptData(invoice) : null;
+                    setPaymentReceiptButtonsVisibility(Boolean(currentPaymentReceipt));
+
+                    openModal('invoiceDetailModal');
+                } catch (error) {
+                    console.error('Error loading invoice detail:', error);
+                    showAlert('error', 'Gagal memuat detail invoice');
+                }
+            }
+
+            function openInvoiceDocument(invoiceId) {
+                if (!invoiceId) {
+                    showAlert('error', 'Invoice tidak ditemukan');
+                    return;
+                }
+                window.open(`/finance/invoice/${invoiceId}/document`, '_blank', 'noopener');
+            }
+
+            async function viewPaymentHistory(customerId) {
+                currentCustomerId = customerId;
+
+                try {
+                    const response = await fetch(`/pelanggan/api/customers/${customerId}`);
+                    const result = await response.json();
+
+                    if (!result.success || !result.data) {
+                        showAlert('error', result.message || 'Data pelanggan tidak ditemukan');
+                        return;
+                    }
+
+                    document.getElementById('historyCustomerName').textContent = `${result.data.fullName} (${result.data.customerCode})`;
+                    await loadHistoryYears(customerId);
+
+                    const now = new Date();
+                    const currentYear = String(now.getFullYear());
+                    const currentMonth = String(now.getMonth() + 1);
+                    const historyYearFilter = document.getElementById('historyYearFilter');
+                    const historyMonthFilter = document.getElementById('historyMonthFilter');
+                    const availableYears = [...historyYearFilter.options].map(option => option.value).filter(Boolean);
+                    const preferredYear = resolvePreferredFilterValue(availableYears, currentYear);
+
+                    if (preferredYear) {
+                        historyYearFilter.value = preferredYear;
+                        await loadHistoryMonths(customerId, preferredYear);
+                        const availableMonths = [...historyMonthFilter.options].map(option => option.value).filter(Boolean);
+                        historyMonthFilter.value = resolvePreferredFilterValue(availableMonths, currentMonth);
+                    }
+
+                    await loadFilteredHistory();
+                    openModal('historyModal');
+                } catch (error) {
+                    console.error('Error loading customer history:', error);
+                    showAlert('error', 'Gagal memuat riwayat pembayaran');
+                }
+            }
+
+            async function loadHistoryYears(customerId) {
+                const yearSelect = document.getElementById('historyYearFilter');
+                const monthSelect = document.getElementById('historyMonthFilter');
+                yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+                monthSelect.innerHTML = '<option value="">Semua Bulan</option>';
+                monthSelect.disabled = true;
+
+                try {
+                    const response = await fetch(`/api/customers/${customerId}/payments/years`);
+                    const result = await response.json();
+
+                    if (result.success && Array.isArray(result.data)) {
+                        result.data.forEach(year => {
+                            const option = document.createElement('option');
+                            option.value = year;
+                            option.textContent = year;
+                            yearSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading history years:', error);
+                }
+            }
+
+            async function loadHistoryMonths(customerId, year) {
+                const monthSelect = document.getElementById('historyMonthFilter');
+                monthSelect.innerHTML = '<option value="">Semua Bulan</option>';
+
+                if (!year) {
+                    monthSelect.disabled = true;
+                    return;
+                }
+
+                monthSelect.disabled = false;
+
+                try {
+                    const response = await fetch(`/api/customers/${customerId}/payments/months?year=${encodeURIComponent(year)}`);
+                    const result = await response.json();
+
+                    if (result.success && Array.isArray(result.data)) {
+                        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                        result.data.forEach(month => {
+                            const option = document.createElement('option');
+                            option.value = month;
+                            option.textContent = months[month - 1] || String(month);
+                            monthSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading history months:', error);
+                }
+            }
+
+            async function loadFilteredHistory() {
+                if (!currentCustomerId) {
+                    return;
+                }
+
+                const year = document.getElementById('historyYearFilter').value;
+                const month = document.getElementById('historyMonthFilter').value;
+                const monthSelect = document.getElementById('historyMonthFilter');
+
+                if (!year) {
+                    monthSelect.innerHTML = '<option value="">Semua Bulan</option>';
+                    monthSelect.disabled = true;
+                } else if (!month) {
+                    await loadHistoryMonths(currentCustomerId, year);
+                }
+
+                let url = `/api/customers/${currentCustomerId}/payments`;
+                const params = [];
+                if (year) {
+                    params.push(`year=${encodeURIComponent(year)}`);
+                }
+                if (month) {
+                    params.push(`month=${encodeURIComponent(month)}`);
+                }
+                if (params.length > 0) {
+                    url += `?${params.join('&')}`;
+                }
+
+                try {
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    const tbody = document.getElementById('historyTableBody');
+                    currentHistoryData = Array.isArray(result.data) ? result.data : [];
+
+                    if (result.success && currentHistoryData.length > 0) {
+                        tbody.innerHTML = currentHistoryData.map(payment => `
+                            <tr>
+                                <td><span class="customer-code">${escapeHtml(payment.invoiceNumber || '-')}</span></td>
+                                <td>${escapeHtml(payment.invoiceTypeLabel || 'Pembayaran Langganan Bulanan')}</td>
+                                <td>${formatDate(payment.dueDate)}</td>
+                                <td>${formatRupiah(payment.invoiceAmount || 0)}</td>
+                                <td>${formatRupiah(payment.amountPaid || 0)}</td>
+                                <td>${formatDate(payment.paymentDate)}</td>
+                                <td>${escapeHtml(payment.paymentMethod || '-')}</td>
+                                <td>
+                                    <span class="payment-badge ${getPaymentBadgeClass(payment.status)}">
+                                        ${getPaymentText(payment.status)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-btn">
+                                        <button type="button" title="Lihat Invoice" onclick="window.viewInvoiceDetail && window.viewInvoiceDetail(${Number(payment.invoiceId || 0)})">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="9" class="table-empty">
+                                    <p>Belum ada riwayat pembayaran.</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading filtered history:', error);
+                    showAlert('error', 'Gagal memuat riwayat pembayaran');
+                }
+            }
+
+            function printCurrentHistory() {
+                window.print();
+            }
+
+            function findInvoiceById(invoiceId) {
+                const normalizedInvoiceId = Number(invoiceId);
+                if (!Number.isFinite(normalizedInvoiceId) || normalizedInvoiceId <= 0) {
+                    return null;
+                }
+
+                return allInvoices.find(invoice => Number(invoice && invoice.id) === normalizedInvoiceId)
+                    || filteredInvoices.find(invoice => Number(invoice && invoice.id) === normalizedInvoiceId)
+                    || null;
+            }
+
+            window.sendManualReceipt = async function sendManualReceipt(invoiceId) {
+                const normalizedInvoiceId = Number(invoiceId);
+                try {
+                    if (!Number.isFinite(normalizedInvoiceId) || normalizedInvoiceId <= 0) {
+                        throw new Error('Invoice tidak ditemukan');
+                    }
+                    if (manualSendInFlight.has(normalizedInvoiceId)) {
+                        return;
+                    }
+                    manualSendInFlight.add(normalizedInvoiceId);
+                    const response = await fetch(`/api/whatsapp/invoices/${normalizedInvoiceId}/manual-send`, {
+                        method: 'POST',
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Gagal mengirim dokumen ke WhatsApp');
+                    }
+
+                    const payload = result.data || {};
+                    if (String(payload.documentType || '').toLowerCase() !== 'receipt') {
+                        throw new Error('Dokumen struk pembayaran tidak tersedia untuk invoice ini');
+                    }
+                    const documentLabel = payload.documentLabel || 'dokumen';
+                    const phone = payload.phone ? ` ke ${payload.phone}` : '';
+                    showAlert('success', `${documentLabel} berhasil dikirim${phone}`);
+                } catch (error) {
+                    console.error('Error sending manual invoice or receipt:', error);
+                    showAlert('error', error.message || 'Gagal mengirim dokumen ke WhatsApp');
+                } finally {
+                    manualSendInFlight.delete(normalizedInvoiceId);
+                }
+            }
+
+            window.sendManualInvoiceOrReceipt = async function sendManualInvoiceOrReceipt(invoiceId, preferredDocumentType) {
+                const normalizedInvoiceId = Number(invoiceId);
+                if (!Number.isFinite(normalizedInvoiceId) || normalizedInvoiceId <= 0) {
+                    showAlert('error', 'Invoice tidak ditemukan');
+                    return;
+                }
+
+                const preferredType = String(preferredDocumentType || '').toLowerCase() === 'receipt'
+                    ? 'receipt'
+                    : '';
+                const invoice = findInvoiceById(normalizedInvoiceId);
+                if (preferredType === 'receipt' || (invoice && resolveInvoicePaymentStatus(invoice) === 'paid')) {
+                    await window.sendManualReceipt(normalizedInvoiceId);
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/whatsapp/invoices/${normalizedInvoiceId}/manual-draft`, {
+                        method: 'GET',
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Gagal menyiapkan draft invoice/tagihan WhatsApp');
+                    }
+
+                    if (!window.NmxWhatsappPanel || typeof window.NmxWhatsappPanel.openDraft !== 'function') {
+                        throw new Error('WhatsApp composer belum siap. Coba muat ulang halaman.');
+                    }
+
+                    await window.NmxWhatsappPanel.openDraft(result.data || {});
+                } catch (error) {
+                    console.error('Error preparing manual invoice draft:', error);
+                    showAlert('error', error.message || 'Gagal menyiapkan draft invoice/tagihan WhatsApp');
+                }
+            }
+
+
+            async function openCreateInvoice(customerId) {
+                try {
+                    const response = await fetch(`/pelanggan/api/customers/${customerId}`);
+                    const result = await response.json();
+
+                    if (!result.success || !result.data) {
+                        showAlert('error', result.message || 'Data pelanggan tidak ditemukan');
+                        return;
+                    }
+
+                    document.getElementById('invoiceCustomerId').value = customerId;
+                    document.getElementById('invoiceCustomerName').textContent = result.data.fullName;
+
+                    const invoiceResponse = await fetch(`/api/customers/${customerId}/invoices`);
+                    const invoiceResult = await invoiceResponse.json();
+
+                    if (invoiceResult.success && Array.isArray(invoiceResult.data) && invoiceResult.data.length > 0) {
+                        const lastInvoice = [...invoiceResult.data].sort((left, right) =>
+                            toDateMillis(right.dueDate || right.billingMonth) - toDateMillis(left.dueDate || left.billingMonth)
+                        )[0];
+                        document.getElementById('invoiceMonthlyFee').value = lastInvoice.monthlyFee || 0;
+                        const anchorDate = parseFlexibleDate(lastInvoice.dueDate || lastInvoice.billingMonth) || new Date();
+                        const nextDueDate = addMonthsSameDay(anchorDate, 1);
+                        document.getElementById('invoiceBillingMonth').value = formatDateInput(nextDueDate).slice(0, 7);
+                        document.getElementById('invoiceDueDate').value = formatDateInput(nextDueDate);
+                    } else {
+                        const nextDueDate = addMonthsSameDay(new Date(), 1);
+                        document.getElementById('invoiceBillingMonth').value = formatDateInput(nextDueDate).slice(0, 7);
+                        document.getElementById('invoiceDueDate').value = formatDateInput(nextDueDate);
+                        document.getElementById('invoiceMonthlyFee').value = customerContextById.get(Number(customerId))?.monthlyFee || 0;
+                    }
+
+                    document.getElementById('invoiceInstallationFee').value = 0;
+                    document.getElementById('invoiceNotes').value = '';
+                    openModal('invoiceModal');
+                } catch (error) {
+                    console.error('Error opening create invoice:', error);
+                    showAlert('error', 'Gagal memuat data pelanggan');
+                }
+            }
+
+            async function saveInvoice() {
+                const customerId = document.getElementById('invoiceCustomerId').value;
+                const billingMonth = document.getElementById('invoiceBillingMonth').value;
+                const dueDate = document.getElementById('invoiceDueDate').value;
+                const monthlyFee = document.getElementById('invoiceMonthlyFee').value;
+                const installationFee = document.getElementById('invoiceInstallationFee').value;
+                const notes = document.getElementById('invoiceNotes').value;
+
+                const dto = {
+                    customerId: parseInt(customerId, 10),
+                    billingMonth: dueDate || `${billingMonth}-01`,
+                    dueDate: dueDate,
+                    monthlyFee: parseFloat(monthlyFee || 0),
+                    installationFee: parseFloat(installationFee || 0),
+                    notes: notes
+                };
+
+                try {
+                    const response = await fetch('/api/invoices', {
+                        method: 'POST',
+                        headers: requestHeaders(true),
+                        credentials: 'same-origin',
+                        body: JSON.stringify(dto)
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showAlert('success', 'Invoice berhasil dibuat!');
+                        closeModal('invoiceModal');
+                        if (window.nmxBilling) {
+                            window.nmxBilling.emit('invoice-created');
+                        }
+                        await loadInvoicePageData();
+                    } else {
+                        showAlert('error', result.message || 'Gagal membuat invoice');
+                    }
+                } catch (error) {
+                    console.error('Error creating invoice:', error);
+                    showAlert('error', 'Gagal membuat invoice');
+                }
+            }
+
+            async function openPayInvoice(customerId) {
+                try {
+                    const response = await fetch(`/api/customers/${customerId}/invoices`);
+                    const result = await response.json();
+
+                    if (!result.success || !Array.isArray(result.data) || result.data.length === 0) {
+                        showAlert('info', 'Belum ada invoice untuk pelanggan ini');
+                        return;
+                    }
+
+                    const unpaidInvoice = result.data.find(inv => {
+                        const normalizedStatus = normalizePaymentStatus(inv && inv.status);
+                        return normalizedStatus !== 'paid'
+                            && normalizedStatus !== 'cancelled'
+                            && normalizedStatus !== 'no-payment';
+                    });
+                    if (!unpaidInvoice) {
+                        showAlert('info', 'Semua invoice sudah lunas!');
+                        return;
+                    }
+
+                    await openPayInvoiceFromHistory(unpaidInvoice.id);
+                } catch (error) {
+                    console.error('Error opening pay invoice:', error);
+                    showAlert('error', 'Gagal memuat invoice pelanggan');
+                }
+            }
+
+            async function openPayInvoiceFromHistory(invoiceId) {
+                try {
+                    const response = await fetch(`/api/invoices/${invoiceId}`);
+                    const result = await response.json();
+
+                    if (!result.success || !result.data) {
+                        showAlert('error', result.message || 'Invoice tidak ditemukan');
+                        return;
+                    }
+
+                    const invoice = result.data;
+                    if (!canProcessInvoicePayment(invoice)) {
+                        currentPayInvoice = invoice;
+                        currentPaymentReceipt = normalizePaymentStatus(invoice.status) === 'paid' ? buildPaymentReceiptData(invoice) : null;
+                        setPaymentReceiptButtonsVisibility(Boolean(currentPaymentReceipt));
+                        setPayModalSubmitState(true);
+                        showAlert('info', normalizePaymentStatus(invoice.status) === 'paid'
+                            ? 'Invoice ini sudah lunas.'
+                            : 'Invoice ini tidak bisa diproses pembayaran lagi.');
+                        return;
+                    }
+
+                    const amountToPay = getOutstandingAmount(invoice) || asNumber(invoice.totalAmount);
+                    currentPayInvoice = invoice;
+                    currentPaymentReceipt = normalizePaymentStatus(invoice.status) === 'paid' ? buildPaymentReceiptData(invoice) : null;
+                    document.getElementById('payInvoiceId').value = invoice.id;
+                    document.getElementById('payInvoiceNumber').textContent = invoice.invoiceNumber || '-';
+                    document.getElementById('payTotalAmount').textContent = formatRupiah(amountToPay);
+                    document.getElementById('payAmount').value = formatCurrencyInputValue(amountToPay);
+                    document.getElementById('payDate').value = invoice.paymentDate || new Date().toISOString().slice(0, 10);
+                    document.getElementById('payMethod').value = 'cash';
+                    document.getElementById('payNotes').value = invoice.paymentNotes || '';
+                    setPaymentReceiptButtonsVisibility(Boolean(currentPaymentReceipt));
+                    setPayModalSubmitState(normalizePaymentStatus(invoice.status) === 'paid');
+
+                    closeModal('historyModal');
+                    openModal('payModal');
+                } catch (error) {
+                    console.error('Error opening pay invoice from history:', error);
+                    showAlert('error', 'Gagal memuat detail invoice');
+                }
+            }
+
+            async function processPayment() {
+                if (isProcessingPayment) {
+                    return;
+                }
+
+                const invoiceId = document.getElementById('payInvoiceId').value;
+                const amount = normalizeCurrencyValue(document.getElementById('payAmount').value);
+                const paymentDate = document.getElementById('payDate').value;
+                const method = document.getElementById('payMethod').value;
+                const notes = document.getElementById('payNotes').value;
+                const paySubmitButton = document.getElementById('paySubmitBtn');
+
+                isProcessingPayment = true;
+                if (paySubmitButton) {
+                    paySubmitButton.disabled = true;
+                    if (!paySubmitButton.dataset.originalHtml) {
+                        paySubmitButton.dataset.originalHtml = paySubmitButton.innerHTML;
+                    }
+                    paySubmitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                }
+
+                try {
+                    const response = await fetch(`/api/invoices/${invoiceId}/pay`, {
+                        method: 'POST',
+                        headers: requestHeaders(true),
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            amount: amount,
+                            paymentDate: paymentDate || new Date().toISOString().slice(0, 10),
+                            paymentMethod: method,
+                            notes: notes
+                        })
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        currentPaymentReceipt = buildPaymentReceiptData(result.data);
+                        setPaymentReceiptButtonsVisibility(true);
+                        setPayModalSubmitState(true);
+                        showAlert('success', 'Pembayaran berhasil!');
+                        if (window.nmxBilling) {
+                            window.nmxBilling.emit('payment');
+                        }
+                        await loadInvoicePageData();
+                    } else {
+                        const normalizedMessage = (result.message || '').toLowerCase();
+                        if (normalizedMessage.includes('sudah dibayar')
+                                || normalizedMessage.includes('rollback-only')
+                                || normalizedMessage.includes('silently rolled back')) {
+                            setPayModalSubmitState(true);
+                            await loadInvoicePageData();
+                        }
+                        showAlert('error', result.message || 'Gagal memproses pembayaran');
+                    }
+                } catch (error) {
+                    console.error('Error processing payment:', error);
+                    showAlert('error', 'Gagal memproses pembayaran');
+                } finally {
+                    isProcessingPayment = false;
+                    if (paySubmitButton) {
+                        paySubmitButton.innerHTML = paySubmitButton.dataset.originalHtml || '<i class="fas fa-check"></i> Proses Pembayaran';
+                        const paidStatus = currentPaymentReceipt && currentPaymentReceipt.status
+                                ? normalizePaymentStatus(currentPaymentReceipt.status)
+                                : null;
+                        paySubmitButton.disabled = paidStatus === 'paid';
+                    }
+                }
+            }
+
+            function printCurrentPaymentReceipt() {
+                const invoiceId = currentPaymentReceipt && currentPaymentReceipt.invoiceId;
+                if (!invoiceId) {
+                    showAlert('error', 'Dokumen struk belum tersedia');
+                    return;
+                }
+                openInvoiceDocument(invoiceId);
+            }
+
+            function printInvoiceReceiptFromDetail() {
+                const invoiceId = currentPaymentReceipt && currentPaymentReceipt.invoiceId;
+                if (!invoiceId) {
+                    showAlert('error', 'Dokumen struk belum tersedia');
+                    return;
+                }
+                openInvoiceDocument(invoiceId);
+            }
+
+            async function openPrintHistory(customerId) {
+                try {
+                    const response = await fetch(`/pelanggan/api/customers/${customerId}`);
+                    const result = await response.json();
+
+                    if (!result.success || !result.data) {
+                        showAlert('error', result.message || 'Data pelanggan tidak ditemukan');
+                        return;
+                    }
+
+                    currentCustomerId = customerId;
+                    document.getElementById('printCustomerName').textContent = `${result.data.fullName} (${result.data.customerCode})`;
+
+                    const yearSelect = document.getElementById('printYear');
+                    yearSelect.innerHTML = '<option value="">Pilih Tahun</option>';
+
+                    const yearsResponse = await fetch(`/api/customers/${customerId}/payments/years`);
+                    const yearsResult = await yearsResponse.json();
+
+                    if (yearsResult.success && Array.isArray(yearsResult.data)) {
+                        yearsResult.data.forEach(year => {
+                            const option = document.createElement('option');
+                            option.value = year;
+                            option.textContent = year;
+                            yearSelect.appendChild(option);
+                        });
+                    }
+
+                    updatePrintOptions();
+                    openModal('printModal');
+                } catch (error) {
+                    console.error('Error opening print history:', error);
+                    showAlert('error', 'Gagal memuat data');
+                }
+            }
+
+            function updatePrintOptions() {
+                const selectedFilter = document.querySelector('input[name="printFilter"]:checked');
+                const filter = selectedFilter ? selectedFilter.value : 'all';
+                const yearSelect = document.getElementById('printYear');
+                const monthSelect = document.getElementById('printMonth');
+
+                if (filter === 'year') {
+                    yearSelect.disabled = false;
+                    monthSelect.disabled = true;
+                } else if (filter === 'month') {
+                    yearSelect.disabled = false;
+                    monthSelect.disabled = false;
+                    updatePrintMonthOptions();
+                } else {
+                    yearSelect.disabled = true;
+                    monthSelect.disabled = true;
+                }
+            }
+
+            async function updatePrintMonthOptions() {
+                const year = document.getElementById('printYear').value;
+                const monthSelect = document.getElementById('printMonth');
+                monthSelect.innerHTML = '<option value="">Pilih Bulan</option>';
+
+                if (!year || !currentCustomerId) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/customers/${currentCustomerId}/payments/months?year=${encodeURIComponent(year)}`);
+                    const result = await response.json();
+
+                    if (result.success && Array.isArray(result.data)) {
+                        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                        result.data.forEach(month => {
+                            const option = document.createElement('option');
+                            option.value = month;
+                            option.textContent = months[month - 1] || String(month);
+                            monthSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading print months:', error);
+                }
+            }
+
+            function executePrint() {
+                window.print();
+            }
+
+            function confirmSuspend(customerId, serviceId) {
+                currentCustomerId = customerId;
+                currentServiceId = serviceId;
+
+                document.getElementById('confirmTitle').textContent = 'Suspend Layanan';
+                document.getElementById('confirmMessage').textContent = 'Apakah Anda yakin ingin menangguhkan layanan pelanggan ini?';
+                document.getElementById('confirmIcon').className = 'confirm-icon warning';
+                document.getElementById('confirmIcon').innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('confirmBtn').className = 'btn btn-primary';
+
+                confirmCallback = executeSuspend;
+                openModal('confirmModal');
+            }
+
+            async function executeSuspend() {
+                if (!currentServiceId || currentServiceId === 0) {
+                    showAlert('error', 'Layanan tidak ditemukan');
+                    closeModal('confirmModal');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/pelanggan/api/services/${currentServiceId}/suspend`, {
+                        method: 'POST',
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showAlert('success', 'Layanan berhasil ditangguhkan!');
+                        await loadInvoicePageData();
+                    } else {
+                        showAlert('error', result.message || 'Gagal menangguhkan layanan');
+                    }
+                } catch (error) {
+                    console.error('Error suspending service:', error);
+                    showAlert('error', 'Gagal menangguhkan layanan');
+                }
+
+                closeModal('confirmModal');
+            }
+
+            function confirmActivate(customerId, serviceId) {
+                currentCustomerId = customerId;
+                currentServiceId = serviceId;
+
+                document.getElementById('confirmTitle').textContent = 'Aktifkan Layanan';
+                document.getElementById('confirmMessage').textContent = 'Apakah Anda yakin ingin mengaktifkan kembali layanan pelanggan ini?';
+                document.getElementById('confirmIcon').className = 'confirm-icon success';
+                document.getElementById('confirmIcon').innerHTML = '<i class="fas fa-play"></i>';
+                document.getElementById('confirmBtn').className = 'btn btn-primary';
+
+                confirmCallback = executeActivate;
+                openModal('confirmModal');
+            }
+
+            async function executeActivate() {
+                if (!currentServiceId || currentServiceId === 0) {
+                    showAlert('error', 'Layanan tidak ditemukan');
+                    closeModal('confirmModal');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/pelanggan/api/services/${currentServiceId}/activate`, {
+                        method: 'POST',
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showAlert('success', 'Layanan berhasil diaktifkan!');
+                        if (window.nmxBilling) {
+                            window.nmxBilling.emit('activation');
+                        }
+                        await loadInvoicePageData();
+                    } else {
+                        showAlert('error', result.message || 'Gagal mengaktifkan layanan');
+                    }
+                } catch (error) {
+                    console.error('Error activating service:', error);
+                    showAlert('error', 'Gagal mengaktifkan layanan');
+                }
+
+                closeModal('confirmModal');
+            }
+
+            function confirmDeleteCustomer(customerId) {
+                currentCustomerId = customerId;
+
+                document.getElementById('confirmTitle').textContent = 'Hapus Pelanggan';
+                document.getElementById('confirmMessage').textContent = 'PERINGATAN: Tindakan ini tidak dapat dibatalkan! Semua data pelanggan akan dihapus permanen.';
+                document.getElementById('confirmIcon').className = 'confirm-icon danger';
+                document.getElementById('confirmIcon').innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                document.getElementById('confirmBtn').className = 'btn btn-danger';
+
+                confirmCallback = executeDeleteCustomer;
+                openModal('confirmModal');
+            }
+
+            async function executeDeleteCustomer() {
+                try {
+                    const response = await fetch(`/pelanggan/api/customers/${currentCustomerId}`, {
+                        method: 'DELETE',
+                        headers: requestHeaders(),
+                        credentials: 'same-origin'
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showAlert('success', 'Pelanggan berhasil dihapus!');
+                        await loadInvoicePageData();
+                    } else {
+                        showAlert('error', result.message || 'Gagal menghapus pelanggan');
+                    }
+                } catch (error) {
+                    console.error('Error deleting customer:', error);
+                    showAlert('error', 'Gagal menghapus pelanggan');
+                }
+
+                closeModal('confirmModal');
+                document.getElementById('confirmBtn').className = 'btn btn-primary';
+            }
+
+            function executeConfirm() {
+                if (confirmCallback) {
+                    confirmCallback();
+                }
+            }
+
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (!modal) {
+                    return;
+                }
+
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (!modal) {
+                    return;
+                }
+
+                modal.classList.remove('open');
+                if (modalId === 'payModal') {
+                    setPaymentReceiptButtonsVisibility(false);
+                    setPayModalSubmitState(false);
+                }
+                const anyModalOpen = document.querySelector('.modal.open');
+                document.body.style.overflow = anyModalOpen ? 'hidden' : '';
+            }
+
+            async function payInvoice(invoiceId, amount) {
+                try {
+                    const response = await fetch(`/api/invoices/${invoiceId}/pay`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [window.csrfHeader || 'X-CSRF-TOKEN']: window.csrfToken || ''
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            amount: amount,
+                            paymentDate: new Date().toISOString().slice(0, 10),
+                            paymentMethod: 'cash',
+                            notes: 'Pembayaran via admin'
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('success', 'Pembayaran berhasil!');
+                        if (window.nmxBilling) {
+                            window.nmxBilling.emit('payment');
+                        }
+                        loadInvoices();
+                    } else {
+                        showAlert('error', result.message || 'Gagal memproses pembayaran');
+                    }
+                } catch (error) {
+                    console.error('Error processing invoice payment:', error);
+                    showAlert('error', 'Gagal memproses pembayaran');
+                }
+            }
+
+            function viewInvoice(invoiceId) {
+                window.location.href = `/pelanggan/history#invoice-${invoiceId}`;
+            }
+
+            function getStatusLabel(status) {
+                return window.nmxBilling ? window.nmxBilling.getStatusLabel(status) : (status === 'paid' ? 'Lunas' : 'Belum Lunas');
+            }
+
+            function formatRupiah(amount) {
+                return `Rp. ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(asNumber(amount))}`;
+            }
+
+            function formatDate(value, options = {}) {
+                if (!value) return '-';
+                const date = parseFlexibleDate(value);
+                return date ? date.toLocaleDateString('id-ID', options) : '-';
+            }
+
+            function formatMonth(value) {
+                return formatDate(value, { month: 'long', year: 'numeric' });
+            }
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function showAlert(type, message) {
+                if (window.nmxNotify) {
+                    window.nmxNotify({
+                        type: type,
+                        message: message
+                    });
+                    return;
+                }
+
+                const alertContainer = document.getElementById('alertContainer');
+                if (!alertContainer) {
+                    return;
+                }
+
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert-message ${type}`;
+
+                let icon = 'info-circle';
+                if (type === 'success') {
+                    icon = 'check-circle';
+                }
+                if (type === 'error') {
+                    icon = 'exclamation-circle';
+                }
+
+                alertDiv.innerHTML = `<i class="fas fa-${icon}"></i><span>${escapeHtml(message)}</span>`;
+                alertContainer.appendChild(alertDiv);
+                setTimeout(() => alertDiv.remove(), 5000);
+            }
+
+            function handleInvoiceSearchInput(event) {
+                const searchInput = document.getElementById('searchInput');
+                const directValue = searchInput ? searchInput.value : '';
+                const eventValue = event && event.target ? event.target.value : directValue;
+                searchKeyword = normalizeSearchKeyword(eventValue || directValue);
+                syncSearchFilterField();
+                applyFilter();
+                applySearchFallbackToRenderedRows();
+                updateStats();
+            }
+
+            function applySearchFallbackToRenderedRows() {
+                const keyword = normalizeSearchKeyword(searchKeyword || '');
+                const tableBody = document.getElementById('invoiceTableBody');
+                const emptyState = document.getElementById('emptyState');
+                if (!tableBody) {
+                    return;
+                }
+
+                const rows = Array.from(tableBody.querySelectorAll('tr'));
+                if (!rows.length) {
+                    if (emptyState) {
+                        emptyState.style.display = 'block';
+                    }
+                    return;
+                }
+
+                let visibleCount = 0;
+                rows.forEach(row => {
+                    const haystack = normalizeSearchKeyword(row.textContent || '');
+                    const isVisible = !keyword || haystack.includes(keyword);
+                    row.style.display = isVisible ? '' : 'none';
+                    if (isVisible) {
+                        visibleCount += 1;
+                    }
+                });
+
+                if (emptyState) {
+                    emptyState.style.display = visibleCount > 0 ? 'none' : 'block';
+                }
+            }
+
+            function handleInvoiceYearFilterChange(event) {
+                return filterByYear(event && event.target ? event.target.value : '');
+            }
+
+            function handleInvoiceMonthFilterChange(event) {
+                return filterByMonth(event && event.target ? event.target.value : '');
+            }
+
+            function handleInvoiceStatusFilterChange(event) {
+                return filterByPaymentStatus(event && event.target ? event.target.value : 'all');
+            }
+
+            // Expose inline handler targets to global scope for onclick/onchange bindings.
+            window.viewInvoiceDetail = viewInvoiceDetail;
+            window.openInvoiceDocument = openInvoiceDocument;
+            window.viewPaymentHistory = viewPaymentHistory;
+            window.loadFilteredHistory = loadFilteredHistory;
+            window.printCurrentHistory = printCurrentHistory;
+            window.openCreateInvoice = openCreateInvoice;
+            window.saveInvoice = saveInvoice;
+            window.openPayInvoice = openPayInvoice;
+            window.openPayInvoiceFromHistory = openPayInvoiceFromHistory;
+            window.processPayment = processPayment;
+            window.printCurrentPaymentReceipt = printCurrentPaymentReceipt;
+            window.printInvoiceReceiptFromDetail = printInvoiceReceiptFromDetail;
+            window.openPrintHistory = openPrintHistory;
+            window.updatePrintOptions = updatePrintOptions;
+            window.updatePrintMonthOptions = updatePrintMonthOptions;
+            window.executePrint = executePrint;
+            window.deleteInvoicePayment = deleteInvoicePayment;
+            window.confirmSuspend = confirmSuspend;
+            window.confirmActivate = confirmActivate;
+            window.confirmDeleteCustomer = confirmDeleteCustomer;
+            window.executeConfirm = executeConfirm;
+            window.openModal = openModal;
+            window.closeModal = closeModal;
+            window.showAlert = showAlert;
+            window.handleInvoiceSearchInput = handleInvoiceSearchInput;
+            window.handleInvoiceYearFilterChange = handleInvoiceYearFilterChange;
+            window.handleInvoiceMonthFilterChange = handleInvoiceMonthFilterChange;
+            window.handleInvoiceStatusFilterChange = handleInvoiceStatusFilterChange;
+    </script>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+

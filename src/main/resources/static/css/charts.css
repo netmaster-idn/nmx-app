@@ -1,0 +1,239 @@
+/* Premium SaaS chart surfaces */
+
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+.chart-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-card);
+}
+
+.chart-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.chart-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.chart-card-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.chart-legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.chart-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.chart-tooltip {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: var(--shadow-lg);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.chart-tooltip-title {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+}
+
+.chart-tooltip-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--nmx-primary);
+}
+
+.chart-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.chart-control-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.chart-control-btn:hover {
+    color: var(--text-primary);
+    border-color: #c7d8ef;
+}
+
+.chart-control-btn.active {
+    background: var(--nmx-primary);
+    color: #ffffff;
+    border-color: var(--nmx-primary);
+}
+
+.donut-chart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.donut-chart-center {
+    position: absolute;
+    text-align: center;
+}
+
+.donut-chart-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.donut-chart-label {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.area-chart-gradient {
+    fill: url(#areaGradient);
+}
+
+.bar-chart .bar {
+    border-radius: 4px 4px 0 0;
+}
+
+.bar-chart .bar:hover {
+    opacity: 0.9;
+}
+
+.line-chart .line {
+    fill: none;
+    stroke-width: 2;
+}
+
+.line-chart .point {
+    stroke-width: 2;
+    fill: #ffffff;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-title {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-change {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.stat-change.positive {
+    color: var(--status-success);
+}
+
+.stat-change.negative {
+    color: var(--status-danger);
+}
+
+.mini-chart {
+    height: 60px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .chart-card {
+        padding: 16px;
+    }
+
+    .chart-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .chart-controls {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,1133 @@
+<div th:fragment="content">
+    <style>
+        .mk-monitor-shell {
+            display: grid;
+            gap: 10px;
+            min-height: 0;
+            height: calc(100vh - 178px);
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+        .mk-monitor-card {
+            background: linear-gradient(180deg, rgba(15, 22, 33, 0.94) 0%, rgba(10, 16, 24, 0.98) 100%);
+            border: 1px solid rgba(99, 115, 129, 0.26);
+            border-radius: 18px;
+            padding: 12px 14px;
+            box-shadow: 0 22px 40px rgba(0, 0, 0, 0.24);
+            min-height: 0;
+            overflow: hidden;
+        }
+        .mk-monitor-topbar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: start;
+            gap: 12px;
+            padding: 12px 14px;
+        }
+        .mk-monitor-topbar-main {
+            min-width: 0;
+        }
+        .mk-monitor-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            align-self: start;
+        }
+        .mk-monitor-select,
+        .mk-monitor-search {
+            min-width: 210px;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(71, 85, 105, 0.8);
+            background: rgba(12, 18, 27, 0.92);
+            color: #e2e8f0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+        .mk-monitor-btn {
+            height: 38px;
+            border: none;
+            border-radius: 12px;
+            padding: 0 14px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #f8fafc;
+            background: linear-gradient(135deg, #0f766e, #155e75);
+        }
+        .mk-monitor-summary {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .mk-monitor-topbar .mk-monitor-summary {
+            grid-template-columns: repeat(4, minmax(150px, 1fr));
+        }
+        .mk-monitor-stat {
+            position: relative;
+            display: grid;
+            gap: 6px;
+            min-height: 92px;
+        }
+        .mk-monitor-stat::after {
+            content: "";
+            position: absolute;
+            right: -26px;
+            bottom: -38px;
+            width: 110px;
+            height: 110px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.16), transparent 70%);
+            pointer-events: none;
+        }
+        .mk-monitor-label {
+            position: relative;
+            z-index: 1;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #7f91ad;
+        }
+        .mk-monitor-value {
+            position: relative;
+            z-index: 1;
+            font-size: 24px;
+            line-height: 1.05;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .mk-monitor-meta {
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+            font-size: 11px;
+            line-height: 1.3;
+            color: #8ea2bf;
+        }
+        .mk-monitor-overview {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: minmax(0, 1.65fr) minmax(330px, 0.95fr);
+            min-height: 0;
+            overflow: hidden;
+        }
+        .mk-monitor-bottom {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: minmax(0, 1.45fr) minmax(350px, 0.8fr);
+            min-height: 0;
+        }
+        .mk-monitor-bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .mk-monitor-section {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            width: 100%;
+        }
+        .mk-monitor-section--traffic {
+            min-height: 470px;
+        }
+        .mk-monitor-section--resource {
+            min-height: 470px;
+        }
+        .mk-monitor-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .mk-monitor-head h3 {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.2;
+            color: #f8fafc;
+        }
+        .mk-monitor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .mk-monitor-badge.fresh { background: rgba(34, 197, 94, 0.14); color: #86efac; }
+        .mk-monitor-badge.stale { background: rgba(245, 158, 11, 0.16); color: #fcd34d; }
+        .mk-monitor-badge.offline { background: rgba(239, 68, 68, 0.16); color: #fca5a5; }
+        .mk-monitor-badge.empty { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; }
+        .mk-monitor-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed rgba(100, 116, 139, 0.42);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            color: #8ea2bf;
+            background: rgba(10, 15, 23, 0.62);
+        }
+        .mk-monitor-state--traffic {
+            flex: 1;
+            min-height: 422px;
+        }
+        .mk-monitor-state--resource {
+            min-height: 172px;
+        }
+        .mk-monitor-chart-shell {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            border-radius: 16px;
+            padding: 10px;
+            border: 1px solid rgba(62, 75, 89, 0.78);
+            background: rgba(6, 11, 18, 0.84);
+            flex: 1;
+        }
+        .mk-monitor-chart-metrics {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-bottom: 8px;
+        }
+        .mk-monitor-metric-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 104px;
+            padding: 11px 12px 10px;
+            border-radius: 18px;
+            border: 1px solid rgba(59, 73, 89, 0.72);
+            background: linear-gradient(180deg, rgba(9, 14, 23, 0.98) 0%, rgba(6, 11, 18, 0.98) 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+        .mk-monitor-metric-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 28%);
+            pointer-events: none;
+        }
+        .mk-monitor-metric-card::after {
+            content: "";
+            position: absolute;
+            right: 14px;
+            top: 18px;
+            width: 34px;
+            height: 34px;
+            border-radius: 13px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(31, 41, 55, 0.82);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+        .mk-monitor-metric-card[data-tone="cyan"] {
+            border-color: rgba(59, 130, 246, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 0 1px rgba(34, 211, 238, 0.04);
+        }
+        .mk-monitor-metric-card[data-tone="cyan"] .mk-monitor-metric-dots::before {
+            background: linear-gradient(90deg, #3b82f6 0%, #38bdf8 55%, #22d3ee 100%);
+        }
+        .mk-monitor-metric-card[data-tone="cyan"] .mk-monitor-metric-foot strong,
+        .mk-monitor-metric-card[data-tone="cyan"] .mk-monitor-metric-icon {
+            color: #38bdf8;
+        }
+        .mk-monitor-metric-card[data-tone="violet"] {
+            background: linear-gradient(180deg, rgba(15, 12, 29, 0.98) 0%, rgba(9, 10, 22, 0.98) 100%);
+            border-color: rgba(168, 85, 247, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 0 1px rgba(192, 132, 252, 0.04);
+        }
+        .mk-monitor-metric-card[data-tone="violet"] .mk-monitor-metric-dots::before {
+            background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%);
+        }
+        .mk-monitor-metric-card[data-tone="violet"] .mk-monitor-metric-foot strong,
+        .mk-monitor-metric-card[data-tone="violet"] .mk-monitor-metric-icon {
+            color: #c084fc;
+        }
+        .mk-monitor-metric-card[data-tone="amber"] {
+            border-color: rgba(245, 158, 11, 0.18);
+        }
+        .mk-monitor-metric-card[data-tone="amber"] .mk-monitor-metric-dots::before {
+            background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+        }
+        .mk-monitor-metric-card[data-tone="amber"] .mk-monitor-metric-foot strong,
+        .mk-monitor-metric-card[data-tone="amber"] .mk-monitor-metric-icon {
+            color: #fbbf24;
+        }
+        .mk-monitor-metric-card[data-tone="rose"] {
+            border-color: rgba(244, 63, 94, 0.18);
+        }
+        .mk-monitor-metric-card[data-tone="rose"] .mk-monitor-metric-dots::before {
+            background: linear-gradient(90deg, #fb7185 0%, #f43f5e 100%);
+        }
+        .mk-monitor-metric-card[data-tone="rose"] .mk-monitor-metric-foot strong,
+        .mk-monitor-metric-card[data-tone="rose"] .mk-monitor-metric-icon {
+            color: #fb7185;
+        }
+        .mk-monitor-metric-head,
+        .mk-monitor-metric-foot {
+            position: relative;
+            z-index: 1;
+        }
+        .mk-monitor-metric-label {
+            display: block;
+            max-width: calc(100% - 54px);
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #7f91ad;
+        }
+        .mk-monitor-metric-value {
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+            line-height: 1.15;
+            color: #f8fafc;
+        }
+        .mk-monitor-metric-value strong {
+            display: block;
+            font-size: 20px;
+            line-height: 1;
+            color: inherit;
+        }
+        .mk-monitor-metric-icon {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            z-index: 2;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .mk-monitor-metric-dots {
+            position: relative;
+            z-index: 1;
+            height: 14px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(30, 41, 59, 0.92) 0 12px,
+                    transparent 12px 18px
+                );
+        }
+        .mk-monitor-metric-dots::before {
+            content: "";
+            display: block;
+            width: 68%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #38bdf8, #22d3ee);
+            -webkit-mask: repeating-linear-gradient(
+                90deg,
+                #000 0 12px,
+                transparent 12px 18px
+            );
+            mask: repeating-linear-gradient(
+                90deg,
+                #000 0 12px,
+                transparent 12px 18px
+            );
+        }
+        .mk-monitor-metric-card[data-fill="short"] .mk-monitor-metric-dots::before { width: 32%; }
+        .mk-monitor-metric-card[data-fill="mid"] .mk-monitor-metric-dots::before { width: 54%; }
+        .mk-monitor-metric-card[data-fill="long"] .mk-monitor-metric-dots::before { width: 72%; }
+        .mk-monitor-metric-card[data-fill="full"] .mk-monitor-metric-dots::before { width: 86%; }
+        .mk-monitor-metric-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #66768f;
+        }
+        .mk-monitor-metric-foot strong {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+        .mk-monitor-chart-host {
+            flex: 1;
+            min-height: 255px;
+        }
+        .mk-monitor-chart-host--realtime {
+            min-height: 320px;
+        }
+        .mk-monitor-chart-host > svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .mk-monitor-chart-legend {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #8ea2bf;
+        }
+        .mk-legend-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .mk-monitor-resource-grid {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            min-height: 172px;
+            align-content: start;
+        }
+        .mk-monitor-resource {
+            border-radius: 14px;
+            padding: 9px 10px;
+            border: 1px solid rgba(59, 73, 89, 0.72);
+            background: rgba(12, 18, 28, 0.92);
+        }
+        .mk-monitor-resource strong {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #7f91ad;
+        }
+        .mk-monitor-resource span {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            line-height: 1.25;
+            font-weight: 700;
+            color: #f8fafc;
+            word-break: break-word;
+        }
+        .mk-monitor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .mk-monitor-quick-card {
+            position: relative;
+            display: grid;
+            gap: 8px;
+            min-height: 132px;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(59, 73, 89, 0.72);
+            background: linear-gradient(180deg, rgba(9, 14, 23, 0.98) 0%, rgba(6, 11, 18, 0.98) 100%);
+            text-align: left;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .mk-monitor-quick-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 34%);
+            pointer-events: none;
+        }
+        .mk-monitor-quick-card h4 {
+            margin: 0;
+            font-size: 15px;
+            color: #f8fafc;
+        }
+        .mk-monitor-quick-meta {
+            display: grid;
+            gap: 4px;
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+        .mk-monitor-quick-stat {
+            font-size: 22px;
+            line-height: 1;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .mk-monitor-quick-caption {
+            font-size: 11px;
+            color: #7f91ad;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .mk-monitor-quick-peek {
+            display: grid;
+            gap: 4px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(59, 73, 89, 0.58);
+            color: #cbd5e1;
+            font-size: 11px;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+        .mk-monitor-quick-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            color: #7dd3fc;
+            font-size: 11px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        .mk-monitor-table-shell {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            border: 1px solid rgba(59, 73, 89, 0.72);
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(9, 14, 22, 0.92);
+        }
+        .mk-monitor-table-scroll {
+            max-height: 220px;
+            overflow: auto;
+        }
+        .mk-monitor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .mk-monitor-table th,
+        .mk-monitor-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(59, 73, 89, 0.68);
+            text-align: left;
+            vertical-align: top;
+        }
+        .mk-monitor-table th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #7f91ad;
+            background: rgba(10, 15, 23, 0.98);
+        }
+        .mk-monitor-table tr:last-child td {
+            border-bottom: none;
+        }
+        .mk-monitor-empty {
+            padding: 24px 16px;
+            text-align: center;
+            color: #8ea2bf;
+        }
+        .mk-monitor-pill {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .mk-status-online, .mk-status-fresh, .mk-status-active { background: rgba(34, 197, 94, 0.14); color: #86efac; }
+        .mk-status-offline, .mk-status-error, .mk-status-down { background: rgba(239, 68, 68, 0.16); color: #fca5a5; }
+        .mk-status-stale, .mk-status-warning, .mk-status-inactive { background: rgba(245, 158, 11, 0.16); color: #fcd34d; }
+        .mk-status-info, .mk-status-disabled, .mk-status-empty, .mk-status-unknown { background: rgba(56, 189, 248, 0.16); color: #7dd3fc; }
+        .mk-monitor-link {
+            border: none;
+            background: rgba(20, 184, 166, 0.14);
+            color: #7dd3fc;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .mk-monitor-log-list {
+            display: grid;
+            gap: 8px;
+            max-height: 220px;
+            overflow: auto;
+            padding-right: 2px;
+            width: 100%;
+        }
+        .mk-monitor-log-item {
+            border-radius: 14px;
+            border: 1px solid rgba(59, 73, 89, 0.72);
+            background: rgba(12, 18, 28, 0.94);
+            padding: 10px 12px;
+        }
+        .mk-monitor-log-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .mk-monitor-mini {
+            color: #8ea2bf;
+            font-size: 11px;
+            line-height: 1.35;
+        }
+        .mk-monitor-hidden { display: none !important; }
+        .mk-monitor-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 20% 18%, rgba(56, 189, 248, 0.08), transparent 30%),
+                radial-gradient(circle at 82% 78%, rgba(168, 85, 247, 0.10), transparent 34%),
+                rgba(5, 10, 24, 0.70);
+            backdrop-filter: blur(12px) saturate(120%);
+            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            z-index: 1500;
+        }
+        .mk-monitor-modal.open { display: flex; }
+        .mk-monitor-modal-panel {
+            width: min(760px, 100%);
+            max-height: min(820px, calc(100vh - 48px));
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(53, 61, 92, 0.92) 0%, rgba(21, 28, 51, 0.96) 22%, rgba(14, 20, 40, 0.98) 100%);
+            border-radius: 18px;
+            border: 1px solid rgba(126, 144, 192, 0.24);
+            box-shadow:
+                0 32px 90px rgba(2, 6, 23, 0.58),
+                0 10px 28px rgba(15, 23, 42, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px) saturate(120%);
+            -webkit-backdrop-filter: blur(20px) saturate(120%);
+            display: flex;
+            flex-direction: column;
+        }
+        .mk-monitor-modal-panel::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px auto 1px;
+            height: 42%;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 68%, transparent 100%);
+            opacity: 0.92;
+            pointer-events: none;
+        }
+        .mk-monitor-modal-panel::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                inset 0 -1px 0 rgba(148, 163, 184, 0.08);
+        }
+        .mk-monitor-modal-panel--wide {
+            width: min(980px, 100%);
+        }
+        .mk-monitor-modal-panel--compact {
+            width: min(640px, 100%);
+        }
+        .mk-monitor-modal-panel > .mk-monitor-head {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            padding: 18px 22px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .mk-monitor-modal-panel > .mk-monitor-head h3 {
+            font-size: 15px;
+            line-height: 1.2;
+        }
+        .mk-monitor-modal-panel > .mk-monitor-head p {
+            margin: 6px 0 0;
+            font-size: 12px;
+            color: #9eb0c9;
+        }
+        .mk-monitor-modal-shell {
+            display: grid;
+            gap: 14px;
+            position: relative;
+            z-index: 1;
+            padding: 22px;
+            overflow: auto;
+        }
+        .mk-monitor-modal-shell--body {
+            flex: 1;
+            min-height: 0;
+        }
+        .mk-monitor-close {
+            min-width: 76px;
+            height: 34px;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(41, 49, 74, 0.94), rgba(17, 23, 42, 0.94));
+            color: #e8eef8;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+        }
+        .mk-monitor-close:hover {
+            border-color: rgba(147, 197, 253, 0.24);
+            background: linear-gradient(180deg, rgba(50, 60, 90, 0.96), rgba(20, 28, 52, 0.96));
+        }
+        .mk-monitor-modal .mk-monitor-search {
+            min-width: 0;
+            width: 100%;
+            border-radius: 10px;
+        }
+        .mk-monitor-modal .mk-monitor-state,
+        .mk-monitor-modal .mk-monitor-chart-shell,
+        .mk-monitor-modal .mk-monitor-table-shell,
+        .mk-monitor-modal .mk-monitor-log-list {
+            position: relative;
+            z-index: 1;
+        }
+        .mk-monitor-modal .mk-monitor-log-list {
+            padding: 0;
+        }
+        .mk-monitor-modal .mk-monitor-table-shell,
+        .mk-monitor-modal .mk-monitor-chart-shell,
+        .mk-monitor-modal .mk-monitor-log-list {
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(14, 20, 38, 0.52);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+        .mk-monitor-modal .mk-monitor-table-scroll,
+        .mk-monitor-modal .mk-monitor-log-list {
+            max-height: 430px;
+        }
+        @media (min-width: 1200px) {
+            body.mk-monitor-page .sidebar {
+                width: 244px;
+                min-width: 244px;
+            }
+            body.mk-monitor-page .sidebar.collapsed {
+                width: 92px;
+                min-width: 92px;
+            }
+            body.mk-monitor-page .sidebar-header {
+                padding: 10px 12px;
+            }
+            body.mk-monitor-page .sidebar-logo-icon {
+                width: 208px;
+                height: 96px;
+            }
+            body.mk-monitor-page .nav-item {
+                min-height: 40px;
+                padding: 8px 14px;
+            }
+            body.mk-monitor-page .submenu-item {
+                padding: 7px 14px 7px 26px;
+            }
+            body.mk-monitor-page .sidebar-promo {
+                margin: 8px 12px 12px;
+                padding: 14px;
+            }
+            body.mk-monitor-page .top-header {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            body.mk-monitor-page .search-box {
+                width: 240px;
+            }
+            body.mk-monitor-page .search-box input {
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+            body.mk-monitor-page .notification-btn {
+                width: 38px;
+                height: 38px;
+            }
+            body.mk-monitor-page .app-footer {
+                height: 50px;
+                min-height: 50px;
+                padding: 0 18px;
+                font-size: 11px;
+            }
+            body.mk-monitor-page .page-wallboard-shell {
+                min-height: 0;
+                height: 100%;
+                margin-top: 0;
+                padding: 16px;
+                box-sizing: border-box;
+                display: flex;
+                overflow: hidden;
+            }
+            #mkMonitoringApp {
+                height: 100%;
+                grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
+                overflow: hidden;
+            }
+        }
+        @media (max-width: 1199px) {
+            .mk-monitor-topbar {
+                grid-template-columns: 1fr;
+            }
+            .mk-monitor-summary,
+            .mk-monitor-overview,
+            .mk-monitor-bottom,
+            .mk-monitor-bottom-grid {
+                grid-template-columns: 1fr;
+            }
+            .mk-monitor-chart-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .mk-monitor-table-scroll,
+            .mk-monitor-log-list {
+                max-height: 320px;
+            }
+        }
+        @media (max-width: 980px) {
+            .mk-monitor-shell {
+                gap: 10px;
+            }
+            .mk-monitor-section--traffic,
+            .mk-monitor-section--resource {
+                min-height: auto;
+            }
+            .mk-monitor-state--traffic {
+                min-height: 320px;
+            }
+            .mk-monitor-state--resource,
+            .mk-monitor-resource-grid {
+                min-height: 148px;
+            }
+            .mk-monitor-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .mk-monitor-chart-metrics,
+            .mk-monitor-resource-grid {
+                grid-template-columns: 1fr;
+            }
+            .mk-monitor-select,
+            .mk-monitor-search {
+                min-width: 180px;
+                width: 100%;
+            }
+            .mk-monitor-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+            .mk-monitor-btn {
+                width: 100%;
+            }
+            .mk-monitor-modal {
+                padding: 12px;
+            }
+            .mk-monitor-modal-panel,
+            .mk-monitor-modal-panel--wide,
+            .mk-monitor-modal-panel--compact {
+                width: 100%;
+                max-height: calc(100vh - 24px);
+            }
+            .mk-monitor-modal-panel > .mk-monitor-head,
+            .mk-monitor-modal-shell {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+        @media (max-width: 640px) {
+            .mk-monitor-summary {
+                grid-template-columns: 1fr;
+            }
+            .mk-monitor-state--traffic {
+                min-height: 260px;
+            }
+            .mk-monitor-state--resource,
+            .mk-monitor-resource-grid {
+                min-height: auto;
+            }
+            .mk-monitor-topbar h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+
+    <div id="mkMonitoringApp" class="mk-monitor-shell">
+        <section class="mk-monitor-card mk-monitor-topbar">
+            <div class="mk-monitor-topbar-main">
+                <section class="mk-monitor-summary">
+                    <article class="mk-monitor-card mk-monitor-stat">
+                        <div class="mk-monitor-label">Router</div>
+                        <div class="mk-monitor-value" id="mkStatRouterName">-</div>
+                        <div class="mk-monitor-meta" id="mkStatRouterMeta">Belum ada router aktif</div>
+                    </article>
+                    <article class="mk-monitor-card mk-monitor-stat">
+                        <div class="mk-monitor-label">Ether1 RX / TX</div>
+                        <div class="mk-monitor-value" id="mkStatTraffic">0 bps</div>
+                        <div class="mk-monitor-meta" id="mkStatTrafficMeta">Snapshot belum tersedia</div>
+                    </article>
+                    <article class="mk-monitor-card mk-monitor-stat">
+                        <div class="mk-monitor-label">CPU Load</div>
+                        <div class="mk-monitor-value" id="mkStatCpu">0%</div>
+                        <div class="mk-monitor-meta" id="mkStatCpuMeta">Resource belum tersedia</div>
+                    </article>
+                    <article class="mk-monitor-card mk-monitor-stat">
+                        <div class="mk-monitor-label">PPPoE Active</div>
+                        <div class="mk-monitor-value" id="mkStatPppoe">0</div>
+                        <div class="mk-monitor-meta" id="mkStatPppoeMeta">Klik user untuk lihat trafik</div>
+                    </article>
+                </section>
+            </div>
+            <div class="mk-monitor-actions">
+                <select id="mkRouterFilter" class="mk-monitor-select"></select>
+                <button id="mkRefreshButton" class="mk-monitor-btn" type="button">Refresh Snapshot</button>
+            </div>
+        </section>
+
+        <div class="mk-monitor-overview">
+            <section class="mk-monitor-card mk-monitor-section mk-monitor-section--traffic">
+                <div class="mk-monitor-head">
+                    <div>
+                        <h3>Traffic Ether1</h3>
+                    </div>
+                    <span id="mkRouterStateBadge" class="mk-monitor-badge empty">Empty</span>
+                </div>
+                <div id="mkEtherState" class="mk-monitor-state mk-monitor-state--traffic">Menunggu snapshot ether1.</div>
+                <div id="mkEtherCard" class="mk-monitor-chart-shell mk-monitor-hidden">
+                    <div class="mk-monitor-chart-metrics">
+                        <div class="mk-monitor-metric-card" data-tone="cyan" data-fill="full">
+                            <div class="mk-monitor-metric-head">
+                                <span class="mk-monitor-metric-label">Download Traffic</span>
+                                <span class="mk-monitor-metric-value"><strong id="mkEtherRxNow">0 bps</strong></span>
+                            </div>
+                            <span class="mk-monitor-metric-icon">↓</span>
+                            <div class="mk-monitor-metric-dots"></div>
+                            <div class="mk-monitor-metric-foot">
+                                <strong>System Optimized</strong>
+                                <span>Live RX</span>
+                            </div>
+                        </div>
+                        <div class="mk-monitor-metric-card" data-tone="violet" data-fill="mid">
+                            <div class="mk-monitor-metric-head">
+                                <span class="mk-monitor-metric-label">Upload Traffic</span>
+                                <span class="mk-monitor-metric-value"><strong id="mkEtherTxNow">0 bps</strong></span>
+                            </div>
+                            <span class="mk-monitor-metric-icon">↑</span>
+                            <div class="mk-monitor-metric-dots"></div>
+                            <div class="mk-monitor-metric-foot">
+                                <strong>System Optimized</strong>
+                                <span>Live TX</span>
+                            </div>
+                        </div>
+                        <div class="mk-monitor-metric-card" data-tone="amber" data-fill="mid">
+                            <div class="mk-monitor-metric-head">
+                                <span class="mk-monitor-metric-label">Packet Flow</span>
+                                <span class="mk-monitor-metric-value"><strong id="mkEtherPackets">0 / 0</strong></span>
+                            </div>
+                            <span class="mk-monitor-metric-icon">•</span>
+                            <div class="mk-monitor-metric-dots"></div>
+                            <div class="mk-monitor-metric-foot">
+                                <strong>Realtime Counter</strong>
+                                <span>RX / TX</span>
+                            </div>
+                        </div>
+                        <div class="mk-monitor-metric-card" data-tone="rose" data-fill="short">
+                            <div class="mk-monitor-metric-head">
+                                <span class="mk-monitor-metric-label">Error Signal</span>
+                                <span class="mk-monitor-metric-value"><strong id="mkEtherErrors">0 / 0</strong></span>
+                            </div>
+                            <span class="mk-monitor-metric-icon">!</span>
+                            <div class="mk-monitor-metric-dots"></div>
+                            <div class="mk-monitor-metric-foot">
+                                <strong>System Guard</strong>
+                                <span>RX / TX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mkEtherChart" class="mk-monitor-chart-host mk-monitor-chart-host--realtime"></div>
+                    <div class="mk-monitor-chart-legend">
+                        <span><i class="mk-legend-dot" style="background:#65d2e5;"></i>RX</span>
+                        <span><i class="mk-legend-dot" style="background:#d18045;"></i>TX</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mk-monitor-card mk-monitor-section mk-monitor-section--resource">
+                <div class="mk-monitor-head">
+                    <div>
+                        <h3>Resource Summary</h3>
+                    </div>
+                </div>
+                <div id="mkResourceState" class="mk-monitor-state mk-monitor-state--resource">Menunggu resource router.</div>
+                <div id="mkResourceGrid" class="mk-monitor-resource-grid mk-monitor-hidden">
+                    <div class="mk-monitor-resource"><strong>Uptime</strong><span id="mkResUptime">-</span></div>
+                    <div class="mk-monitor-resource"><strong>Version</strong><span id="mkResVersion">-</span></div>
+                    <div class="mk-monitor-resource"><strong>Board</strong><span id="mkResBoard">-</span></div>
+                    <div class="mk-monitor-resource"><strong>Architecture</strong><span id="mkResArch">-</span></div>
+                    <div class="mk-monitor-resource"><strong>CPU</strong><span id="mkResCpu">-</span></div>
+                    <div class="mk-monitor-resource"><strong>Memory</strong><span id="mkResMemory">-</span></div>
+                    <div class="mk-monitor-resource"><strong>Disk</strong><span id="mkResDisk">-</span></div>
+                    <div class="mk-monitor-resource"><strong>Snapshot</strong><span id="mkResCollectedAt">-</span></div>
+                </div>
+                <div class="mk-monitor-bottom-grid" style="margin-top:10px;">
+                    <button id="mkPppoeCard" class="mk-monitor-quick-card" type="button">
+                        <div>
+                            <h4>PPPoE Aktif</h4>
+                        </div>
+                        <div class="mk-monitor-quick-meta">
+                            <div class="mk-monitor-quick-caption">Total Active Sessions</div>
+                            <div id="mkPppoeQuickCount" class="mk-monitor-quick-stat">0</div>
+                        </div>
+                        <div id="mkPppoeQuickPeek" class="mk-monitor-quick-peek">
+                            <span>Belum ada PPPoE aktif.</span>
+                        </div>
+                        <div class="mk-monitor-quick-footer">
+                            <span>Klik untuk buka daftar</span>
+                            <span>View All</span>
+                        </div>
+                    </button>
+
+                    <button id="mkLogsCard" class="mk-monitor-quick-card" type="button">
+                        <div>
+                            <h4>Latest Logs</h4>
+                        </div>
+                        <div class="mk-monitor-quick-meta">
+                            <div class="mk-monitor-quick-caption">Latest Entries</div>
+                            <div id="mkLogsQuickCount" class="mk-monitor-quick-stat">0</div>
+                        </div>
+                        <div id="mkLogsQuickPeek" class="mk-monitor-quick-peek">
+                            <span>Belum ada latest logs.</span>
+                        </div>
+                        <div class="mk-monitor-quick-footer">
+                            <span>Klik untuk buka daftar</span>
+                            <span>View All</span>
+                        </div>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="mkPppoeListModal" class="mk-monitor-modal">
+        <div class="mk-monitor-modal-panel mk-monitor-modal-panel--wide">
+            <div class="mk-monitor-head">
+                <div>
+                    <h3>PPPoE Aktif</h3>
+                </div>
+                <button id="mkPppoeListModalClose" class="mk-monitor-close" type="button">Tutup</button>
+            </div>
+            <div class="mk-monitor-modal-shell mk-monitor-modal-shell--body custom-scroll">
+                <input id="mkPppoeSearch" class="mk-monitor-search" type="search" placeholder="Cari user / interface / IP / caller ID">
+                <div class="mk-monitor-table-shell">
+                    <div class="mk-monitor-table-scroll custom-scroll">
+                        <table class="mk-monitor-table">
+                            <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Traffic</th>
+                                <th>Uptime</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                            </thead>
+                            <tbody id="mkPppoeBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mkLogsModal" class="mk-monitor-modal">
+        <div class="mk-monitor-modal-panel mk-monitor-modal-panel--compact">
+            <div class="mk-monitor-head">
+                <div>
+                    <h3>Latest Logs</h3>
+                </div>
+                <button id="mkLogsModalClose" class="mk-monitor-close" type="button">Tutup</button>
+            </div>
+            <div class="mk-monitor-modal-shell mk-monitor-modal-shell--body custom-scroll">
+                <div id="mkLogList" class="mk-monitor-log-list custom-scroll"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mkPppoeModal" class="mk-monitor-modal">
+        <div class="mk-monitor-modal-panel mk-monitor-modal-panel--wide">
+            <div class="mk-monitor-head">
+                <div>
+                    <h3 id="mkModalTitle">Traffic PPPoE</h3>
+                    <p id="mkModalMeta" style="display:none;">Lazy snapshot akan aktif selama modal terbuka.</p>
+                </div>
+                <button id="mkModalClose" class="mk-monitor-close" type="button">Tutup</button>
+            </div>
+            <div class="mk-monitor-modal-shell mk-monitor-modal-shell--body custom-scroll">
+            <div id="mkModalState" class="mk-monitor-state">Menunggu data user.</div>
+            <div id="mkModalChartShell" class="mk-monitor-chart-shell mk-monitor-hidden">
+                <div class="mk-monitor-chart-metrics">
+                    <div class="mk-monitor-metric-card" data-tone="cyan" data-fill="mid">
+                        <div class="mk-monitor-metric-head">
+                            <span class="mk-monitor-metric-label">Status</span>
+                            <span class="mk-monitor-metric-value"><strong id="mkModalStatus">-</strong></span>
+                        </div>
+                        <span class="mk-monitor-metric-icon">◌</span>
+                        <div class="mk-monitor-metric-dots"></div>
+                        <div class="mk-monitor-metric-foot">
+                            <strong>User Session</strong>
+                            <span>Realtime</span>
+                        </div>
+                    </div>
+                    <div class="mk-monitor-metric-card" data-tone="violet" data-fill="short">
+                        <div class="mk-monitor-metric-head">
+                            <span class="mk-monitor-metric-label">Last Seen</span>
+                            <span class="mk-monitor-metric-value"><strong id="mkModalLastSeen">-</strong></span>
+                        </div>
+                        <span class="mk-monitor-metric-icon">◷</span>
+                        <div class="mk-monitor-metric-dots"></div>
+                        <div class="mk-monitor-metric-foot">
+                            <strong>Snapshot Time</strong>
+                            <span>Observed</span>
+                        </div>
+                    </div>
+                    <div class="mk-monitor-metric-card" data-tone="amber" data-fill="mid">
+                        <div class="mk-monitor-metric-head">
+                            <span class="mk-monitor-metric-label">Interface</span>
+                            <span class="mk-monitor-metric-value"><strong id="mkModalInterface">-</strong></span>
+                        </div>
+                        <span class="mk-monitor-metric-icon">⇄</span>
+                        <div class="mk-monitor-metric-dots"></div>
+                        <div class="mk-monitor-metric-foot">
+                            <strong>PPPoE Bind</strong>
+                            <span>Live Port</span>
+                        </div>
+                    </div>
+                    <div class="mk-monitor-metric-card" data-tone="rose" data-fill="full">
+                        <div class="mk-monitor-metric-head">
+                            <span class="mk-monitor-metric-label">Ring Buffer</span>
+                            <span class="mk-monitor-metric-value"><strong>Live</strong></span>
+                        </div>
+                        <span class="mk-monitor-metric-icon">∞</span>
+                        <div class="mk-monitor-metric-dots"></div>
+                        <div class="mk-monitor-metric-foot">
+                            <strong>Buffer Active</strong>
+                            <span>Polling</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="mkModalChart" class="mk-monitor-chart-host"></div>
+                <div class="mk-monitor-chart-legend">
+                    <span><i class="mk-legend-dot" style="background:#65d2e5;"></i>RX</span>
+                    <span><i class="mk-legend-dot" style="background:#d18045;"></i>TX</span>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.body.classList.add("mk-monitor-page");
+        window.nmxPageLoading = window.nmxPageLoading || {};
+        window.nmxPageLoading.disableFetchOverlay = true;
+    </script>
+    <script src="/js/trafik-monitoring-page.js"></script>
+</div>

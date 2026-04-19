@@ -1,0 +1,161 @@
+<div th:fragment="header" class="top-header"
+     th:with="isControlPlanePage=${page == 'superadmin-dashboard' or page == 'tenant-approval' or page == 'tenant-directory'}">
+    <div class="header-left" th:attr="data-page=${page}">
+        <div class="header-page-copy">
+            <div class="breadcrumb-current" id="current-page-path">
+                <th:block th:switch="${page}">
+                    <span th:case="'dashboard-home'">Dashboard</span>
+                    <span th:case="'superadmin-dashboard'">SaaS Control Plane</span>
+                    <span th:case="'registrasi'">Registrasi Pelanggan</span>
+                    <span th:case="'data-pelanggan'">Data Pelanggan</span>
+                    <span th:case="'paket'">Paket Internet</span>
+                    <span th:case="'history-payment'">History Pembayaran</span>
+                    <span th:case="'trafik'">Monitoring Trafik Jaringan</span>
+                    <span th:case="'alert'">WhatsApp Invoice Schedule</span>
+                    <span th:case="'invoice'">Invoice</span>
+                    <span th:case="'pembayaran'">Pembayaran</span>
+                    <span th:case="'piutang'">Piutang</span>
+                    <span th:case="'cashflow'">Cashflow</span>
+                    <span th:case="'laporan-keuangan'">Laporan Keuangan</span>
+                    <span th:case="'tiket-baru'">Tiket Baru</span>
+                    <span th:case="'tiket-aktif'">Tiket Aktif</span>
+                    <span th:case="'sla'">SLA Ticketing</span>
+                    <span th:case="'teknisi'">Teknisi</span>
+                    <span th:case="'mikrotik'">MikroTik</span>
+                    <span th:case="'network-server'">Server Network</span>
+                    <span th:case="'acs'">ACS</span>
+                    <span th:case="'vpn'">VPN</span>
+                    <span th:case="'ip-pool'">IP Pool</span>
+                    <span th:case="'odp'">ODP</span>
+                    <span th:case="'reports'">Reports</span>
+                    <span th:case="'user-mgmt'">Manajemen User</span>
+                    <span th:case="'automation'">Automation</span>
+                    <span th:case="'system'">System</span>
+                    <span th:case="'process-log'">Log Proses</span>
+                    <span th:case="'error-log'">Log Error</span>
+                    <span th:case="'tenant-approval'">Tenant Pending Approval</span>
+                    <span th:case="'tenant-directory'">Direktori Tenant</span>
+                    <span th:case="'crm'">CRM</span>
+                    <span th:case="'mapping'">Mapping</span>
+                    <span th:case="'company'">Company</span>
+                    <span th:case="*">Dashboard</span>
+                </th:block>
+            </div>
+            <div class="page-subtitle" id="current-page-subtitle">
+                <th:block th:switch="${page}">
+                    <span th:case="'dashboard-home'">Ringkasan operasional utama untuk memantau performa bisnis dan jaringan saat ini.</span>
+                    <span th:case="'superadmin-dashboard'">Pusat kontrol SaaS untuk memantau tenant, status platform, dan aktivitas superadmin.</span>
+                    <span th:case="'registrasi'">Halaman input pelanggan baru beserta data layanan, alamat, dan aktivasi awal.</span>
+                    <span th:case="'data-pelanggan'">Daftar dan detail pelanggan aktif untuk pencarian, pembaruan, dan tindak lanjut layanan.</span>
+                    <span th:case="'paket'">Kelola katalog paket internet, harga layanan, dan pengaturan bandwidth pelanggan.</span>
+                    <span th:case="'history-payment'">Riwayat pembayaran pelanggan untuk pelacakan transaksi dan status pelunasan.</span>
+                    <span th:case="'trafik'">Pemantauan trafik jaringan untuk melihat performa bandwidth dan aktivitas perangkat.</span>
+                    <span th:case="'alert'">Penjadwalan WhatsApp billing dan otomatisasi tindakan jaringan berdasarkan status tagihan.</span>
+                    <span th:case="'invoice'">Kelola invoice pelanggan, status penagihan, dan proses pengiriman tagihan.</span>
+                    <span th:case="'pembayaran'">Pencatatan pembayaran invoice pelanggan dan verifikasi transaksi yang masuk.</span>
+                    <span th:case="'piutang'">Pemantauan tagihan belum lunas dan tindak lanjut pelanggan yang memiliki tunggakan.</span>
+                    <span th:case="'cashflow'">Ringkasan arus kas masuk dan keluar untuk memantau kesehatan keuangan operasional.</span>
+                    <span th:case="'laporan-keuangan'">Laporan keuangan untuk analisis pendapatan, pembayaran, dan kondisi bisnis.</span>
+                    <span th:case="'tiket-baru'">Form pembuatan tiket baru untuk mencatat gangguan atau permintaan layanan pelanggan.</span>
+                    <span th:case="'tiket-aktif'">Daftar tiket aktif yang sedang diproses oleh tim operasional dan teknisi.</span>
+                    <span th:case="'sla'">Pemantauan SLA ticketing untuk melihat kepatuhan waktu respons dan penyelesaian tiket.</span>
+                    <span th:case="'teknisi'">Kelola data teknisi lapangan, status aktif, dan penugasan pekerjaan teknis.</span>
+                    <span th:case="'mikrotik'">Manajemen perangkat MikroTik untuk konfigurasi, pemantauan, dan sinkronisasi jaringan.</span>
+                    <span th:case="'network-server'">Daftar dan konfigurasi server jaringan yang digunakan pada operasional sistem.</span>
+                    <span th:case="'acs'">Kelola ACS untuk provisioning, monitoring, dan pengendalian perangkat pelanggan.</span>
+                    <span th:case="'vpn'">Pengaturan koneksi VPN untuk kebutuhan akses jarak jauh dan integrasi jaringan.</span>
+                    <span th:case="'ip-pool'">Kelola IP Pool untuk distribusi alamat IP pada layanan jaringan pelanggan.</span>
+                    <span th:case="'odp'">Informasi ODP untuk mendukung pengelolaan titik distribusi jaringan pelanggan.</span>
+                    <span th:case="'reports'">Ringkasan laporan lintas modul untuk membantu evaluasi operasional dan bisnis.</span>
+                    <span th:case="'user-mgmt'">Pengelolaan akun user, peran akses, dan kontrol keamanan pengguna sistem.</span>
+                    <span th:case="'automation'">Pengaturan otomasi proses operasional untuk efisiensi aktivitas rutin sistem.</span>
+                    <span th:case="'system'">Konfigurasi sistem inti aplikasi dan pengaturan umum lingkungan operasional.</span>
+                    <span th:case="'process-log'">Catatan proses aplikasi untuk audit aktivitas dan penelusuran eksekusi sistem.</span>
+                    <span th:case="'error-log'">Daftar error aplikasi untuk investigasi masalah dan pemantauan stabilitas sistem.</span>
+                    <span th:case="'tenant-approval'">Antrian persetujuan tenant baru sebelum diaktifkan ke dalam platform SaaS.</span>
+                    <span th:case="'tenant-directory'">Direktori seluruh tenant untuk melihat status, akses, dan identitas pelanggan SaaS.</span>
+                    <span th:case="'crm'">Pusat data CRM untuk interaksi pelanggan, tindak lanjut, dan histori komunikasi.</span>
+                    <span th:case="'mapping'">Visualisasi peta pelanggan dan titik jaringan untuk analisis cakupan layanan.</span>
+                    <span th:case="'company'">Pengaturan profil perusahaan, branding, dan informasi identitas bisnis.</span>
+                    <span th:case="*">Ringkasan halaman aktif untuk membantu memahami konteks kerja saat ini.</span>
+                </th:block>
+            </div>
+        </div>
+
+        <div th:if="${page == 'alert'}" class="bot-toggle-card bot-toggle-card-header">
+            <div class="bot-toggle-copy">
+                <strong>BOT WA</strong>
+                <span id="waBotToggleLabel">Status: Nonaktif</span>
+            </div>
+            <label class="bot-toggle-switch" for="waBotToggle">
+                <input type="checkbox" id="waBotToggle">
+                <span class="bot-toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="header-right">
+        <div th:unless="${isControlPlanePage}">
+            <div th:if="${page != 'invoice'}" class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+        </div>
+
+        <div class="quick-actions" th:unless="${isControlPlanePage}">
+            <button class="quick-action-btn" title="Tambah Pelanggan" type="button" onclick="window.location.href='/pelanggan/registrasi'">
+                <i data-lucide="user-plus"></i>
+            </button>
+            <button class="quick-action-btn" title="Generate Invoice" type="button">
+                <i data-lucide="file-text"></i>
+            </button>
+            <button class="quick-action-btn" title="Sync MikroTik" type="button">
+                <i data-lucide="refresh-cw"></i>
+            </button>
+        </div>
+
+        <div class="quick-actions" th:if="${isControlPlanePage}">
+            <button class="quick-action-btn" title="Approval Queue" type="button" onclick="window.location.href='/system/tenant-approval'">
+                <i data-lucide="shield-check"></i>
+            </button>
+            <button class="quick-action-btn" title="Tenant Directory" type="button" onclick="window.location.href='/system/tenant-directory'">
+                <i data-lucide="building-2"></i>
+            </button>
+            <button class="quick-action-btn" title="Control Plane" type="button" onclick="window.location.href='/superadmin/dashboard'">
+                <i data-lucide="layout-dashboard"></i>
+            </button>
+        </div>
+
+        <div class="clock-display">
+            <div class="clock-label" th:text="${isControlPlanePage ? 'Control Time' : 'Time'}">Time</div>
+            <div class="clock-time" id="clock">00:00:00</div>
+        </div>
+
+        <button class="notification-btn"
+                th:unless="${isControlPlanePage}"
+                title="Notifications"
+                type="button">
+            <i data-lucide="bell"></i>
+            <span class="badge">3</span>
+        </button>
+
+        <div class="user-menu" th:if="${#authorization.expression('isAuthenticated()')}">
+            <div class="user-menu-dropdown" id="userMenuDropdown">
+                <form th:action="@{/logout}" method="post" class="user-menu-form">
+                    <button type="submit" class="user-menu-action">
+                        <i class="fas fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+
+            <button class="user-box" id="userMenuToggle" type="button" aria-expanded="false" aria-haspopup="true">
+                <div class="user-avatar" th:text="${#strings.toUpperCase(#authentication.name.substring(0,1))}">U</div>
+                <div class="user-details">
+                    <div class="user-name" th:text="${#authentication.name}">Username</div>
+                    <div class="user-role" th:text="${isControlPlanePage ? 'SUPERADMIN CONTROL' : #authentication.authorities}">ROLE</div>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>

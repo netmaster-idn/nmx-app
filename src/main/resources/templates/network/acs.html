@@ -1,0 +1,2391 @@
+<div th:fragment="content">
+    <style>
+        .billing-page{display:grid;gap:16px;color:var(--text-primary)}
+        .billing-card,.billing-table-card{background:var(--bg-card);border:1px solid rgba(255,255,255,.06);border-radius:20px;box-shadow:var(--shadow-card)}
+        .billing-card{padding:18px}
+        .billing-title{margin:0;color:var(--text-primary)}
+        .billing-meta,.billing-empty{color:var(--text-muted)}
+        .billing-section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+        .billing-section-head p{margin:0;font-size:12px;color:var(--text-muted)}
+        .billing-section-copy{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .billing-section-sep{color:var(--text-dim);font-size:12px}
+        .billing-table-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:20px 20px 0}
+        .billing-table-wrap{overflow:auto}
+        .billing-kpi-row{display:flex;gap:12px;align-items:stretch;flex-wrap:nowrap}
+
+        .acs-page {
+            display: grid;
+            gap: 16px;
+            color: var(--text-primary);
+        }
+
+        .acs-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .acs-toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            flex: 1 1 420px;
+        }
+
+        .acs-toolbar-status {
+            flex: 0 0 auto;
+            min-width: 0;
+        }
+
+        .acs-card,
+        .acs-table-container {
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.05);
+            border-radius: 16px;
+        }
+
+        .acs-note {
+            margin: 6px 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .acs-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .acs-summary-primary {
+            flex: 1 1 68%;
+            min-width: 0;
+        }
+
+        .acs-card {
+            padding: 12px 14px;
+        }
+
+        .acs-stat-value {
+            display: block;
+            margin-top: 6px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.05;
+        }
+
+        .acs-stat-label {
+            display: block;
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .acs-stat-meta {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-dim);
+            font-size: 10px;
+            line-height: 1.35;
+        }
+
+        .acs-status-grid {
+            display: block;
+        }
+
+        .acs-kv {
+            display: grid;
+            gap: 12px;
+        }
+
+        .acs-kv.horizontal {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            width: max-content;
+        }
+
+        .acs-kv-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .acs-kv-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .acs-kv-label {
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .acs-kv-value {
+            display: block;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: right;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .acs-kv.horizontal .acs-kv-item {
+            display: grid;
+            gap: 3px;
+            align-content: start;
+            padding: 10px 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            min-width: max-content;
+        }
+
+        .acs-kv.horizontal .acs-kv-value {
+            text-align: left;
+        }
+
+        .acs-feedback {
+            display: none;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            font-size: 13px;
+        }
+
+        .acs-feedback.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.18);
+            color: #22c55e;
+        }
+
+        .acs-feedback.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.18);
+            color: #ef4444;
+        }
+
+        .acs-feedback.info {
+            display: block;
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.18);
+            color: #60a5fa;
+        }
+
+        .acs-table-container {
+            overflow: hidden;
+        }
+
+        .acs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .acs-table thead {
+            background: var(--bg-input);
+        }
+
+        .acs-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .acs-table td {
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .acs-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .acs-badge.online,
+        .acs-badge.success {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+        }
+
+        .acs-badge.offline,
+        .acs-badge.failed {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+        }
+
+        .acs-badge.pending {
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+        }
+
+        .acs-empty {
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .acs-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1500;
+            background:
+                radial-gradient(circle at 20% 18%, rgba(56, 189, 248, 0.08), transparent 30%),
+                radial-gradient(circle at 82% 78%, rgba(168, 85, 247, 0.10), transparent 34%),
+                rgba(5, 10, 24, 0.70);
+            backdrop-filter: blur(12px) saturate(120%);
+            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .acs-modal-overlay.open {
+            display: flex;
+        }
+
+        .acs-modal {
+            width: min(560px, 100%);
+            position: relative;
+            background: linear-gradient(180deg, rgba(53, 61, 92, 0.92) 0%, rgba(21, 28, 51, 0.96) 22%, rgba(14, 20, 40, 0.98) 100%);
+            border: 1px solid rgba(126, 144, 192, 0.24);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow:
+                0 32px 90px rgba(2, 6, 23, 0.58),
+                0 10px 28px rgba(15, 23, 42, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px) saturate(120%);
+            -webkit-backdrop-filter: blur(20px) saturate(120%);
+        }
+
+        .acs-modal::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px auto 1px;
+            height: 42%;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 68%, transparent 100%);
+            opacity: 0.92;
+            pointer-events: none;
+        }
+
+        .acs-modal::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                inset 0 -1px 0 rgba(148, 163, 184, 0.08);
+        }
+
+        .acs-modal-header,
+        .acs-modal-footer {
+            position: relative;
+            z-index: 1;
+            padding: 18px 22px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .acs-modal-footer {
+            border-bottom: none;
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.16), rgba(9, 14, 29, 0.34));
+        }
+
+        .acs-modal-body {
+            position: relative;
+            z-index: 1;
+            padding: 22px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .acs-field {
+            display: grid;
+            gap: 6px;
+        }
+
+        .acs-field label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .acs-input,
+        .acs-select {
+            width: 100%;
+            padding: 11px 13px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .acs-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .acs-cell-stack {
+            display: grid;
+            gap: 4px;
+        }
+
+        .acs-cell-main {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .acs-cell-sub {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .acs-empty-value {
+            color: var(--text-muted);
+        }
+
+        .acs-quick-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            overflow: hidden;
+        }
+
+        .acs-quick-trigger,
+        .acs-quick-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .acs-quick-trigger {
+            display: none;
+        }
+
+        .acs-quick-btn {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            opacity: 1;
+            transform: none;
+            width: 34px;
+            min-width: 34px;
+            padding: 0;
+        }
+
+        .acs-quick-action:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.14);
+        }
+
+        .acs-quick-btn:hover {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+
+        .acs-quick-btn.reboot:hover {
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+        }
+
+        .acs-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .acs-detail-grid .acs-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .acs-detail-card {
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .acs-detail-card h4 {
+            margin: 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .acs-detail-shell {
+            display: grid;
+            gap: 18px;
+        }
+
+        .acs-detail-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .acs-detail-title {
+            display: grid;
+            gap: 6px;
+        }
+
+        .acs-detail-title h3,
+        .acs-detail-title p {
+            margin: 0;
+        }
+
+        .acs-detail-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .acs-device-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+            gap: 18px;
+        }
+
+        .acs-device-metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .acs-metric-card {
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .acs-metric-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .acs-metric-card span {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .acs-section-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 18px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .acs-section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .acs-section-head h4,
+        .acs-section-head p {
+            margin: 0;
+        }
+
+        .acs-service-list,
+        .acs-ssid-list,
+        .acs-client-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .acs-service-item,
+        .acs-ssid-item,
+        .acs-client-item {
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 16px;
+            background: rgba(255,255,255,0.025);
+            display: grid;
+            gap: 14px;
+        }
+
+        .acs-service-head,
+        .acs-ssid-head,
+        .acs-client-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .acs-service-title,
+        .acs-ssid-title {
+            display: grid;
+            gap: 6px;
+        }
+
+        .acs-service-title h5,
+        .acs-ssid-title h5,
+        .acs-client-head strong {
+            margin: 0;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .acs-pill-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .acs-soft-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.12);
+            color: #93c5fd;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .acs-soft-pill.green {
+            background: rgba(34, 197, 94, 0.12);
+            color: #86efac;
+        }
+
+        .acs-soft-pill.gray {
+            background: rgba(148, 163, 184, 0.16);
+            color: #cbd5e1;
+        }
+
+        .acs-inline-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .acs-grid-two,
+        .acs-grid-three {
+            display: grid;
+            gap: 12px;
+        }
+
+        .acs-grid-two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .acs-grid-three {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .acs-mini-kv {
+            padding: 12px 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            display: grid;
+            gap: 6px;
+        }
+
+        .acs-mini-kv label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .acs-mini-kv span {
+            color: var(--text-primary);
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .acs-editor-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .acs-editor-grid .acs-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .acs-switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .acs-client-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .acs-empty-panel {
+            padding: 18px;
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 16px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .acs-modal.compact-modal {
+            width: min(980px, 100%);
+            max-height: calc(100vh - 56px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .compact-modal .acs-modal-header {
+            padding: 16px 18px 12px;
+        }
+
+        .compact-modal .acs-modal-body {
+            padding: 14px 18px 18px;
+            overflow: auto;
+        }
+
+        .acs-detail-v2 {
+            width: min(1040px, calc(100vw - 28px));
+            max-height: calc(100vh - 20px);
+        }
+
+        .acs-detail-v2 .acs-modal-header {
+            padding: 10px 14px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .acs-detail-v2 .acs-modal-body {
+            padding: 10px 12px 12px;
+            overflow: hidden;
+        }
+
+        .acs-detail-v2-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .acs-detail-v2-title h3,
+        .acs-detail-v2-title p {
+            margin: 0;
+        }
+
+        .acs-detail-v2-title p {
+            margin-top: 2px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .acs-detail-v2-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .acs-detail-v2-body {
+            display: grid;
+            grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+            gap: 10px;
+        }
+
+        .acs-v2-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 10px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .acs-v2-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .acs-v2-head h4,
+        .acs-v2-head p {
+            margin: 0;
+        }
+
+        .acs-v2-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .acs-info-list {
+            display: grid;
+            gap: 0;
+        }
+
+        .acs-info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .acs-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .acs-info-row label {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .acs-info-row strong {
+            color: var(--text-primary);
+            font-size: 13px;
+            text-align: right;
+            word-break: break-word;
+            line-height: 1.15;
+        }
+
+        .acs-v2-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .acs-v2-metric {
+            padding: 9px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+            display: grid;
+            gap: 4px;
+        }
+
+        .acs-v2-metric span {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .acs-v2-metric strong {
+            color: var(--text-primary);
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .acs-v2-metric strong small {
+            font-size: 14px;
+            opacity: .9;
+        }
+
+        .acs-wan-table-wrap {
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .acs-wan-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .acs-wan-table th,
+        .acs-wan-table td {
+            padding: 7px 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 11px;
+            vertical-align: middle;
+            line-height: 1.2;
+        }
+
+        .acs-wan-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .acs-wan-table th {
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-size: 10px;
+            text-align: left;
+        }
+
+        .acs-wan-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .acs-icon-btn {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            color: var(--text-secondary);
+            border-radius: 7px;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .acs-icon-btn:hover {
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,0.18);
+        }
+
+        .acs-v2-wifi-grid {
+            display: grid;
+            grid-template-columns: minmax(240px, 1fr) minmax(240px, 1fr);
+            gap: 8px;
+        }
+
+        .acs-ssid-card,
+        .acs-client-card {
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 8px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .acs-ssid-stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .acs-ssid-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .acs-client-item-v2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .acs-client-item-v2:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .acs-client-item-v2 strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        .acs-client-item-v2 small {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        .acs-detail-v2 .acs-note {
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .acs-detail-v2 .btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            border-radius: 10px;
+        }
+
+        .acs-detail-v2 .acs-soft-pill,
+        .acs-detail-v2 .acs-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+
+        .acs-detail-v2 h3 {
+            font-size: 20px;
+            line-height: 1.15;
+        }
+
+        .acs-detail-v2 h4 {
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .acs-detail-v2 .acs-inline-actions .acs-text-btn {
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+
+        .acs-detail-v2 #acsSsidList,
+        .acs-detail-v2 #acsWifiClientList {
+            max-height: 250px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 980px) {
+            .acs-detail-v2-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .acs-v2-wifi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .acs-overview-banner {
+            display: grid;
+            gap: 12px;
+        }
+
+        .acs-overview-topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .acs-overview-identity {
+            display: grid;
+            gap: 8px;
+        }
+
+        .acs-overview-identity h3,
+        .acs-overview-identity p {
+            margin: 0;
+        }
+
+        .acs-overview-meta {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .acs-hero-stat {
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.035);
+            display: grid;
+            gap: 4px;
+        }
+
+        .acs-hero-stat label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .acs-hero-stat strong {
+            font-size: 14px;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .acs-detail-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .acs-tab-btn {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .acs-tab-btn.active {
+            background: rgba(59,130,246,.18);
+            border-color: rgba(59,130,246,.35);
+            color: #bfdbfe;
+        }
+
+        .acs-tab-panel {
+            display: none;
+            gap: 12px;
+        }
+
+        .acs-tab-panel.active {
+            display: grid;
+        }
+
+        .acs-compact-section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 14px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .acs-compact-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .acs-compact-head h4,
+        .acs-compact-head p {
+            margin: 0;
+        }
+
+        .acs-compact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .acs-primary-item {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: grid;
+            gap: 4px;
+        }
+
+        .acs-primary-item label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text-muted);
+        }
+
+        .acs-primary-item strong {
+            font-size: 13px;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .acs-collapse {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 10px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .acs-collapse summary {
+            list-style: none;
+            cursor: pointer;
+            color: #bfdbfe;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .acs-collapse summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .acs-secondary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .acs-secondary-item {
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.025);
+            display: grid;
+            gap: 4px;
+        }
+
+        .acs-secondary-item label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text-muted);
+        }
+
+        .acs-secondary-item span {
+            font-size: 12px;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .acs-summary-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .acs-summary-row {
+            display: grid;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.025);
+        }
+
+        .acs-summary-row.muted {
+            opacity: .78;
+            background: rgba(255,255,255,0.015);
+        }
+
+        .acs-summary-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .acs-summary-title {
+            display: grid;
+            gap: 5px;
+        }
+
+        .acs-summary-title strong {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .acs-summary-title small {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .acs-summary-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .acs-text-btn {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            padding: 7px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .acs-text-btn.primary {
+            background: rgba(59,130,246,.16);
+            color: #bfdbfe;
+            border-color: rgba(59,130,246,.32);
+        }
+
+        .acs-text-btn.success {
+            background: rgba(34,197,94,.12);
+            color: #86efac;
+            border-color: rgba(34,197,94,.22);
+        }
+
+        .acs-preview-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .acs-preview-item {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.025);
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .acs-preview-item strong {
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .acs-preview-item small {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .acs-modal.slim-modal {
+            width: min(700px, 100%);
+            max-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .acs-detail-view-content {
+            display: grid;
+            gap: 10px;
+        }
+
+        .acs-detail-view-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .billing-card {
+                padding: 16px;
+            }
+
+            .billing-kpi-row {
+                flex-wrap: wrap;
+            }
+
+            .acs-summary-primary,
+            .acs-toolbar-status {
+                flex: 1 1 100%;
+                min-width: 0;
+            }
+
+            .acs-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .acs-kv.horizontal {
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .acs-status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acs-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acs-device-layout,
+            .acs-grid-two,
+            .acs-grid-three,
+            .acs-editor-grid,
+            .acs-overview-meta,
+            .acs-compact-grid,
+            .acs-secondary-grid,
+            .acs-detail-view-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .acs-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .acs-kv.horizontal {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <div class="acs-page billing-page">
+        <section class="billing-card">
+            <div class="acs-toolbar">
+                <div class="acs-toolbar-actions">
+                    <button class="btn btn-secondary" type="button" onclick="openAcsSettingsModal()">
+                        <i class="fas fa-sliders"></i> Setting ACS
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="testAcsConnection()">
+                        <i class="fas fa-plug-circle-check"></i> Test Koneksi
+                    </button>
+                    <button class="btn btn-primary" type="button" onclick="syncAcsDevices()">
+                        <i class="fas fa-rotate"></i> Sinkronisasi
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="loadAcsDashboard(true)">
+                        <i class="fas fa-arrows-rotate"></i> Refresh
+                    </button>
+                </div>
+                <section class="acs-toolbar-status acs-status-grid">
+                    <div class="acs-kv horizontal">
+                        <div class="acs-kv-item">
+                            <div class="acs-kv-label">Server URL</div>
+                            <div class="acs-kv-value" id="acsServerUrl">Belum diatur</div>
+                        </div>
+                        <div class="acs-kv-item">
+                            <div class="acs-kv-label">Username</div>
+                            <div class="acs-kv-value" id="acsUsername">Belum diatur</div>
+                        </div>
+                        <div class="acs-kv-item">
+                            <div class="acs-kv-label">Password</div>
+                            <div class="acs-kv-value" id="acsPasswordConfigured">Belum diatur</div>
+                        </div>
+                        <div class="acs-kv-item">
+                            <div class="acs-kv-label">Status Koneksi Terakhir</div>
+                            <div class="acs-kv-value" id="acsLastStatus">-</div>
+                        </div>
+                        <div class="acs-kv-item">
+                            <div class="acs-kv-label">Waktu Sukses Terakhir</div>
+                            <div class="acs-kv-value" id="acsLastConnectedAt">-</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <div id="acsFeedback" class="acs-feedback"></div>
+
+        <div class="billing-kpi-row">
+            <section class="billing-card acs-summary-primary">
+                <div class="billing-section-head">
+                    <div class="billing-section-copy">
+                        <h3 class="billing-title">Ringkasan ACS</h3>
+                        <span class="billing-section-sep">|</span>
+                        <p>Prioritas cepat untuk sinkronisasi dan status perangkat.</p>
+                    </div>
+                </div>
+                <div class="acs-stats">
+                    <div class="acs-card">
+                        <div class="acs-stat-label">ACS Terkonfigurasi</div>
+                        <div class="acs-stat-value" id="acsStatConfigured">No</div>
+                        <div class="acs-stat-meta">Status integrasi dan kesiapan endpoint</div>
+                    </div>
+                    <div class="acs-card">
+                        <div class="acs-stat-label">Device Tersinkron</div>
+                        <div class="acs-stat-value" id="acsStatTotal">0</div>
+                        <div class="acs-stat-meta">Perangkat yang berhasil dipetakan</div>
+                    </div>
+                    <div class="acs-card">
+                        <div class="acs-stat-label">Online</div>
+                        <div class="acs-stat-value" id="acsStatOnline">0</div>
+                        <div class="acs-stat-meta">Perangkat aktif pada snapshot terakhir</div>
+                    </div>
+                    <div class="acs-card">
+                        <div class="acs-stat-label">Offline</div>
+                        <div class="acs-stat-value" id="acsStatOffline">0</div>
+                        <div class="acs-stat-meta">Perangkat belum merespons inform</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <section class="billing-table-card">
+            <div class="billing-table-head">
+                <div>
+                    <h3 class="billing-title">Daftar Device ACS</h3>
+                    <div class="billing-meta">Perangkat yang berhasil dipetakan dengan data pelanggan dan PPPoE.</div>
+                </div>
+            </div>
+            <div class="billing-table-wrap">
+                <div class="acs-table-container">
+            <table class="acs-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Serial Number</th>
+                        <th>Wilayah</th>
+                        <th>Nama Pelanggan</th>
+                        <th>PPPoE Username</th>
+                        <th>Vendor / Model</th>
+                        <th>IP Address</th>
+                        <th>WiFi</th>
+                        <th>Redaman Optik</th>
+                        <th>Status</th>
+                        <th>Last Inform</th>
+                        <th>Quick Action</th>
+                    </tr>
+                </thead>
+                <tbody id="acsDeviceTableBody"></tbody>
+            </table>
+            <div id="acsEmptyState" class="acs-empty" style="display:none;">
+                Belum ada device ACS yang cocok dengan PPPoE username pelanggan di database. Pastikan setting GenieACS benar lalu klik `Test Koneksi` atau `Sinkronisasi`.
+            </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="acsSettingsModal" class="acs-modal-overlay">
+            <div class="acs-modal">
+            <div class="acs-modal-header">
+                <h3 style="margin:0;">Setting ACS</h3>
+            </div>
+            <form id="acsSettingsForm">
+                <div class="acs-modal-body">
+                    <div class="acs-field">
+                        <label for="acsServerUrlInput">Alamat Server GenieACS</label>
+                        <input id="acsServerUrlInput" class="acs-input" type="url" placeholder="Contoh: http://10.10.10.20:7557">
+                    </div>
+                    <div class="acs-field">
+                        <label for="acsUsernameInput">Username</label>
+                        <input id="acsUsernameInput" class="acs-input" type="text" placeholder="Masukkan username NBI">
+                    </div>
+                    <div class="acs-field">
+                        <label for="acsPasswordInput">Password</label>
+                        <input id="acsPasswordInput" class="acs-input" type="password" placeholder="Kosongkan jika password tidak diubah">
+                    </div>
+                    <div class="acs-field">
+                        <label for="acsActiveInput">Status Integrasi</label>
+                        <select id="acsActiveInput" class="acs-select">
+                            <option value="true">Aktif</option>
+                            <option value="false">Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="acs-modal-footer">
+                    <button class="btn btn-secondary" type="button" onclick="closeAcsSettingsModal()">Batal</button>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-floppy-disk"></i> Simpan Setting
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="acsDetailModal" class="acs-modal-overlay">
+        <div class="acs-modal compact-modal acs-detail-v2">
+            <div class="acs-modal-header">
+                <div class="acs-detail-v2-head">
+                    <div class="acs-detail-v2-title">
+                        <h3 id="acsDetailModalTitle">ACS Terminal Management</h3>
+                        <p id="acsDetailNotice">Monitoring &amp; Configuration for ONT Device</p>
+                    </div>
+                    <div class="acs-detail-v2-actions">
+                        <div id="acsDetailStatus">-</div>
+                        <span class="acs-soft-pill gray" id="acsDetailLastInformBadge">Last inform -</span>
+                        <button class="btn btn-primary" type="button" onclick="refreshSelectedAcsDetail()">
+                            <i class="fas fa-arrows-rotate"></i> Refresh Data
+                        </button>
+                        <button class="btn btn-secondary" type="button" onclick="closeAcsDetailModal()">Tutup</button>
+                    </div>
+                </div>
+            </div>
+            <div class="acs-modal-body acs-detail-v2-body">
+                <div class="acs-v2-left">
+                    <section class="acs-v2-card">
+                        <div class="acs-v2-head">
+                            <h4>Device Information</h4>
+                        </div>
+                        <div class="acs-pill-row">
+                            <span class="acs-soft-pill gray" id="acsDetailRegionPill">Wilayah -</span>
+                            <span class="acs-soft-pill gray" id="acsDetailCustomerPill">Pelanggan -</span>
+                        </div>
+                        <div id="acsDeviceInfoList" class="acs-info-list"></div>
+                    </section>
+                    <section class="acs-v2-metrics">
+                        <div class="acs-v2-metric">
+                            <span>Optic RX Power</span>
+                            <strong id="acsMetricRx">-</strong>
+                        </div>
+                        <div class="acs-v2-metric">
+                            <span>Temperature</span>
+                            <strong id="acsMetricTemp">-</strong>
+                        </div>
+                    </section>
+                </div>
+                <div class="acs-v2-right">
+                    <section class="acs-v2-card">
+                        <div class="acs-v2-head">
+                            <h4>WAN Service Management</h4>
+                            <button class="btn btn-primary" type="button" onclick="openWanEditorModal()">
+                                <i class="fas fa-plus"></i> Add WAN
+                            </button>
+                        </div>
+                        <div id="acsWanServiceList"></div>
+                    </section>
+
+                    <section class="acs-v2-card">
+                        <div class="acs-v2-head">
+                            <h4>SSID Configuration &amp; Clients</h4>
+                            <button class="acs-text-btn" type="button" id="acsViewAllClientsBtn" style="display:none;">View All</button>
+                        </div>
+                        <div class="acs-v2-wifi-grid">
+                            <div>
+                                <p class="acs-v2-label" id="acsSsidSummaryTitle">Active SSIDs</p>
+                                <div id="acsSsidList" class="acs-ssid-stack"></div>
+                            </div>
+                            <div>
+                                <p class="acs-v2-label" id="acsConnectedTitle">Connected Clients</p>
+                                <div id="acsWifiClientList"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="acsWanEditorModal" class="acs-modal-overlay">
+        <div class="acs-modal" style="width:min(820px, 100%);">
+            <div class="acs-modal-header">
+                <h3 id="acsWanEditorTitle" style="margin:0;">Tambah WAN Service</h3>
+            </div>
+            <form id="acsWanEditorForm">
+                <div class="acs-modal-body">
+                    <input id="acsWanMode" type="hidden" value="create">
+                    <input id="acsWanInstance" type="hidden" value="">
+                    <div class="acs-editor-grid">
+                        <div class="acs-field">
+                            <label for="acsWanConnectionType">Tipe Koneksi</label>
+                            <select id="acsWanConnectionType" class="acs-select">
+                                <option value="PPP">WAN PPP</option>
+                                <option value="IP">WAN IP</option>
+                            </select>
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsWanConnectionName">Conn Name</label>
+                            <input id="acsWanConnectionName" class="acs-input" type="text" placeholder="INTERNET_PPP">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsWanConnectionMode">Conn Mode</label>
+                            <input id="acsWanConnectionMode" class="acs-input" type="text" placeholder="PPPoE_ROUTED / IP_Routed">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsWanServiceListField">Service List</label>
+                            <input id="acsWanServiceListField" class="acs-input" type="text" placeholder="INTERNET / TR069 / IPTV">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsWanIpAddress">IP</label>
+                            <input id="acsWanIpAddress" class="acs-input" type="text" placeholder="10.10.10.2">
+                        </div>
+                        <div class="acs-field wan-ppp-only">
+                            <label for="acsWanUsername">Username</label>
+                            <input id="acsWanUsername" class="acs-input" type="text" placeholder="user_pppoe">
+                        </div>
+                        <div class="acs-field wan-ppp-only">
+                            <label for="acsWanPassword">Password</label>
+                            <input id="acsWanPassword" class="acs-input" type="text" placeholder="password_pppoe">
+                        </div>
+                        <div class="acs-field wan-ip-only">
+                            <label for="acsWanIpMode">DHCP/Static</label>
+                            <select id="acsWanIpMode" class="acs-select">
+                                <option value="DHCP">DHCP</option>
+                                <option value="Static">Static</option>
+                            </select>
+                        </div>
+                        <div class="acs-field wan-ip-only">
+                            <label for="acsWanGateway">Gateway</label>
+                            <input id="acsWanGateway" class="acs-input" type="text" placeholder="10.10.10.1">
+                        </div>
+                        <div class="acs-field wan-ip-only">
+                            <label for="acsWanSubnetMask">Mask</label>
+                            <input id="acsWanSubnetMask" class="acs-input" type="text" placeholder="255.255.255.0">
+                        </div>
+                        <div class="acs-field wan-ip-only">
+                            <label for="acsWanDnsServers">DNS</label>
+                            <input id="acsWanDnsServers" class="acs-input" type="text" placeholder="8.8.8.8,1.1.1.1">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsWanVlanId">VLAN ID</label>
+                            <input id="acsWanVlanId" class="acs-input" type="text" placeholder="100">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsWanLanBind">Lan Bind</label>
+                            <input id="acsWanLanBind" class="acs-input" type="text" placeholder="LAN1,LAN2,SSID1">
+                        </div>
+                        <div class="acs-field full">
+                            <div class="acs-grid-three">
+                                <label class="acs-switch-row"><span>Enable</span><input id="acsWanEnable" type="checkbox" checked></label>
+                                <label class="acs-switch-row"><span>NAT</span><input id="acsWanNat" type="checkbox" checked></label>
+                                <label class="acs-switch-row"><span>VLAN Enable</span><input id="acsWanVlanEnable" type="checkbox"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="acs-modal-footer">
+                    <button class="btn btn-secondary" type="button" onclick="closeWanEditorModal()">Batal</button>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-floppy-disk"></i> Simpan WAN
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="acsSsidEditorModal" class="acs-modal-overlay">
+        <div class="acs-modal" style="width:min(720px, 100%);">
+            <div class="acs-modal-header">
+                <h3 id="acsSsidEditorTitle" style="margin:0;">Edit Wireless Settings</h3>
+            </div>
+            <form id="acsSsidEditorForm">
+                <div class="acs-modal-body">
+                    <input id="acsSsidInstance" type="hidden" value="">
+                    <div class="acs-editor-grid">
+                        <div class="acs-field full">
+                            <label for="acsSsidNameInput">SSID Name</label>
+                            <input id="acsSsidNameInput" class="acs-input" type="text" placeholder="FiberHome_MyWiFi" required>
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsSsidSecurityInput">Security Mode</label>
+                            <select id="acsSsidSecurityInput" class="acs-select">
+                                <option value="WPA2-PSK">WPA2 Personal</option>
+                                <option value="WPA-PSK">WPA Personal</option>
+                                <option value="OPEN">Open</option>
+                            </select>
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsSsidPasswordInput">WiFi Password</label>
+                            <input id="acsSsidPasswordInput" class="acs-input" type="text" placeholder="Password WiFi">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsSsidPowerInput">TX Power %</label>
+                            <input id="acsSsidPowerInput" class="acs-input" type="number" min="1" max="100" placeholder="100">
+                        </div>
+                        <div class="acs-field">
+                            <label for="acsSsidChannelInput">Channel</label>
+                            <input id="acsSsidChannelInput" class="acs-input" type="text" placeholder="Auto / 6 / 11">
+                        </div>
+                        <div class="acs-field full">
+                            <div class="acs-grid-two">
+                                <label class="acs-switch-row"><span>Enable SSID</span><input id="acsSsidEnableInput" type="checkbox" checked></label>
+                                <label class="acs-switch-row"><span>Auto Channel</span><input id="acsSsidAutoChannelInput" type="checkbox" checked></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="acs-modal-footer">
+                    <button class="btn btn-secondary" type="button" onclick="closeSsidEditorModal()">Cancel</button>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-floppy-disk"></i> Apply Change
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="acsPeekModal" class="acs-modal-overlay">
+        <div class="acs-modal slim-modal">
+            <div class="acs-modal-header">
+                <h3 id="acsPeekModalTitle" style="margin:0;">Detail</h3>
+            </div>
+            <div class="acs-modal-body">
+                <div id="acsPeekModalContent" class="acs-detail-view-content"></div>
+            </div>
+            <div class="acs-modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeAcsPeekModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.nmxPageLoading = Object.assign({}, window.nmxPageLoading || {}, {
+            shouldTrackFetch(input) {
+                const urlValue = input instanceof Request ? input.url : String(input || '');
+                return !/\/api\/network\/acs\/devices\/.+\/detail(?:\?|$)/.test(urlValue);
+            }
+        });
+
+        const acsState = {
+            settings: null,
+            liveDevices: [],
+            selectedDevice: null
+        };
+        const ACS_CACHE_KEY = 'nmx-acs-dashboard-cache-v1';
+        const ACS_CACHE_TTL_MS = 60 * 60 * 1000;
+        let acsAutoRefreshTimer = null;
+
+        function createDefaultAcsSettings() {
+            return {
+                serverUrl: null,
+                username: null,
+                passwordConfigured: false,
+                active: false,
+                lastConnectionStatus: 'unavailable',
+                lastConnectionMessage: null,
+                lastConnectedAt: null
+            };
+        }
+
+        function createDefaultAcsStats() {
+            return {
+                configured: false,
+                total: 0,
+                online: 0,
+                offline: 0,
+                provisioned: 0
+            };
+        }
+
+        function isMissingAcsSettingsError(error) {
+            const message = String(error && error.message ? error.message : error || '').toLowerCase();
+            return message.includes('acs_settings') && (
+                message.includes('does not exist') ||
+                message.includes('no such table') ||
+                message.includes('not found') ||
+                message.includes('invalid object name')
+            );
+        }
+
+        function normalizeAcsErrorMessage(error) {
+            if (isMissingAcsSettingsError(error)) {
+                return 'Tabel setting ACS belum tersedia. Dashboard ditampilkan dengan mode default sampai backend ACS selesai diinisialisasi.';
+            }
+            return error && error.message ? error.message : 'Permintaan ACS gagal.';
+        }
+
+        function acsHeaders(includeJson = false) {
+            const headers = {};
+            if (includeJson) {
+                headers['Content-Type'] = 'application/json';
+            }
+            const csrfToken = window.csrfToken || '';
+            const csrfHeader = window.csrfHeader || 'X-CSRF-TOKEN';
+            if (csrfToken) {
+                headers[csrfHeader] = csrfToken;
+            }
+            return headers;
+        }
+
+        function formatValue(value, fallback = '-') {
+            return value === null || value === undefined || value === '' ? fallback : value;
+        }
+
+        function formatDateTime(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleString('id-ID');
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showAcsFeedback(type, message) {
+            const box = document.getElementById('acsFeedback');
+            box.className = 'acs-feedback ' + type;
+            box.textContent = message;
+        }
+
+        function clearAcsFeedback() {
+            const box = document.getElementById('acsFeedback');
+            box.className = 'acs-feedback';
+            box.textContent = '';
+        }
+
+        function readAcsDashboardCache() {
+            try {
+                const raw = window.localStorage.getItem(ACS_CACHE_KEY);
+                if (!raw) {
+                    return null;
+                }
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object' || !parsed.cachedAt) {
+                    return null;
+                }
+                return parsed;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function writeAcsDashboardCache(payload) {
+            try {
+                window.localStorage.setItem(ACS_CACHE_KEY, JSON.stringify({
+                    cachedAt: Date.now(),
+                    settings: payload.settings || null,
+                    stats: payload.stats || null,
+                    liveDevices: Array.isArray(payload.liveDevices) ? payload.liveDevices : []
+                }));
+            } catch (error) {
+                console.warn('Unable to persist ACS dashboard cache:', error);
+            }
+        }
+
+        function clearAcsDashboardCache() {
+            try {
+                window.localStorage.removeItem(ACS_CACHE_KEY);
+            } catch (error) {
+                console.warn('Unable to clear ACS dashboard cache:', error);
+            }
+        }
+
+        function isAcsCacheFresh(cache) {
+            return Boolean(cache && cache.cachedAt && (Date.now() - Number(cache.cachedAt) < ACS_CACHE_TTL_MS));
+        }
+
+        function applyAcsDashboardState(payload) {
+            acsState.settings = payload.settings || null;
+            acsState.liveDevices = Array.isArray(payload.liveDevices) ? payload.liveDevices : [];
+            renderAcsSettings();
+            renderAcsStats(payload.stats || {});
+            renderAcsDeviceTable();
+        }
+
+        function scheduleAcsAutoRefresh(cachedAt) {
+            if (acsAutoRefreshTimer) {
+                window.clearTimeout(acsAutoRefreshTimer);
+            }
+            const nextReloadIn = Math.max(15 * 1000, ACS_CACHE_TTL_MS - (Date.now() - Number(cachedAt || 0)));
+            acsAutoRefreshTimer = window.setTimeout(function() {
+                loadAcsDashboard(true, { silent: true });
+            }, nextReloadIn);
+        }
+
+        async function requestAcsJson(url, options = {}) {
+            const requestOptions = { ...options };
+            const useOriginalFetch = requestOptions.useOriginalFetch === true;
+            delete requestOptions.useOriginalFetch;
+
+            const fetchImpl = useOriginalFetch && typeof window.__originalFetch === 'function'
+                ? window.__originalFetch
+                : fetch;
+
+            const response = await fetchImpl(url, {
+                credentials: 'same-origin',
+                ...requestOptions
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Permintaan ACS gagal.');
+            }
+            return result.data;
+        }
+
+        async function requestAcsJsonWithTimeout(url, options = {}, timeoutMs = 15000) {
+            const controller = new AbortController();
+            const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                return await requestAcsJson(url, {
+                    ...options,
+                    signal: controller.signal,
+                    useOriginalFetch: true
+                });
+            } catch (error) {
+                if (error && error.name === 'AbortError') {
+                    throw new Error('Permintaan detail ACS terlalu lama. Coba lagi atau cek koneksi ke server GenieACS.');
+                }
+                throw error;
+            } finally {
+                window.clearTimeout(timeoutId);
+            }
+        }
+
+        async function loadAcsSettings() {
+            try {
+                acsState.settings = await requestAcsJson('/api/network/acs/settings');
+            } catch (error) {
+                if (!isMissingAcsSettingsError(error)) {
+                    throw error;
+                }
+                acsState.settings = createDefaultAcsSettings();
+                showAcsFeedback('info', normalizeAcsErrorMessage(error));
+            }
+            renderAcsSettings();
+            return acsState.settings;
+        }
+
+        function renderAcsStats(stats) {
+            const payload = stats || {};
+            document.getElementById('acsStatConfigured').textContent = payload.configured ? 'Yes' : 'No';
+            document.getElementById('acsStatTotal').textContent = Number(payload.total || 0);
+            document.getElementById('acsStatOnline').textContent = Number(payload.online || 0);
+            document.getElementById('acsStatOffline').textContent = Number(payload.offline || 0);
+        }
+
+        async function loadAcsStats() {
+            let stats;
+            try {
+                stats = await requestAcsJson('/api/network/acs/stats');
+            } catch (error) {
+                if (!isMissingAcsSettingsError(error)) {
+                    throw error;
+                }
+                stats = createDefaultAcsStats();
+                showAcsFeedback('info', normalizeAcsErrorMessage(error));
+            }
+            renderAcsStats(stats);
+            return stats;
+        }
+
+        async function loadAcsLiveDevices() {
+            try {
+                acsState.liveDevices = await requestAcsJson('/api/network/acs/live');
+                renderAcsDeviceTable();
+                return acsState.liveDevices;
+            } catch (error) {
+                acsState.liveDevices = [];
+                renderAcsDeviceTable();
+                showAcsFeedback('info', error.message);
+                return [];
+            }
+        }
+
+        async function loadAcsDashboard(forceReload = false, options = {}) {
+            const silent = options && options.silent === true;
+            if (!silent) {
+                clearAcsFeedback();
+            }
+            const cache = readAcsDashboardCache();
+            if (!forceReload && isAcsCacheFresh(cache)) {
+                applyAcsDashboardState(cache);
+                scheduleAcsAutoRefresh(cache.cachedAt);
+                return;
+            }
+            try {
+                const settings = await loadAcsSettings();
+                const stats = await loadAcsStats();
+                let liveDevices = [];
+                if (acsState.settings && acsState.settings.active && acsState.settings.serverUrl) {
+                    liveDevices = await loadAcsLiveDevices();
+                } else {
+                    acsState.liveDevices = [];
+                    renderAcsDeviceTable();
+                }
+                writeAcsDashboardCache({
+                    settings,
+                    stats,
+                    liveDevices
+                });
+                scheduleAcsAutoRefresh(Date.now());
+            } catch (error) {
+                showAcsFeedback('error', normalizeAcsErrorMessage(error));
+            }
+        }
+
+        function renderAcsSettings() {
+            const settings = acsState.settings || {};
+            document.getElementById('acsServerUrl').textContent = formatValue(settings.serverUrl, 'Belum diatur');
+            document.getElementById('acsUsername').textContent = formatValue(settings.username, 'Belum diatur');
+            document.getElementById('acsPasswordConfigured').textContent = settings.passwordConfigured ? 'Tersimpan' : 'Belum diatur';
+            document.getElementById('acsLastStatus').innerHTML = settings.lastConnectionStatus
+                ? `<span class="acs-badge ${escapeHtml(settings.lastConnectionStatus)}">${escapeHtml(settings.lastConnectionStatus)}</span>`
+                : '-';
+            document.getElementById('acsLastConnectedAt').textContent = formatDateTime(settings.lastConnectedAt);
+
+            document.getElementById('acsServerUrlInput').value = settings.serverUrl || '';
+            document.getElementById('acsUsernameInput').value = settings.username || '';
+            document.getElementById('acsPasswordInput').value = '';
+            document.getElementById('acsActiveInput').value = String(settings.active !== false);
+        }
+
+        function renderAcsDeviceTable() {
+            const tbody = document.getElementById('acsDeviceTableBody');
+            const empty = document.getElementById('acsEmptyState');
+            if (!acsState.liveDevices.length) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tbody.innerHTML = acsState.liveDevices.map((device, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${escapeHtml(formatValue(device.serialNumber))}</td>
+                    <td>${renderTableStack(device.regionName, device.customerServiceId ? 'Auto dari customer' : 'Belum termapping')}</td>
+                    <td>${renderTableStack(device.customerName, device.customerServiceId ? 'Customer aktif' : 'Belum termapping')}</td>
+                    <td>${renderTableStack(device.pppoeUsername, device.customerServiceId ? 'Sinkron ke customer_services' : 'Belum ada kecocokan')}</td>
+                    <td>${escapeHtml(formatValue(device.vendor))}<br><span style="color:var(--text-muted);">${escapeHtml(formatValue(device.model))}</span></td>
+                    <td>${escapeHtml(formatValue(device.ipAddress))}</td>
+                    <td>${escapeHtml(formatValue(device.wifiName, 'Belum terbaca'))}</td>
+                    <td>${device.opticalRxPower !== null && device.opticalRxPower !== undefined ? escapeHtml(String(device.opticalRxPower) + ' dBm') : 'Belum terbaca'}</td>
+                    <td><span class="acs-badge ${escapeHtml(formatValue(device.status, 'offline'))}">${escapeHtml(formatValue(device.status, 'offline'))}</span></td>
+                    <td>${escapeHtml(formatDateTime(device.lastInform))}</td>
+                    <td>${renderQuickAction(device)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderTableStack(mainValue, subValue) {
+            const main = mainValue ? escapeHtml(String(mainValue)) : '<span class="acs-empty-value">-</span>';
+            const sub = subValue ? `<div class="acs-cell-sub">${escapeHtml(String(subValue))}</div>` : '';
+            return `<div class="acs-cell-stack"><div class="acs-cell-main">${main}</div>${sub}</div>`;
+        }
+
+        function renderQuickAction(device) {
+            const serial = String(device.serialNumber || '');
+            return `
+                <div class="acs-quick-action">
+                    <button class="acs-quick-btn" type="button" title="Detail ACS" data-action="open-detail" data-serial="${escapeHtml(serial)}" ${serial ? '' : 'disabled'}>
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="acs-quick-btn reboot" type="button" title="Reboot ONT" data-action="reboot-device" data-serial="${escapeHtml(serial)}" ${serial ? '' : 'disabled'}>
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function setQuickActionState(quickId, active) {
+            if (!quickId) {
+                return;
+            }
+            const quickAction = document.getElementById(quickId);
+            if (!quickAction) {
+                return;
+            }
+            quickAction.classList.toggle('active', Boolean(active));
+            const trigger = quickAction.querySelector('.acs-quick-trigger');
+            if (trigger) {
+                trigger.setAttribute('aria-expanded', active ? 'true' : 'false');
+            }
+        }
+
+        function closeAllQuickActions() {
+            document.querySelectorAll('.acs-quick-action.active').forEach(function(item) {
+                item.classList.remove('active');
+                const trigger = item.querySelector('.acs-quick-trigger');
+                if (trigger) {
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        function openAcsDetailModalFromQuickAction(quickId, serialNumber) {
+            setQuickActionState(quickId, false);
+            showAcsFeedback('info', `Membuka detail ACS untuk serial ${serialNumber || '-'}.`);
+            openAcsDetailModalBySerial(serialNumber);
+        }
+
+        function rebootAcsDeviceFromQuickAction(quickId, serialNumber) {
+            setQuickActionState(quickId, false);
+            rebootAcsDevice(serialNumber);
+        }
+
+        function setAcsDetailFormEnabled(enabled) {
+            document.getElementById('acsDetailPppoeUsername').disabled = !enabled;
+            document.getElementById('acsDetailPppoePassword').disabled = !enabled;
+            document.getElementById('acsDetailWifiName').disabled = !enabled;
+            document.getElementById('acsDetailWifiPassword').disabled = !enabled;
+            document.getElementById('acsDetailSubmitButton').disabled = !enabled;
+        }
+
+        function fillAcsDetailModal(device) {
+            acsState.selectedDevice = device || null;
+            document.getElementById('acsDetailSerial').textContent = formatValue(device && device.serialNumber);
+            document.getElementById('acsDetailVendorModel').textContent = `${formatValue(device && device.vendor)} / ${formatValue(device && device.model)}`;
+            document.getElementById('acsDetailLastInform').textContent = formatDateTime(device && device.lastInform);
+            document.getElementById('acsDetailRegion').textContent = formatValue(device && device.regionName, 'Belum termapping');
+            document.getElementById('acsDetailCustomer').textContent = formatValue(device && device.customerName, 'Belum termapping');
+            document.getElementById('acsDetailServiceId').textContent = formatValue(device && device.customerServiceId, 'Belum tersedia');
+            document.getElementById('acsDetailIp').textContent = formatValue(device && device.ipAddress);
+            document.getElementById('acsDetailStatus').innerHTML = device && device.status
+                ? `<span class="acs-badge ${escapeHtml(device.status)}">${escapeHtml(device.status)}</span>`
+                : '-';
+
+            document.getElementById('acsDetailPppoeUsername').value = device && device.pppoeUsername ? device.pppoeUsername : '';
+            document.getElementById('acsDetailPppoePassword').value = device && device.pppoePassword ? device.pppoePassword : '';
+            document.getElementById('acsDetailWifiName').value = device && device.wifiName ? device.wifiName : '';
+            document.getElementById('acsDetailWifiPassword').value = device && device.wifiPassword ? device.wifiPassword : '';
+
+            const hasMapping = Boolean(device && device.customerServiceId);
+            document.getElementById('acsDetailNotice').textContent = hasMapping
+                ? 'Perubahan akan disimpan ke customer_services dan dikirim ke GenieACS jika serial ONT tersedia.'
+                : 'Device ini belum memiliki kecocokan data pada customer_services berdasarkan PPPoE username, jadi form belum bisa disimpan.';
+            setAcsDetailFormEnabled(hasMapping);
+        }
+
+        function openAcsDetailModal() {
+            if (window.nmxLoading && typeof window.nmxLoading.hide === 'function') {
+                window.nmxLoading.hide(true);
+            }
+            document.getElementById('acsDetailModal').classList.add('open');
+        }
+
+        function closeAcsDetailModal() {
+            document.getElementById('acsDetailModal').classList.remove('open');
+        }
+
+        async function openAcsDetailModalBySerial(serialNumber) {
+            if (!document.getElementById('acsDetailForm')) {
+                if (typeof window.__acsTerminalOpenDetail === 'function') {
+                    return window.__acsTerminalOpenDetail(serialNumber);
+                }
+                showAcsFeedback('error', 'Komponen detail ACS belum siap dimuat. Silakan refresh halaman.');
+                return;
+            }
+            if (!serialNumber) {
+                showAcsFeedback('error', 'Serial ONT belum tersedia.');
+                return;
+            }
+            const localDevice = acsState.liveDevices.find(item => item.serialNumber === serialNumber) || null;
+            fillAcsDetailModal(localDevice);
+            document.getElementById('acsDetailNotice').textContent = 'Memuat detail ACS terbaru...';
+            openAcsDetailModal();
+            try {
+                const detail = await requestAcsJsonWithTimeout(`/api/network/acs/devices/${encodeURIComponent(serialNumber)}/detail`);
+                fillAcsDetailModal(detail);
+            } catch (error) {
+                if (localDevice) {
+                    fillAcsDetailModal(localDevice);
+                    document.getElementById('acsDetailNotice').textContent = 'Detail terbaru dari ACS belum berhasil dimuat. Menampilkan data terakhir yang tersedia.';
+                }
+                showAcsFeedback('error', error.message);
+            }
+        }
+
+        async function rebootAcsDevice(serialNumber) {
+            if (!serialNumber) {
+                showAcsFeedback('error', 'Serial ONT belum tersedia.');
+                return;
+            }
+            const confirmed = await window.nmxConfirm(`Reboot ONT dengan serial ${serialNumber}?`, {
+                title: 'Konfirmasi Reboot',
+                confirmText: 'Reboot',
+                confirmClass: 'btn btn-danger'
+            });
+            if (!confirmed) {
+                return;
+            }
+            try {
+                await requestAcsJson(`/api/network/acs/devices/${encodeURIComponent(serialNumber)}/reboot`, {
+                    method: 'POST',
+                    headers: acsHeaders()
+                });
+                showAcsFeedback('success', `Perintah reboot untuk ONT ${serialNumber} berhasil dikirim.`);
+            } catch (error) {
+                showAcsFeedback('error', error.message);
+            }
+        }
+
+        async function saveAcsDetail(event) {
+            event.preventDefault();
+            const device = acsState.selectedDevice;
+            if (!device || !device.customerServiceId) {
+                showAcsFeedback('error', 'Device belum termapping ke customer_services.');
+                return;
+            }
+
+            try {
+                const payload = {
+                    serialNumber: device.serialNumber || '',
+                    pppoeUsername: document.getElementById('acsDetailPppoeUsername').value.trim(),
+                    pppoePassword: document.getElementById('acsDetailPppoePassword').value.trim(),
+                    wifiName: document.getElementById('acsDetailWifiName').value.trim(),
+                    wifiPassword: document.getElementById('acsDetailWifiPassword').value.trim()
+                };
+
+                const updated = await requestAcsJson(`/api/network/acs/customer-services/${device.customerServiceId}/subscriber`, {
+                    method: 'PUT',
+                    headers: acsHeaders(true),
+                    body: JSON.stringify(payload)
+                });
+
+                const index = acsState.liveDevices.findIndex(item => item.serialNumber === updated.serialNumber);
+                if (index >= 0) {
+                    acsState.liveDevices[index] = updated;
+                }
+                fillAcsDetailModal(updated);
+                renderAcsDeviceTable();
+                showAcsFeedback('success', 'Detail ACS berhasil diperbarui.');
+                await loadAcsStats();
+            } catch (error) {
+                showAcsFeedback('error', error.message);
+            }
+        }
+
+        function openAcsSettingsModal() {
+            document.getElementById('acsSettingsModal').classList.add('open');
+        }
+
+        function closeAcsSettingsModal() {
+            document.getElementById('acsSettingsModal').classList.remove('open');
+        }
+
+        async function saveAcsSettings(event) {
+            event.preventDefault();
+            try {
+                const payload = {
+                    serverUrl: document.getElementById('acsServerUrlInput').value.trim(),
+                    username: document.getElementById('acsUsernameInput').value.trim(),
+                    password: document.getElementById('acsPasswordInput').value,
+                    active: document.getElementById('acsActiveInput').value === 'true'
+                };
+
+                await requestAcsJson('/api/network/acs/settings', {
+                    method: 'PUT',
+                    headers: acsHeaders(true),
+                    body: JSON.stringify(payload)
+                });
+
+                clearAcsDashboardCache();
+                closeAcsSettingsModal();
+                showAcsFeedback('success', 'Setting ACS berhasil disimpan.');
+                await loadAcsDashboard(true);
+            } catch (error) {
+                showAcsFeedback('error', error.message);
+            }
+        }
+
+        async function testAcsConnection() {
+            clearAcsFeedback();
+            try {
+                const data = await requestAcsJson('/api/network/acs/settings/test', {
+                    method: 'POST',
+                    headers: acsHeaders()
+                });
+                clearAcsDashboardCache();
+                showAcsFeedback('success', `${data.message}. Sample device terbaca: ${data.sampleCount}.`);
+                await loadAcsDashboard(true);
+            } catch (error) {
+                showAcsFeedback('error', error.message);
+                await loadAcsSettings();
+            }
+        }
+
+        async function syncAcsDevices() {
+            clearAcsFeedback();
+            try {
+                const data = await requestAcsJson('/api/network/acs/sync', {
+                    method: 'POST',
+                    headers: acsHeaders()
+                });
+                clearAcsDashboardCache();
+                showAcsFeedback('success', `Sinkronisasi ACS berhasil. ${Array.isArray(data) ? data.length : 0} device diproses.`);
+                await loadAcsDashboard(true);
+            } catch (error) {
+                showAcsFeedback('error', error.message);
+            }
+        }
+
+        window.acsState = acsState;
+        window.acsHeaders = acsHeaders;
+        window.requestAcsJson = requestAcsJson;
+        window.requestAcsJsonWithTimeout = requestAcsJsonWithTimeout;
+        window.showAcsFeedback = showAcsFeedback;
+        window.renderAcsDeviceTable = renderAcsDeviceTable;
+        window.clearAcsDashboardCache = clearAcsDashboardCache;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('acsDetailForm')) {
+                fillAcsDetailModal(null);
+            }
+            loadAcsDashboard();
+            document.getElementById('acsSettingsForm').addEventListener('submit', saveAcsSettings);
+            const legacyDetailForm = document.getElementById('acsDetailForm');
+            if (legacyDetailForm) {
+                legacyDetailForm.addEventListener('submit', saveAcsDetail);
+            }
+            document.getElementById('acsSettingsModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeAcsSettingsModal();
+                }
+            });
+            document.getElementById('acsDetailModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeAcsDetailModal();
+                }
+            });
+            document.getElementById('acsDeviceTableBody').addEventListener('click', function(event) {
+                const button = event.target.closest('button[data-action]');
+                if (!button) {
+                    closeAllQuickActions();
+                    return;
+                }
+
+                const action = button.getAttribute('data-action');
+                const quickId = button.getAttribute('data-quick-id');
+                const serialNumber = button.getAttribute('data-serial') || '';
+
+                if (action === 'toggle-quick') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const quickAction = document.getElementById(quickId);
+                    const shouldOpen = !(quickAction && quickAction.classList.contains('active'));
+                    closeAllQuickActions();
+                    setQuickActionState(quickId, shouldOpen);
+                    return;
+                }
+
+                if (action === 'open-detail') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openAcsDetailModalFromQuickAction(quickId, serialNumber);
+                    return;
+                }
+
+                if (action === 'reboot-device') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    rebootAcsDeviceFromQuickAction(quickId, serialNumber);
+                }
+            });
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.acs-quick-action')) {
+                    closeAllQuickActions();
+                }
+            });
+        });
+    </script>
+    <script src="/js/acs-terminal-page.js"></script>
+</div>
+

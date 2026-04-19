@@ -1,0 +1,17 @@
+[Unit]
+Description=NMX WhatsApp Gateway
+After=network.target
+
+[Service]
+Type=simple
+User=nmx
+Group=nmx
+WorkingDirectory=/opt/nmx/app/whatsapp-gateway
+EnvironmentFile=/etc/nmx/whatsapp-gateway.env
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

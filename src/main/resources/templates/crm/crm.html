@@ -1,0 +1,51 @@
+<div th:fragment="content">
+    <style>
+            .page-header-custom { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+            .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+            .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 12px; }
+            .stat-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+            .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+            .stat-icon.green { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+            .stat-icon.orange { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+            .stat-icon.purple { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+            .stat-info h4 { font-size: 24px; font-weight: 700; color: var(--text-primary); margin: 0; }
+            .stat-info p { font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0; }
+            .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+            .data-table { width: 100%; border-collapse: collapse; }
+            .data-table thead { background: #161616; }
+            .data-table th { padding: 14px 16px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+            .data-table td { padding: 14px 16px; border-bottom: 1px solid #1a1a1a; color: var(--text-secondary); font-size: 13px; }
+            .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+            .contact-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--nmx-orange); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; }
+            .status-badge { display: inline-flex; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+            .status-badge.customer { background: rgba(34,197,94,0.1); color: #22c55e; }
+            .status-badge.prospect { background: rgba(59,130,246,0.1); color: #3b82f6; }
+            .status-badge.lead { background: rgba(249,115,22,0.1); color: #f97316; }
+        </style>
+    <div>
+        <div class="page-header-custom"><button class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Kontak</button>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-address-book"></i></div><div class="stat-info"><h4>150</h4><p>Total Kontak</p></div></div>
+                        <div class="stat-card"><div class="stat-icon green"><i class="fas fa-user-check"></i></div><div class="stat-info"><h4>85</h4><p>Pelanggan</p></div></div>
+                        <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-user-clock"></i></div><div class="stat-info"><h4>45</h4><p>Prospek</p></div></div>
+                        <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-user-plus"></i></div><div class="stat-info"><h4>20</h4><p>Lead Baru</p></div></div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead><tr><th>Nama</th><th>Perusahaan</th><th>Email</th><th>Telepon</th><th>Status</th><th>Aksi</th></tr></thead>
+                            <tbody>
+                                <tr><td><div class="contact-avatar">AS</div> Ahmad Santos</td><td>PT Maju Jaya</td><td>ahmad@majujaya.com</td><td>081234567890</td><td><span class="status-badge customer">Pelanggan</span></td><td><button class="btn btn-sm">Detail</button></td></tr>
+                                <tr><td><div class="contact-avatar">BW</div> Budi Wijaya</td><td>CV Berkah Sejahtera</td><td>budi@berkah.com</td><td>081234567891</td><td><span class="status-badge prospect">Prospek</span></td><td><button class="btn btn-sm">Detail</button></td></tr>
+                                <tr><td><div class="contact-avatar">CS</div> Clara Susilo</td><td>Toko Clara Cell</td><td>clara@claracell.com</td><td>081234567892</td><td><span class="status-badge lead">Lead</span></td><td><button class="btn btn-sm">Detail</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    </div>
+    <script>
+            lucide.createIcons();
+            function updateClock(){const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');const e=document.getElementById('clock');if(e)e.textContent=`${h}:${m}:${s}`;}
+            setInterval(updateClock,1000);updateClock();</script>
+</div>
+

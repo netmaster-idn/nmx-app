@@ -1,0 +1,4248 @@
+/* High-impact page polish overrides (loaded after template inline styles) */
+
+body[data-page="invoice"],
+body[data-page="pembayaran"],
+body[data-page="piutang"],
+body[data-page="cashflow"],
+body[data-page="laporan-keuangan"],
+body[data-page="alert"],
+body[data-page="trafik"],
+body[data-page="data-pelanggan"],
+body[data-page="paket"],
+body[data-page="registrasi"],
+body[data-page="tiket-baru"],
+body[data-page="tiket-aktif"],
+body[data-page="sla"],
+body[data-page="teknisi"] {
+    --inline-panel-bg: #ffffff;
+    --inline-panel-soft: #f8fbff;
+}
+
+body[data-page="invoice"] .stat-card,
+body[data-page="pembayaran"] .stat-card,
+body[data-page="piutang"] .stat-card,
+body[data-page="cashflow"] .stat-card,
+body[data-page="data-pelanggan"] .stat-card,
+body[data-page="tiket-baru"] .stat-card,
+body[data-page="tiket-aktif"] .stat-card,
+body[data-page="sla"] .stat-card,
+body[data-page="teknisi"] .stat-card,
+body[data-page="paket"] .stat-card-modern,
+body[data-page="laporan-keuangan"] .finance-card,
+body[data-page="cashflow"] .card-shell,
+body[data-page="laporan-keuangan"] .table-shell {
+    background: var(--inline-panel-bg) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    color: var(--text-primary) !important;
+}
+
+body[data-page="invoice"] .stat-info p,
+body[data-page="pembayaran"] .stat-info p,
+body[data-page="piutang"] .stat-info p,
+body[data-page="cashflow"] .stat-info p,
+body[data-page="data-pelanggan"] .stat-info p,
+body[data-page="tiket-baru"] .stat-info p,
+body[data-page="tiket-aktif"] .stat-info p,
+body[data-page="sla"] .stat-info p,
+body[data-page="teknisi"] .stat-info p,
+body[data-page="laporan-keuangan"] .finance-card p,
+body[data-page="laporan-keuangan"] .finance-card h3 {
+    color: var(--text-muted) !important;
+}
+
+body[data-page="invoice"] .search-container input,
+body[data-page="pembayaran"] .search-container input,
+body[data-page="piutang"] .search-container input,
+body[data-page="data-pelanggan"] .search-container input,
+body[data-page="tiket-aktif"] .search-container input,
+body[data-page="teknisi"] .search-container input,
+body[data-page="cashflow"] .filter-dropdown select,
+body[data-page="laporan-keuangan"] .filter-dropdown select,
+body[data-page="invoice"] .filter-dropdown select,
+body[data-page="pembayaran"] .filter-dropdown select,
+body[data-page="piutang"] .filter-dropdown select {
+    background: #ffffff !important;
+    border: 1px solid var(--input-border) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="invoice"] .search-container input:focus,
+body[data-page="pembayaran"] .search-container input:focus,
+body[data-page="piutang"] .search-container input:focus,
+body[data-page="data-pelanggan"] .search-container input:focus,
+body[data-page="tiket-aktif"] .search-container input:focus,
+body[data-page="teknisi"] .search-container input:focus,
+body[data-page="cashflow"] .filter-dropdown select:focus,
+body[data-page="laporan-keuangan"] .filter-dropdown select:focus,
+body[data-page="invoice"] .filter-dropdown select:focus,
+body[data-page="pembayaran"] .filter-dropdown select:focus,
+body[data-page="piutang"] .filter-dropdown select:focus {
+    border-color: var(--input-border-focus) !important;
+    box-shadow: var(--focus-ring), var(--shadow-sm) !important;
+}
+
+body[data-page="cashflow"] .data-table thead,
+body[data-page="laporan-keuangan"] .data-table thead {
+    background: #f8fbff !important;
+}
+
+body[data-page="cashflow"] .data-table th,
+body[data-page="laporan-keuangan"] .data-table th {
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body[data-page="cashflow"] .data-table td,
+body[data-page="laporan-keuangan"] .data-table td {
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+body[data-page="cashflow"] .data-table tbody tr:hover,
+body[data-page="laporan-keuangan"] .data-table tbody tr:hover {
+    background: #f8fbff !important;
+}
+
+body[data-page="alert"] .billing-card,
+body[data-page="alert"] .billing-table-card,
+body[data-page="alert"] .billing-kpi-mini,
+body[data-page="alert"] .bot-toggle-card,
+body[data-page="alert"] .wa-history-card,
+body[data-page="alert"] .billing-action-panel {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="alert"] .billing-tab,
+body[data-page="alert"] .billing-action-btn,
+body[data-page="alert"] .icon-btn {
+    background: var(--inline-panel-soft) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-secondary) !important;
+}
+
+body[data-page="alert"] .billing-tab.active {
+    background: var(--nmx-primary) !important;
+    border-color: var(--nmx-primary) !important;
+    color: #ffffff !important;
+}
+
+body[data-page="alert"] .billing-table th {
+    background: #f8fbff !important;
+    color: var(--text-muted) !important;
+}
+
+body[data-page="alert"] .billing-main,
+body[data-page="alert"] .billing-title,
+body[data-page="alert"] .billing-head h2 {
+    color: var(--text-primary) !important;
+}
+
+body[data-page="alert"] .billing-sub,
+body[data-page="alert"] .billing-meta,
+body[data-page="alert"] .billing-empty,
+body[data-page="alert"] .billing-head p {
+    color: var(--text-muted) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-card,
+body[data-page="trafik"] .mk-monitor-modal,
+body[data-page="trafik"] .mk-traffic-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-select,
+body[data-page="trafik"] .mk-monitor-search,
+body[data-page="trafik"] .mk-monitor-btn,
+body[data-page="trafik"] .mk-filter-select,
+body[data-page="trafik"] .mk-filter-input {
+    background: #ffffff !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--input-border) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-btn {
+    background: var(--nmx-primary) !important;
+    border-color: var(--nmx-primary) !important;
+    color: #ffffff !important;
+}
+
+body[data-page="trafik"] .mk-monitor-label,
+body[data-page="trafik"] .mk-chart-legend,
+body[data-page="trafik"] .mk-monitor-meta {
+    color: var(--text-muted) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-value,
+body[data-page="trafik"] .mk-section-title {
+    color: var(--text-primary) !important;
+}
+
+/* Monitoring Trafik deep light-theme override */
+body[data-page="trafik"] .mk-monitor-card,
+body[data-page="trafik"] .mk-monitor-chart-shell,
+body[data-page="trafik"] .mk-monitor-metric-card,
+body[data-page="trafik"] .mk-monitor-resource,
+body[data-page="trafik"] .mk-monitor-quick-card,
+body[data-page="trafik"] .mk-monitor-table-shell,
+body[data-page="trafik"] .mk-monitor-log-item,
+body[data-page="trafik"] .mk-monitor-modal-panel,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-table-shell,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-chart-shell,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-log-list,
+body[data-page="trafik"] .mk-monitor-state {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    color: var(--text-secondary) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-stat::after,
+body[data-page="trafik"] .mk-monitor-quick-card::before,
+body[data-page="trafik"] .mk-monitor-metric-card::before,
+body[data-page="trafik"] .mk-monitor-modal-panel::before,
+body[data-page="trafik"] .mk-monitor-modal-panel::after {
+    background: none !important;
+    box-shadow: none !important;
+}
+
+body[data-page="trafik"] .mk-monitor-metric-card::after {
+    background: #f8fbff !important;
+    border: 1px solid var(--border-light) !important;
+    box-shadow: none !important;
+}
+
+body[data-page="trafik"] .mk-monitor-head h3,
+body[data-page="trafik"] .mk-monitor-value,
+body[data-page="trafik"] .mk-monitor-quick-card h4,
+body[data-page="trafik"] .mk-monitor-quick-stat,
+body[data-page="trafik"] .mk-monitor-resource span,
+body[data-page="trafik"] .mk-monitor-metric-value,
+body[data-page="trafik"] .mk-monitor-metric-value strong,
+body[data-page="trafik"] .mk-monitor-table td {
+    color: var(--text-primary) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-label,
+body[data-page="trafik"] .mk-monitor-meta,
+body[data-page="trafik"] .mk-monitor-resource strong,
+body[data-page="trafik"] .mk-monitor-quick-caption,
+body[data-page="trafik"] .mk-monitor-quick-peek,
+body[data-page="trafik"] .mk-monitor-chart-legend,
+body[data-page="trafik"] .mk-monitor-empty,
+body[data-page="trafik"] .mk-monitor-mini,
+body[data-page="trafik"] .mk-monitor-metric-label,
+body[data-page="trafik"] .mk-monitor-metric-foot,
+body[data-page="trafik"] .mk-monitor-table th,
+body[data-page="trafik"] .mk-monitor-modal-panel > .mk-monitor-head p {
+    color: var(--text-muted) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-select,
+body[data-page="trafik"] .mk-monitor-search,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-search {
+    background: #ffffff !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--input-border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-close {
+    background: #ffffff !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-close:hover {
+    background: #f8fbff !important;
+    color: var(--nmx-primary-dark) !important;
+    border-color: #c7d8ef !important;
+}
+
+body[data-page="trafik"] .mk-monitor-modal {
+    background: rgba(15, 23, 42, 0.28) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-table th {
+    background: #f8fbff !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-table td {
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-metric-dots {
+    background: #e7edf7 !important;
+}
+
+body[data-page="trafik"] .mk-monitor-metric-dots::before {
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-link {
+    background: var(--status-info-bg) !important;
+    color: var(--status-info-text) !important;
+    border: 1px solid #bfdbfe !important;
+}
+
+body[data-page="paket"] .package-theme .tab-navigation,
+body[data-page="paket"] .package-theme .table-shell,
+body[data-page="paket"] .package-theme .modal-content-modern {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="paket"] .package-theme .tab-btn.active,
+body[data-page="paket"] .package-theme .btn-primary-modern,
+body[data-page="paket"] .package-theme .modal-header-icon {
+    background: var(--nmx-primary) !important;
+    color: #ffffff !important;
+}
+
+body[data-page="registrasi"] .registration-grid .compact-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="tiket-baru"] .form-card,
+body[data-page="tiket-aktif"] .table-container,
+body[data-page="sla"] .chart-container,
+body[data-page="teknisi"] .table-container {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="tiket-aktif"] .customer-table thead,
+body[data-page="teknisi"] .customer-table thead,
+body[data-page="sla"] .customer-table thead {
+    background: #f8fbff !important;
+}
+
+body[data-page="tiket-aktif"] .customer-table th,
+body[data-page="teknisi"] .customer-table th,
+body[data-page="sla"] .customer-table th {
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body[data-page="tiket-aktif"] .customer-table td,
+body[data-page="teknisi"] .customer-table td,
+body[data-page="sla"] .customer-table td {
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+body[data-page="tiket-baru"] .page-header-custom,
+body[data-page="tiket-aktif"] .page-header-custom,
+body[data-page="sla"] .page-header-custom,
+body[data-page="teknisi"] .page-header-custom,
+body[data-page="data-pelanggan"] .page-header-custom,
+body[data-page="history-payment"] .history-header {
+    margin-bottom: 16px !important;
+}
+
+body[data-page="invoice"] .stats-row,
+body[data-page="pembayaran"] .stats-grid,
+body[data-page="piutang"] .stats-row,
+body[data-page="cashflow"] .stats-grid,
+body[data-page="laporan-keuangan"] .stats-grid,
+body[data-page="data-pelanggan"] .stats-row,
+body[data-page="history-payment"] .stats-row,
+body[data-page="paket"] .stats-grid,
+body[data-page="tiket-baru"] .stats-row,
+body[data-page="tiket-aktif"] .stats-row,
+body[data-page="sla"] .stats-row,
+body[data-page="teknisi"] .stats-row {
+    gap: 12px !important;
+}
+
+@media (max-width: 980px) {
+    body[data-page="alert"] .billing-grid,
+    body[data-page="alert"] .billing-kpi-grid-secondary,
+    body[data-page="trafik"] .mk-monitor-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+body[data-page="invoice"] .invoice-header .stats-row,
+    body[data-page="pembayaran"] .stats-grid,
+    body[data-page="piutang"] .stats-row,
+    body[data-page="cashflow"] .stats-grid,
+    body[data-page="laporan-keuangan"] .stats-grid,
+    body[data-page="alert"] .billing-grid,
+    body[data-page="alert"] .billing-kpi-grid-secondary,
+    body[data-page="trafik"] .mk-monitor-summary,
+    body[data-page="data-pelanggan"] .stats-row,
+    body[data-page="history-payment"] .stats-row,
+    body[data-page="paket"] .stats-grid,
+    body[data-page="tiket-baru"] .stats-row,
+    body[data-page="tiket-aktif"] .stats-row,
+    body[data-page="sla"] .stats-row,
+    body[data-page="teknisi"] .stats-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Invoice specific: fix old dark action buttons and legacy accents */
+body[data-page="invoice"] .filter-tab:hover,
+body[data-page="invoice"] .filter-tab.active {
+    background: var(--nmx-primary) !important;
+    border-color: var(--nmx-primary) !important;
+    color: #ffffff !important;
+}
+
+body[data-page="invoice"] .invoice-number,
+body[data-page="invoice"] .customer-code {
+    color: var(--status-info-text) !important;
+}
+
+body[data-page="invoice"] .action-btn button {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border-radius: 10px !important;
+}
+
+body[data-page="invoice"] .action-btn button:hover {
+    background: #f8fbff !important;
+    border-color: #c7d8ef !important;
+    color: var(--nmx-primary-dark) !important;
+}
+
+body[data-page="invoice"] .action-btn button.success:hover {
+    background: #f0fdf4 !important;
+    border-color: #bbf7d0 !important;
+    color: var(--status-success-text) !important;
+}
+
+body[data-page="invoice"] .action-btn button.danger:hover {
+    background: #fef2f2 !important;
+    border-color: #fecaca !important;
+    color: var(--status-danger-text) !important;
+}
+
+body[data-page="invoice"] .payment-badge {
+    border-radius: 999px !important;
+    padding: 4px 9px !important;
+    font-weight: 600 !important;
+}
+
+/* Global legacy dark cleanup across remaining pages */
+body[data-page="network-server"],
+body[data-page="acs"],
+body[data-page="mikrotik"],
+body[data-page="reports"],
+body[data-page="crm"],
+body[data-page="mapping"],
+body[data-page="system"],
+body[data-page="process-log"],
+body[data-page="error-log"],
+body[data-page="superadmin-dashboard"],
+body[data-page="tenant-approval"],
+body[data-page="tenant-directory"],
+body[data-page="user-mgmt"],
+body[data-page="automation"],
+body[data-page="company"] {
+    --legacy-surface: #ffffff;
+    --legacy-surface-soft: #f8fbff;
+}
+
+body [class*="data-table"] thead,
+body .data-table thead,
+body .customer-table thead,
+body .billing-table thead {
+    background: #f8fbff !important;
+}
+
+body [class*="data-table"] th,
+body .data-table th,
+body .customer-table th,
+body .billing-table th {
+    color: var(--text-muted) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body [class*="data-table"] td,
+body .data-table td,
+body .customer-table td,
+body .billing-table td {
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+body [class*="data-table"] tbody tr:hover,
+body .data-table tbody tr:hover,
+body .customer-table tbody tr:hover,
+body .billing-table tbody tr:hover {
+    background: #f8fbff !important;
+}
+
+body .table-shell,
+body .card-shell,
+body .hybrid-card,
+body .hybrid-table-shell,
+body .hybrid-modal-panel,
+body .company-toolbar,
+body .superadmin-card,
+body .tenant-card,
+body .network-card,
+body .report-card,
+body .crm-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body .status-chip.paid,
+body .status-badge.paid,
+body .payment-badge.paid,
+body .alert-message.success,
+body .rule-status.active,
+body .access-badge.full,
+body .source-badge.api,
+body .status-chip.online {
+    background: var(--status-success-bg) !important;
+    color: var(--status-success-text) !important;
+}
+
+body .status-chip.pending,
+body .status-badge.pending,
+body .access-badge.read,
+body .source-badge.monitoring,
+body .status-chip.info {
+    background: var(--status-info-bg) !important;
+    color: var(--status-info-text) !important;
+}
+
+body .stat-icon.purple,
+body .report-card-icon[style*="#a855f7"],
+body .report-card-icon[style*="#8b5cf6"] {
+    color: var(--color-compare) !important;
+}
+
+/* Registration page: remove remaining old dark strip and orange legacy */
+body.page-registrasi-compact .page-wallboard-shell {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-card) !important;
+}
+
+body.page-registrasi-compact .compact-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body.page-registrasi-compact .form-section-title {
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+body.page-registrasi-compact #registrationForm .input-icon-wrapper i {
+    color: var(--text-dim) !important;
+}
+
+body.page-registrasi-compact .form-actions-custom {
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    box-shadow: var(--shadow-sm) !important;
+    backdrop-filter: none !important;
+}
+
+/* Monitoring trafik + alert legacy dark elements */
+body[data-page="trafik"] .mk-monitor-card,
+body[data-page="trafik"] .mk-monitor-topbar,
+body[data-page="trafik"] .mk-monitor-summary .mk-monitor-stat,
+body[data-page="trafik"] .mk-monitor-modal,
+body[data-page="trafik"] .mk-monitor-bottom-grid .mk-monitor-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-value,
+body[data-page="trafik"] .mk-monitor-label,
+body[data-page="trafik"] .mk-monitor-meta {
+    text-shadow: none !important;
+}
+
+body[data-page="alert"] .billing-action-panel {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+/* Dashboard home dark tactile override (final layer) */
+body[data-page="dashboard-home"] .content-scroll {
+    background: transparent !important;
+}
+
+body[data-page="dashboard-home"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="dashboard-home"] .page-wallboard-shell::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)) !important;
+}
+
+body[data-page="dashboard-home"] .top-header {
+    background: linear-gradient(180deg, #3a3f49 0%, #2d313a 100%) !important;
+    border: 1px solid #4b505b !important;
+    box-shadow:
+        0 16px 28px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+body[data-page="dashboard-home"] .search-box input,
+body[data-page="dashboard-home"] .quick-actions,
+body[data-page="dashboard-home"] .clock-display,
+body[data-page="dashboard-home"] .notification-btn,
+body[data-page="dashboard-home"] .user-box,
+body[data-page="dashboard-home"] .dashboard-chart-badge,
+body[data-page="dashboard-home"] .alert-item {
+    background: linear-gradient(180deg, #3a3f4a 0%, #2f343e 100%) !important;
+    border: 1px solid #4b505a !important;
+    color: #dfd6c9 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="dashboard-home"] .dashboard-home .card {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="dashboard-home"] .dashboard-home .card::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0)) !important;
+}
+
+body[data-page="dashboard-home"] .dashboard-home .dashboard-map-shell {
+    background:
+        radial-gradient(circle at top left, rgba(203, 109, 47, 0.18), transparent 38%),
+        radial-gradient(circle at bottom right, rgba(97, 108, 129, 0.24), transparent 34%),
+        linear-gradient(180deg, rgba(39, 44, 54, 0.96), rgba(31, 35, 43, 0.96)) !important;
+    border: 1px solid #464b55 !important;
+}
+
+body[data-page="dashboard-home"] .dashboard-home .dashboard-map-legend {
+    background: linear-gradient(180deg, #3a3f49 0%, #2f343d 100%) !important;
+    border: 1px solid #4b505a !important;
+}
+
+body[data-page="dashboard-home"] .app-footer {
+    background: linear-gradient(180deg, #2e323b 0%, #252932 100%) !important;
+    border: 1px solid #414650 !important;
+    color: #a89f91 !important;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="dashboard-home"] .footer-version {
+    background: linear-gradient(180deg, #3a3f48 0%, #2f333c 100%) !important;
+    border: 1px solid #4b5058 !important;
+}
+
+/* Monitoring trafik dark tactile override (final layer) */
+body[data-page="trafik"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2b3039 0%, #20242d 100%) !important;
+    border: 1px solid #434854 !important;
+    box-shadow:
+        0 22px 42px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.34) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-card,
+body[data-page="trafik"] .mk-monitor-topbar,
+body[data-page="trafik"] .mk-monitor-summary .mk-monitor-stat,
+body[data-page="trafik"] .mk-monitor-bottom-grid .mk-monitor-card,
+body[data-page="trafik"] .mk-monitor-chart-shell,
+body[data-page="trafik"] .mk-monitor-metric-card,
+body[data-page="trafik"] .mk-monitor-resource,
+body[data-page="trafik"] .mk-monitor-quick-card,
+body[data-page="trafik"] .mk-monitor-table-shell,
+body[data-page="trafik"] .mk-monitor-log-item,
+body[data-page="trafik"] .mk-monitor-modal-panel,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-table-shell,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-chart-shell,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-log-list,
+body[data-page="trafik"] .mk-monitor-state {
+    background: linear-gradient(180deg, #343943 0%, #292d36 100%) !important;
+    border: 1px solid #4a505b !important;
+    box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+    color: #e7ddd0 !important;
+}
+
+body[data-page="trafik"] .mk-monitor-modal {
+    background: rgba(5, 7, 11, 0.72) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-chart-shell {
+    background: linear-gradient(180deg, rgba(26, 30, 37, 0.95), rgba(18, 22, 29, 0.95)) !important;
+    border-color: #49505c !important;
+}
+
+body[data-page="trafik"] .mk-monitor-metric-card::after {
+    background: linear-gradient(180deg, #3f4551 0%, #323843 100%) !important;
+    border: 1px solid #59606d !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-stat::after,
+body[data-page="trafik"] .mk-monitor-quick-card::before,
+body[data-page="trafik"] .mk-monitor-metric-card::before,
+body[data-page="trafik"] .mk-monitor-modal-panel::before,
+body[data-page="trafik"] .mk-monitor-modal-panel::after {
+    background: radial-gradient(circle at top right, rgba(209, 128, 69, 0.18), transparent 45%) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-label,
+body[data-page="trafik"] .mk-monitor-meta,
+body[data-page="trafik"] .mk-monitor-resource strong,
+body[data-page="trafik"] .mk-monitor-quick-caption,
+body[data-page="trafik"] .mk-monitor-quick-peek,
+body[data-page="trafik"] .mk-monitor-chart-legend,
+body[data-page="trafik"] .mk-monitor-empty,
+body[data-page="trafik"] .mk-monitor-mini,
+body[data-page="trafik"] .mk-monitor-metric-label,
+body[data-page="trafik"] .mk-monitor-metric-foot,
+body[data-page="trafik"] .mk-monitor-table th,
+body[data-page="trafik"] .mk-monitor-modal-panel > .mk-monitor-head p {
+    color: #a99d8d !important;
+}
+
+body[data-page="trafik"] .mk-monitor-head h3,
+body[data-page="trafik"] .mk-monitor-value,
+body[data-page="trafik"] .mk-monitor-quick-card h4,
+body[data-page="trafik"] .mk-monitor-quick-stat,
+body[data-page="trafik"] .mk-monitor-resource span,
+body[data-page="trafik"] .mk-monitor-metric-value,
+body[data-page="trafik"] .mk-monitor-metric-value strong,
+body[data-page="trafik"] .mk-monitor-table td {
+    color: #f0e7dc !important;
+}
+
+body[data-page="trafik"] .mk-monitor-select,
+body[data-page="trafik"] .mk-monitor-search,
+body[data-page="trafik"] .mk-monitor-modal .mk-monitor-search,
+body[data-page="trafik"] .mk-filter-select,
+body[data-page="trafik"] .mk-filter-input {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    color: #e8ddd1 !important;
+    border: 1px solid #525864 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-btn {
+    background: linear-gradient(170deg, #db8a50 0%, #bf662f 58%, #9d4f21 100%) !important;
+    border: 1px solid rgba(184, 99, 44, 0.82) !important;
+    color: #fff8ef !important;
+    box-shadow:
+        0 10px 18px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        inset 0 -2px 0 rgba(95, 48, 21, 0.46) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-close {
+    background: linear-gradient(180deg, #3c424d 0%, #303640 100%) !important;
+    color: #e9dfd2 !important;
+    border: 1px solid #4f5662 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-close:hover {
+    background: linear-gradient(180deg, #474d58 0%, #373d48 100%) !important;
+    border-color: rgba(209, 128, 69, 0.5) !important;
+    color: #ffd4b0 !important;
+}
+
+body[data-page="trafik"] .mk-monitor-table th {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+    border-bottom: 1px solid #4e5560 !important;
+}
+
+body[data-page="trafik"] .mk-monitor-table td {
+    border-bottom: 1px solid rgba(84, 91, 102, 0.42) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-metric-dots {
+    background: #232933 !important;
+}
+
+body[data-page="trafik"] .mk-monitor-metric-dots::before {
+    background: linear-gradient(90deg, #5ccfe2 0%, #cf7b41 100%) !important;
+}
+
+body[data-page="trafik"] .mk-monitor-link {
+    background: linear-gradient(180deg, rgba(86, 64, 46, 0.68), rgba(62, 46, 34, 0.68)) !important;
+    color: #f1d7bf !important;
+    border: 1px solid rgba(210, 132, 75, 0.42) !important;
+}
+
+body[data-page="trafik"] .app-footer {
+    background: linear-gradient(180deg, #2e323b 0%, #252932 100%) !important;
+    border: 1px solid #414650 !important;
+    color: #a89f91 !important;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="trafik"] .footer-version {
+    background: linear-gradient(180deg, #3a3f48 0%, #2f333c 100%) !important;
+    border: 1px solid #4b5058 !important;
+}
+
+/* Global cohesive dark slate layer for all pages */
+body[data-page] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2b3039 0%, #20242d 100%) !important;
+    border: 1px solid #434854 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.34) !important;
+}
+
+body[data-page] .page-wallboard-shell::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)) !important;
+    opacity: 0.55 !important;
+}
+
+body[data-page] .top-header {
+    background: linear-gradient(180deg, #3a3f49 0%, #2d313a 100%) !important;
+    border: 1px solid #4b505b !important;
+    box-shadow:
+        0 16px 28px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+body[data-page] .top-header::before {
+    background: linear-gradient(180deg, rgba(229, 174, 132, 0.08), rgba(255, 255, 255, 0.01)) !important;
+}
+
+body[data-page] .top-header::after {
+    background: linear-gradient(90deg, transparent, rgba(209, 128, 69, 0.3), transparent) !important;
+}
+
+body[data-page] .card,
+body[data-page] .stat-card,
+body[data-page] .metric-card,
+body[data-page] .widget-card,
+body[data-page] .section-card,
+body[data-page] .form-card,
+body[data-page] .mini-stat,
+body[data-page] .chart-card,
+body[data-page] .report-card,
+body[data-page] .rule-card,
+body[data-page] .device-card,
+body[data-page] .info-card,
+body[data-page] .table-container,
+body[data-page] .table-shell,
+body[data-page] .card-shell,
+body[data-page] .hybrid-card,
+body[data-page] .hybrid-table-shell,
+body[data-page] .hybrid-modal-panel,
+body[data-page] .company-toolbar,
+body[data-page] .superadmin-card,
+body[data-page] .tenant-card,
+body[data-page] .network-card,
+body[data-page] .crm-card,
+body[data-page] .finance-card,
+body[data-page] .billing-card,
+body[data-page] .billing-table-card,
+body[data-page] .billing-kpi-mini,
+body[data-page] .bot-toggle-card,
+body[data-page] .wa-history-card,
+body[data-page] .billing-action-panel,
+body[data-page] .mk-monitor-card,
+body[data-page] .mk-monitor-topbar,
+body[data-page] .mk-monitor-summary .mk-monitor-stat,
+body[data-page] .mk-monitor-chart-shell,
+body[data-page] .mk-monitor-metric-card,
+body[data-page] .mk-monitor-resource,
+body[data-page] .mk-monitor-quick-card,
+body[data-page] .mk-monitor-table-shell,
+body[data-page] .mk-monitor-log-item,
+body[data-page] .mk-monitor-modal-panel,
+body[data-page] .mk-monitor-modal .mk-monitor-table-shell,
+body[data-page] .mk-monitor-modal .mk-monitor-chart-shell,
+body[data-page] .mk-monitor-modal .mk-monitor-log-list,
+body[data-page] .mk-monitor-state,
+body[data-page] .tenant-approval-table-card,
+body[data-page] .tenant-directory-shell,
+body[data-page] .settings-card,
+body[data-page] .activity-item,
+body[data-page] .wa-status-card {
+    background: linear-gradient(180deg, #343943 0%, #292d36 100%) !important;
+    border: 1px solid #4a505b !important;
+    box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+    color: #e7ddd0 !important;
+}
+
+body[data-page] .search-box input,
+body[data-page] .table-search input,
+body[data-page] .quick-actions,
+body[data-page] .clock-display,
+body[data-page] .notification-btn,
+body[data-page] .user-box,
+body[data-page] .mk-monitor-select,
+body[data-page] .mk-monitor-search,
+body[data-page] .mk-filter-select,
+body[data-page] .mk-filter-input,
+body[data-page] input[type="text"],
+body[data-page] input[type="password"],
+body[data-page] input[type="email"],
+body[data-page] input[type="number"],
+body[data-page] input[type="date"],
+body[data-page] select,
+body[data-page] textarea {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    color: #e8ddd1 !important;
+    border: 1px solid #525864 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body[data-page] .search-box input:focus,
+body[data-page] .table-search input:focus,
+body[data-page] input:focus,
+body[data-page] select:focus,
+body[data-page] textarea:focus {
+    border-color: rgba(209, 128, 69, 0.58) !important;
+    box-shadow:
+        0 0 0 3px rgba(209, 128, 69, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.46),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body[data-page] .btn,
+body[data-page] .btn-primary,
+body[data-page] .btn-orange,
+body[data-page] .mk-monitor-btn,
+body[data-page] .billing-tab.active,
+body[data-page] .btn-modern,
+body[data-page] .btn-primary-modern {
+    background: linear-gradient(170deg, #db8a50 0%, #bf662f 58%, #9d4f21 100%) !important;
+    border: 1px solid rgba(184, 99, 44, 0.82) !important;
+    color: #fff8ef !important;
+    box-shadow:
+        0 10px 18px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        inset 0 -2px 0 rgba(95, 48, 21, 0.46) !important;
+}
+
+body[data-page] .btn-secondary,
+body[data-page] .btn-outline,
+body[data-page] .btn-soft,
+body[data-page] .mk-monitor-close,
+body[data-page] .icon-btn,
+body[data-page] .quick-action-btn,
+body[data-page] .pagination-btn,
+body[data-page] .table-action-btn,
+body[data-page] .filter-btn,
+body[data-page] .filter-tab {
+    background: linear-gradient(180deg, #3c424d 0%, #303640 100%) !important;
+    color: #e9dfd2 !important;
+    border: 1px solid #4f5662 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page] .table thead,
+body[data-page] .data-table thead,
+body[data-page] .customer-table thead,
+body[data-page] .billing-table thead,
+body[data-page] .mk-monitor-table th {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page] .table th,
+body[data-page] .data-table th,
+body[data-page] .customer-table th,
+body[data-page] .billing-table th,
+body[data-page] .mk-monitor-table th,
+body[data-page] .table-empty,
+body[data-page] .empty-state p,
+body[data-page] .mk-monitor-label,
+body[data-page] .mk-monitor-meta,
+body[data-page] .mk-monitor-mini,
+body[data-page] .mk-monitor-metric-label,
+body[data-page] .mk-monitor-metric-foot,
+body[data-page] .page-subtitle,
+body[data-page] .footer-copyright {
+    color: #a99d8d !important;
+}
+
+body[data-page] .table td,
+body[data-page] .data-table td,
+body[data-page] .customer-table td,
+body[data-page] .billing-table td,
+body[data-page] .mk-monitor-table td,
+body[data-page] .card-title,
+body[data-page] .widget-card-title,
+body[data-page] .section-card-title,
+body[data-page] .form-card-title,
+body[data-page] .modal-title,
+body[data-page] .page-title,
+body[data-page] .breadcrumb-current,
+body[data-page] .mk-monitor-value,
+body[data-page] .mk-monitor-resource span,
+body[data-page] .mk-monitor-metric-value,
+body[data-page] .mk-monitor-metric-value strong {
+    color: #f0e7dc !important;
+}
+
+body[data-page] .table tbody tr:hover,
+body[data-page] .data-table tbody tr:hover,
+body[data-page] .customer-table tbody tr:hover,
+body[data-page] .billing-table tbody tr:hover,
+body[data-page] .mk-monitor-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page] .modal,
+body[data-page] .modal-overlay,
+body[data-page] .superadmin-modal-overlay,
+body[data-page] .mk-monitor-modal {
+    background: rgba(5, 7, 11, 0.72) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body[data-page] .modal-content,
+body[data-page] .company-modal,
+body[data-page] .superadmin-modal,
+body[data-page] .modal-content-modern,
+body[data-page] .modal-slide {
+    background: linear-gradient(180deg, #343943 0%, #292d36 100%) !important;
+    border: 1px solid #4a505b !important;
+    box-shadow:
+        0 18px 34px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page] .app-footer {
+    background: linear-gradient(180deg, #2e323b 0%, #252932 100%) !important;
+    border: 1px solid #414650 !important;
+    color: #a89f91 !important;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page] .footer-version {
+    background: linear-gradient(180deg, #3a3f48 0%, #2f333c 100%) !important;
+    border: 1px solid #4b5058 !important;
+}
+
+/* Header quick-actions polish */
+body[data-page] .quick-actions {
+    background: linear-gradient(180deg, #343943 0%, #2b3039 100%) !important;
+    border: 1px solid #49505b !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page] .quick-action-btn {
+    background: linear-gradient(180deg, #3d434f 0%, #313742 100%) !important;
+    border: 1px solid #535a66 !important;
+    color: #d7cec2 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page] .quick-action-btn:hover {
+    background: linear-gradient(180deg, #484f5b 0%, #383f4b 100%) !important;
+    border-color: rgba(209, 128, 69, 0.52) !important;
+    color: #ffd8b7 !important;
+}
+
+/* WA Schedule page polish */
+body[data-page="alert"] .billing-topbar,
+body[data-page="alert"] .billing-table-head,
+body[data-page="alert"] .billing-filter-bar {
+    background: linear-gradient(180deg, rgba(56, 61, 71, 0.92), rgba(43, 48, 58, 0.92)) !important;
+    border: 1px solid #4b515c !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="alert"] .billing-tab,
+body[data-page="alert"] .billing-pill,
+body[data-page="alert"] .billing-badge,
+body[data-page="alert"] .status-chip {
+    background: linear-gradient(180deg, #3a404b 0%, #2f353f 100%) !important;
+    border: 1px solid #515864 !important;
+    color: #d5cabd !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="alert"] .billing-tab:hover {
+    border-color: rgba(209, 128, 69, 0.46) !important;
+    color: #ffd7b5 !important;
+}
+
+body[data-page="alert"] .billing-tab.active {
+    background: linear-gradient(170deg, #db8a50 0%, #bf662f 58%, #9d4f21 100%) !important;
+    border: 1px solid rgba(184, 99, 44, 0.82) !important;
+    color: #fff8ef !important;
+}
+
+body[data-page="alert"] .billing-action-btn,
+body[data-page="alert"] .icon-btn {
+    background: linear-gradient(180deg, #3c424d 0%, #303640 100%) !important;
+    border: 1px solid #505763 !important;
+    color: #ddd3c6 !important;
+}
+
+body[data-page="alert"] .billing-action-btn:hover,
+body[data-page="alert"] .icon-btn:hover {
+    background: linear-gradient(180deg, #474d59 0%, #383e49 100%) !important;
+    border-color: rgba(209, 128, 69, 0.5) !important;
+    color: #ffd5b2 !important;
+}
+
+body[data-page="alert"] .billing-action-panel {
+    background: linear-gradient(180deg, #343a45 0%, #2b3039 100%) !important;
+    border: 1px solid #4f5662 !important;
+}
+
+body[data-page="alert"] .billing-action-item {
+    color: #eee4d8 !important;
+}
+
+body[data-page="alert"] .billing-action-item:hover {
+    background: rgba(209, 128, 69, 0.14) !important;
+}
+
+/* Alert settings modal (bsSettingsModal) */
+body[data-page="alert"] #bsSettingsModal .modal-content {
+    background: linear-gradient(180deg, #343943 0%, #292d36 100%) !important;
+    border: 1px solid #4b515d !important;
+    box-shadow:
+        0 24px 42px rgba(0, 0, 0, 0.44),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .modal-header,
+body[data-page="alert"] #bsSettingsModal .modal-body,
+body[data-page="alert"] #bsSettingsModal .modal-footer {
+    background: transparent !important;
+    border-color: #434a56 !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .modal-footer {
+    background: linear-gradient(180deg, rgba(47, 52, 62, 0.95), rgba(37, 42, 51, 0.95)) !important;
+    border-top: 1px solid #4b515d !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .modal-title,
+body[data-page="alert"] #bsSettingsModal .modal-subtitle,
+body[data-page="alert"] #bsSettingsModal .billing-sub,
+body[data-page="alert"] #bsSettingsModal .alert-settings-trigger,
+body[data-page="alert"] #bsSettingsModal .form-label,
+body[data-page="alert"] #bsSettingsModal label {
+    color: #e8ddd0 !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .billing-table-card,
+body[data-page="alert"] #bsSettingsModal .alert-modal-summary-card,
+body[data-page="alert"] #bsSettingsModal .alert-modal-highlight {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+    border: 1px solid #4f5663 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .form-input,
+body[data-page="alert"] #bsSettingsModal .form-select,
+body[data-page="alert"] #bsSettingsModal input,
+body[data-page="alert"] #bsSettingsModal select,
+body[data-page="alert"] #bsSettingsModal textarea {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    color: #eadfd3 !important;
+    border: 1px solid #545b67 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .form-input:focus,
+body[data-page="alert"] #bsSettingsModal .form-select:focus,
+body[data-page="alert"] #bsSettingsModal input:focus,
+body[data-page="alert"] #bsSettingsModal select:focus,
+body[data-page="alert"] #bsSettingsModal textarea:focus {
+    border-color: rgba(209, 128, 69, 0.58) !important;
+    box-shadow:
+        0 0 0 3px rgba(209, 128, 69, 0.22),
+        inset 0 2px 4px rgba(0, 0, 0, 0.46),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .modal-close {
+    background: linear-gradient(180deg, #3e444f 0%, #323843 100%) !important;
+    border: 1px solid #545b67 !important;
+    color: #e7dccf !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .modal-close:hover {
+    border-color: rgba(209, 128, 69, 0.52) !important;
+    color: #ffd8b5 !important;
+}
+
+body[data-page="alert"] #bsSettingsModal .alert-settings-advanced {
+    border-top: 1px solid #444b57 !important;
+}
+
+/* WhatsApp settings modal: dark + better spacing */
+#whatsappSettingsModal .modal-content.wa-modal-shell {
+    background: linear-gradient(180deg, #343943 0%, #292d36 100%) !important;
+    border: 1px solid #4b515d !important;
+    box-shadow:
+        0 24px 42px rgba(0, 0, 0, 0.44),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+#whatsappSettingsModal .modal-header,
+#whatsappSettingsModal .modal-body,
+#whatsappSettingsModal .modal-footer {
+    background: transparent !important;
+    border-color: #434a56 !important;
+}
+
+#whatsappSettingsModal .modal-body {
+    padding: 22px !important;
+}
+
+#whatsappSettingsModal .wa-settings-grid {
+    gap: 18px !important;
+}
+
+#whatsappSettingsModal .wa-panel-card,
+#whatsappSettingsModal .wa-reminder-card {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+    border: 1px solid #505763 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    padding: 16px !important;
+}
+
+#whatsappSettingsModal .wa-status-hero {
+    padding: 18px !important;
+}
+
+#whatsappSettingsModal .wa-status-heading {
+    margin-top: 6px !important;
+    margin-bottom: 12px !important;
+}
+
+#whatsappSettingsModal .wa-qr-wrap {
+    margin-top: 12px !important;
+}
+
+#whatsappSettingsModal .wa-qr-frame {
+    background: linear-gradient(180deg, #1c212a 0%, #141922 100%) !important;
+    border: 1px solid #545b67 !important;
+    padding: 10px !important;
+}
+
+#whatsappSettingsModal .wa-meta-grid {
+    gap: 10px !important;
+    margin-top: 10px !important;
+}
+
+#whatsappSettingsModal .wa-meta-item {
+    background: linear-gradient(180deg, #323843 0%, #2a2f39 100%) !important;
+    border: 1px solid #535a66 !important;
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+}
+
+#whatsappSettingsModal .wa-reminder-header {
+    margin-bottom: 12px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid #464d59 !important;
+}
+
+#whatsappSettingsModal .wa-radio-group {
+    gap: 10px !important;
+    margin-top: 8px !important;
+}
+
+#whatsappSettingsModal .wa-radio-option {
+    background: linear-gradient(180deg, #343a45 0%, #2b3039 100%) !important;
+    border: 1px solid #535a66 !important;
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+}
+
+#whatsappSettingsModal .wa-action-row {
+    margin-top: 14px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+}
+
+#whatsappSettingsModal .wa-action-row .btn {
+    flex: 1 1 calc(50% - 10px) !important;
+    min-height: 38px !important;
+}
+
+#whatsappSettingsModal .wa-action-row .btn:last-child {
+    flex-basis: 100% !important;
+}
+
+#whatsappSettingsModal .wa-status-heading h4,
+#whatsappSettingsModal .wa-reminder-header h5,
+#whatsappSettingsModal .wa-meta-item strong {
+    color: #f1e7db !important;
+}
+
+#whatsappSettingsModal .wa-status-heading p,
+#whatsappSettingsModal .wa-reminder-header p,
+#whatsappSettingsModal .wa-meta-item span,
+#whatsappSettingsModal .wa-qr-wrap p {
+    color: #ac9f8f !important;
+}
+
+#whatsappSettingsModal .modal-close {
+    background: linear-gradient(180deg, #3e444f 0%, #323843 100%) !important;
+    border: 1px solid #545b67 !important;
+    color: #e7dccf !important;
+}
+
+#whatsappSettingsModal .modal-close:hover {
+    border-color: rgba(209, 128, 69, 0.52) !important;
+    color: #ffd8b5 !important;
+}
+
+/* Alert table head + scrollbar polish */
+body[data-page="alert"] .billing-table thead,
+body[data-page="alert"] #bsTableCard .billing-table thead,
+body[data-page="alert"] #bsLogsCard .billing-table thead,
+body[data-page="alert"] #waBotHistoryModal .billing-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="alert"] .billing-table th,
+body[data-page="alert"] #bsTableCard .billing-table thead th,
+body[data-page="alert"] #bsLogsCard .billing-table thead th,
+body[data-page="alert"] #waBotHistoryModal .billing-table thead th {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+    color: #a99d8d !important;
+    border-bottom: 1px solid #4e5560 !important;
+}
+
+body[data-page="alert"] .billing-table-wrap,
+body[data-page="alert"] .wa-history-modal-wrap,
+body[data-page="alert"] .custom-scroll {
+    scrollbar-color: #6b5b49 #1c2129 !important;
+}
+
+body[data-page="alert"] .billing-table-wrap::-webkit-scrollbar,
+body[data-page="alert"] .wa-history-modal-wrap::-webkit-scrollbar,
+body[data-page="alert"] .custom-scroll::-webkit-scrollbar {
+    width: 10px !important;
+    height: 10px !important;
+}
+
+body[data-page="alert"] .billing-table-wrap::-webkit-scrollbar-track,
+body[data-page="alert"] .wa-history-modal-wrap::-webkit-scrollbar-track,
+body[data-page="alert"] .custom-scroll::-webkit-scrollbar-track {
+    background: #1c2129 !important;
+    border-radius: 999px !important;
+}
+
+body[data-page="alert"] .billing-table-wrap::-webkit-scrollbar-thumb,
+body[data-page="alert"] .wa-history-modal-wrap::-webkit-scrollbar-thumb,
+body[data-page="alert"] .custom-scroll::-webkit-scrollbar-thumb {
+    background: #6b5b49 !important;
+    border: 2px solid #1c2129 !important;
+    border-radius: 999px !important;
+}
+
+body[data-page="alert"] .billing-table-wrap::-webkit-scrollbar-thumb:hover,
+body[data-page="alert"] .wa-history-modal-wrap::-webkit-scrollbar-thumb:hover,
+body[data-page="alert"] .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #8a735b !important;
+}
+
+body[data-page="trafik"] .mk-monitor-shell,
+body[data-page="trafik"] .mk-monitor-overview,
+body[data-page="trafik"] .mk-monitor-bottom,
+body[data-page="trafik"] .mk-monitor-section {
+    background: transparent !important;
+}
+
+/* Global loading modal alignment */
+.nmx-loading-overlay {
+    background: rgba(5, 7, 11, 0.66) !important;
+    backdrop-filter: blur(9px) !important;
+    -webkit-backdrop-filter: blur(9px) !important;
+}
+
+.nmx-loading-card {
+    background: linear-gradient(180deg, #353a44 0%, #2a2f38 100%) !important;
+    border: 1px solid #4f5663 !important;
+    box-shadow:
+        0 26px 48px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    color: #efe5d9 !important;
+}
+
+.nmx-loading-card h3 {
+    color: #f1e7dc !important;
+}
+
+.nmx-loading-card p {
+    color: #aa9e8e !important;
+}
+
+.nmx-loading-spinner {
+    border-color: rgba(109, 117, 130, 0.48) !important;
+    border-top-color: #d08146 !important;
+    border-right-color: rgba(208, 129, 70, 0.46) !important;
+    box-shadow: 0 0 0 8px rgba(208, 129, 70, 0.14) !important;
+}
+
+/* WhatsApp history modal alignment */
+body[data-page="alert"] #waBotHistoryModal .modal-content {
+    background: linear-gradient(180deg, #343943 0%, #292d36 100%) !important;
+    border: 1px solid #4b515d !important;
+    box-shadow:
+        0 24px 42px rgba(0, 0, 0, 0.44),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-header,
+body[data-page="alert"] #waBotHistoryModal .modal-body,
+body[data-page="alert"] #waBotHistoryModal .modal-footer {
+    background: transparent !important;
+    border-color: #434a56 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-body {
+    padding: 20px !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-footer {
+    background: linear-gradient(180deg, rgba(47, 52, 62, 0.95), rgba(37, 42, 51, 0.95)) !important;
+    border-top: 1px solid #4b515d !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .history-summary-card,
+body[data-page="alert"] #waBotHistoryModal .wa-history-card {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+    border: 1px solid #505763 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .billing-table-wrap,
+body[data-page="alert"] #waBotHistoryModal .wa-history-modal-wrap {
+    background: linear-gradient(180deg, #333842 0%, #292d36 100%) !important;
+    border: 1px solid #4f5662 !important;
+    border-radius: 14px !important;
+    padding: 0 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .billing-table thead,
+body[data-page="alert"] #waBotHistoryModal .billing-table thead th {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+    color: #a99d8d !important;
+    border-bottom: 1px solid #4e5560 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .billing-table td {
+    color: #e8ddd0 !important;
+    border-bottom: 1px solid rgba(84, 91, 102, 0.42) !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .billing-empty,
+body[data-page="alert"] #waBotHistoryModal .history-summary-note {
+    color: #a99d8d !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-title,
+body[data-page="alert"] #waBotHistoryModal .modal-subtitle,
+body[data-page="alert"] #waBotHistoryModal .history-summary-card .label,
+body[data-page="alert"] #waBotHistoryModal .wa-history-card .label {
+    color: #e8ddd0 !important;
+}
+
+/* WhatsApp history modal final pass */
+body[data-page="alert"] #waBotHistoryModal {
+    padding: 24px !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-content::before,
+body[data-page="alert"] #waBotHistoryModal .modal-content::after {
+    display: none !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-header {
+    padding: 16px 18px 14px !important;
+    border-bottom: 1px solid rgba(85, 93, 106, 0.72) !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-body {
+    padding: 18px !important;
+    gap: 14px !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .wa-history-grid {
+    gap: 12px !important;
+    margin-bottom: 0 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .history-summary-card,
+body[data-page="alert"] #waBotHistoryModal .wa-history-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .history-summary-card .value,
+body[data-page="alert"] #waBotHistoryModal .wa-history-card strong {
+    color: #f0e6da !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .history-summary-note {
+    margin: 0 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .wa-history-modal-wrap {
+    margin-top: 4px !important;
+    padding: 0 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .billing-table thead th {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .billing-table td {
+    background: rgba(39, 44, 53, 0.45) !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-footer {
+    padding: 12px 16px !important;
+    background: linear-gradient(180deg, #333844 0%, #2a2f39 100%) !important;
+    border-top: 1px solid #4f5662 !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-footer .btn {
+    min-width: 94px !important;
+}
+
+body[data-page="alert"] #waBotHistoryModal .modal-close {
+    background: linear-gradient(180deg, #f4f1eb 0%, #ddd6c9 100%) !important;
+    border-color: #bbb3a7 !important;
+    color: #6f6659 !important;
+}
+
+body[data-page="alert"] {
+    scrollbar-color: #6b5b49 #1c2129;
+}
+
+body[data-page="alert"]::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+}
+
+body[data-page="alert"]::-webkit-scrollbar-track {
+    background: #1c2129;
+}
+
+body[data-page="alert"]::-webkit-scrollbar-thumb {
+    background: #6b5b49;
+    border: 2px solid #1c2129;
+    border-radius: 999px;
+}
+
+body[data-page="alert"]::-webkit-scrollbar-thumb:hover {
+    background: #8a735b;
+}
+
+/* Registration page final dark tactile alignment */
+body[data-page="registrasi"] .page-wallboard-shell,
+body.page-registrasi-compact[data-page="registrasi"] .page-wallboard-shell {
+    background:
+        radial-gradient(circle at 14% -8%, rgba(208, 129, 70, 0.12), transparent 42%),
+        linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="registrasi"] #registrationForm {
+    gap: 14px !important;
+}
+
+body[data-page="registrasi"] .registration-grid {
+    gap: 14px !important;
+}
+
+body[data-page="registrasi"] .registration-col {
+    gap: 14px !important;
+}
+
+body[data-page="registrasi"] .section-card.compact-card,
+body[data-page="registrasi"] .registration-grid .compact-card,
+body.page-registrasi-compact[data-page="registrasi"] .compact-card {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    border-radius: 16px !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    padding: 13px 14px !important;
+}
+
+body[data-page="registrasi"] .form-section-title {
+    color: #e7ddd1 !important;
+    border-bottom: 1px solid rgba(96, 105, 118, 0.68) !important;
+}
+
+body[data-page="registrasi"] .form-section-title i,
+body[data-page="registrasi"] #registrationForm .input-icon-wrapper i {
+    color: #d08146 !important;
+}
+
+body[data-page="registrasi"] #registrationForm .form-label {
+    color: #b5ab9d !important;
+}
+
+body[data-page="registrasi"] .text-muted-custom,
+body[data-page="registrasi"] .form-hint {
+    color: #988e81 !important;
+}
+
+body[data-page="registrasi"] #registrationForm .form-input,
+body[data-page="registrasi"] #registrationForm select,
+body[data-page="registrasi"] #registrationForm input[type="text"],
+body[data-page="registrasi"] #registrationForm input[type="password"],
+body[data-page="registrasi"] #registrationForm input[type="email"],
+body[data-page="registrasi"] #registrationForm input[type="number"],
+body[data-page="registrasi"] #registrationForm input[type="date"],
+body[data-page="registrasi"] #registrationForm textarea {
+    background: linear-gradient(180deg, #1c2230 0%, #181e2a 100%) !important;
+    border: 1px solid #505968 !important;
+    color: #eadfd2 !important;
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+body[data-page="registrasi"] #registrationForm .form-input::placeholder,
+body[data-page="registrasi"] #registrationForm input::placeholder,
+body[data-page="registrasi"] #registrationForm textarea::placeholder {
+    color: #8f8579 !important;
+}
+
+body[data-page="registrasi"] #registrationForm .form-input:focus,
+body[data-page="registrasi"] #registrationForm select:focus,
+body[data-page="registrasi"] #registrationForm input:focus,
+body[data-page="registrasi"] #registrationForm textarea:focus {
+    border-color: #d08146 !important;
+    box-shadow:
+        0 0 0 3px rgba(208, 129, 70, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.22) !important;
+}
+
+body[data-page="registrasi"] #registrationForm option {
+    background: #1f2531;
+    color: #eadfd2;
+}
+
+body[data-page="registrasi"] .technical-summary .form-section-title {
+    border-bottom: 1px solid rgba(98, 107, 121, 0.72) !important;
+}
+
+body[data-page="registrasi"] .form-actions-custom,
+body.page-registrasi-compact[data-page="registrasi"] .form-actions-custom {
+    border: 1px solid #4b5361 !important;
+    border-radius: 14px !important;
+    padding: 12px 14px !important;
+    background: linear-gradient(180deg, #343b47 0%, #2b313c 100%) !important;
+    box-shadow:
+        0 -10px 22px rgba(0, 0, 0, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="registrasi"] .form-actions-custom .btn.btn-secondary {
+    background: linear-gradient(180deg, #444c58 0%, #353d49 100%) !important;
+    border: 1px solid #596271 !important;
+    color: #e6dacd !important;
+}
+
+body[data-page="registrasi"] .form-actions-custom .btn.btn-secondary:hover {
+    background: linear-gradient(180deg, #4d5562 0%, #3d4652 100%) !important;
+    border-color: #6a7383 !important;
+}
+
+body[data-page="registrasi"] .form-actions-custom .btn.btn-primary {
+    background: linear-gradient(180deg, #db925b 0%, #b96f39 100%) !important;
+    border: 1px solid #cc844d !important;
+    color: #fffaf4 !important;
+    box-shadow: 0 8px 18px rgba(185, 111, 57, 0.34) !important;
+}
+
+body[data-page="registrasi"] .form-actions-custom .btn.btn-primary:hover {
+    background: linear-gradient(180deg, #e39d68 0%, #c3773f 100%) !important;
+}
+
+/* Data pelanggan aligned to dashboard palette */
+body[data-page="data-pelanggan"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="data-pelanggan"] .stat-card,
+body[data-page="data-pelanggan"] .table-container,
+body[data-page="data-pelanggan"] .customer-modal-card {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="data-pelanggan"] .stat-card::before,
+body[data-page="data-pelanggan"] .table-container::before,
+body[data-page="data-pelanggan"] .customer-modal-card::before {
+    content: none !important;
+}
+
+body[data-page="data-pelanggan"] .search-container input,
+body[data-page="data-pelanggan"] .form-input,
+body[data-page="data-pelanggan"] select,
+body[data-page="data-pelanggan"] textarea {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: rgba(33, 39, 49, 0.9) !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table tbody tr {
+    background: rgba(33, 39, 49, 0.9) !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table tbody tr:nth-child(even) {
+    background: rgba(37, 43, 53, 0.92) !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="data-pelanggan"] .customer-code {
+    color: #d98a52 !important;
+}
+
+body[data-page="data-pelanggan"] .status-badge,
+body[data-page="data-pelanggan"] .payment-badge {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* History payment aligned to data pelanggan palette */
+body[data-page="history-payment"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="history-payment"] .stat-card,
+body[data-page="history-payment"] .table-container,
+body[data-page="history-payment"] .customer-modal-card {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="history-payment"] .stat-card::before,
+body[data-page="history-payment"] .table-container::before,
+body[data-page="history-payment"] .customer-modal-card::before {
+    content: none !important;
+}
+
+body[data-page="history-payment"] .search-container input,
+body[data-page="history-payment"] .form-input,
+body[data-page="history-payment"] select,
+body[data-page="history-payment"] textarea {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="history-payment"] .customer-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="history-payment"] .customer-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="history-payment"] .customer-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: rgba(33, 39, 49, 0.9) !important;
+}
+
+body[data-page="history-payment"] .customer-table tbody tr {
+    background: rgba(33, 39, 49, 0.9) !important;
+}
+
+body[data-page="history-payment"] .customer-table tbody tr:nth-child(even) {
+    background: rgba(37, 43, 53, 0.92) !important;
+}
+
+body[data-page="history-payment"] .customer-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="history-payment"] .customer-code {
+    color: #d98a52 !important;
+}
+
+body[data-page="history-payment"] .status-badge,
+body[data-page="history-payment"] .payment-badge {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="history-payment"] .payment-badge.paid,
+body[data-page="history-payment"] .payment-badge.lunas {
+    background: linear-gradient(180deg, #38d996 0%, #22b274 100%) !important;
+    color: #f3fff8 !important;
+    border-color: rgba(170, 246, 214, 0.56) !important;
+    box-shadow:
+        0 8px 16px rgba(14, 95, 63, 0.34),
+        inset 0 1px 0 rgba(227, 255, 243, 0.32) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+}
+
+/* Invoice aligned to dark dashboard palette */
+body[data-page="invoice"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="invoice"] .stat-card,
+body[data-page="invoice"] .table-container,
+body[data-page="invoice"] .modal-content {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="invoice"] .stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+    box-shadow:
+        0 18px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.34) !important;
+}
+
+body[data-page="invoice"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 22%, rgba(255, 255, 255, 0) 45%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.18) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="invoice"] .stat-card::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    height: 1px !important;
+    background: rgba(255, 255, 255, 0.34) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="invoice"] .stat-card .stat-info h4 {
+    color: #f3eadf !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="invoice"] .stat-card .stat-info p {
+    color: #bfae99 !important;
+}
+
+body[data-page="invoice"] .search-container input,
+body[data-page="invoice"] .filter-dropdown select,
+body[data-page="invoice"] .form-input,
+body[data-page="invoice"] .form-select,
+body[data-page="invoice"] textarea {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="invoice"] .invoice-toolbar-stack .filter-dropdown select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="invoice"] .invoice-toolbar-stack .filter-dropdown select:hover {
+    border-color: rgba(217, 138, 82, 0.78) !important;
+}
+
+body[data-page="invoice"] .invoice-toolbar-stack .filter-dropdown select:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="invoice"] .invoice-toolbar-stack .filter-dropdown select option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="invoice"] .invoice-toolbar-stack .filter-dropdown select option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="invoice"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="invoice"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="invoice"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: rgba(33, 39, 49, 0.9) !important;
+}
+
+body[data-page="invoice"] .data-table tbody tr {
+    background: rgba(33, 39, 49, 0.9) !important;
+}
+
+body[data-page="invoice"] .data-table tbody tr:nth-child(even) {
+    background: rgba(37, 43, 53, 0.92) !important;
+}
+
+body[data-page="invoice"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="invoice"] .invoice-number,
+body[data-page="invoice"] .customer-code {
+    color: #d98a52 !important;
+}
+
+body[data-page="invoice"] .payment-badge,
+body[data-page="invoice"] .status-badge {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="invoice"] .payment-badge.paid,
+body[data-page="invoice"] .payment-badge.lunas,
+body[data-page="invoice"] .status-badge.paid {
+    background: linear-gradient(180deg, #38d996 0%, #22b274 100%) !important;
+    color: #f3fff8 !important;
+    border-color: rgba(170, 246, 214, 0.56) !important;
+    box-shadow:
+        0 8px 16px rgba(14, 95, 63, 0.34),
+        inset 0 1px 0 rgba(227, 255, 243, 0.32) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+}
+
+body[data-page="invoice"] .action-btn button {
+    background: linear-gradient(180deg, #3a4250 0%, #2b3340 100%) !important;
+    border: 1px solid #5a6270 !important;
+    color: #d7deea !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    border-radius: 10px !important;
+}
+
+body[data-page="invoice"] .action-btn button:hover {
+    background: linear-gradient(180deg, #495264 0%, #394252 100%) !important;
+    border-color: rgba(217, 138, 82, 0.78) !important;
+    color: #ffd9bb !important;
+}
+
+body[data-page="invoice"] .action-btn button.success:hover {
+    background: linear-gradient(180deg, #2f6b52 0%, #23503e 100%) !important;
+    border-color: rgba(87, 190, 142, 0.8) !important;
+    color: #d2ffea !important;
+}
+
+body[data-page="invoice"] .action-btn button.danger:hover {
+    background: linear-gradient(180deg, #6b3a3a 0%, #4d2a2a 100%) !important;
+    border-color: rgba(239, 124, 124, 0.82) !important;
+    color: #ffd2d2 !important;
+}
+
+body[data-page="invoice"] .modal-backdrop {
+    background: rgba(9, 12, 18, 0.74) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="invoice"] .modal-header,
+body[data-page="invoice"] .modal-footer {
+    border-color: rgba(82, 90, 102, 0.62) !important;
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.78) 0%, rgba(41, 47, 58, 0.68) 100%) !important;
+}
+
+body[data-page="invoice"] .modal-body {
+    background: linear-gradient(180deg, rgba(39, 45, 55, 0.92) 0%, rgba(32, 37, 47, 0.92) 100%) !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="invoice"] .modal-title,
+body[data-page="invoice"] .confirm-title {
+    color: #f1e7dc !important;
+}
+
+body[data-page="invoice"] .modal-subtitle,
+body[data-page="invoice"] .confirm-message,
+body[data-page="invoice"] .form-label,
+body[data-page="invoice"] .form-hint {
+    color: #c7b9a7 !important;
+}
+
+body[data-page="invoice"] .modal-close {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    border: 1px solid #596171 !important;
+    color: #d7deea !important;
+    background: linear-gradient(180deg, #3b4352 0%, #2c3441 100%) !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="invoice"] .modal-close:hover {
+    background: linear-gradient(180deg, #4c5668 0%, #3c4555 100%) !important;
+    border-color: rgba(217, 138, 82, 0.78) !important;
+    color: #ffd9bb !important;
+}
+
+body[data-page="invoice"] .invoice-summary,
+body[data-page="invoice"] .modal-info {
+    background: linear-gradient(180deg, rgba(28, 34, 43, 0.92) 0%, rgba(21, 26, 34, 0.92) 100%) !important;
+    border: 1px solid #4f5766 !important;
+    color: #eadfd2 !important;
+}
+
+body[data-page="invoice"] #payModal #payMethod {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+    color-scheme: dark !important;
+}
+
+body[data-page="invoice"] #payModal #payMethod option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="invoice"] #payModal #payMethod option:checked,
+body[data-page="invoice"] #payModal #payMethod option:hover {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal {
+    background: rgba(9, 12, 18, 0.74) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-shell {
+    background: linear-gradient(180deg, rgba(44, 50, 60, 0.95) 0%, rgba(31, 37, 47, 0.96) 100%) !important;
+    border: 1px solid rgba(88, 96, 110, 0.82) !important;
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .modal-header {
+    background: linear-gradient(180deg, rgba(57, 63, 74, 0.82) 0%, rgba(45, 51, 62, 0.74) 100%) !important;
+    border-bottom: 1px solid rgba(88, 96, 110, 0.76) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .modal-title,
+body[data-page="invoice"] #whatsappComposerModal .wa-sidebar-title-row h4,
+body[data-page="invoice"] #whatsappComposerModal #waComposerChatTitle {
+    color: #f1e7dc !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .modal-subtitle,
+body[data-page="invoice"] #whatsappComposerModal #waComposerChatMeta,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item-preview,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item-time {
+    color: #c7b9a7 !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-brand-icon {
+    background: linear-gradient(180deg, #2a5f57 0%, #234c46 100%) !important;
+    border-color: rgba(105, 198, 170, 0.45) !important;
+    color: #c4ffef !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-header-actions .btn-secondary,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-top-actions .btn-secondary,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-form-actions .btn-secondary,
+body[data-page="invoice"] #whatsappComposerModal .wa-message-tools .btn-ghost,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-top-actions .btn-ghost,
+body[data-page="invoice"] #whatsappComposerModal .wa-action-outline {
+    background: linear-gradient(180deg, #3a4250 0%, #2b3340 100%) !important;
+    border: 1px solid #5a6270 !important;
+    color: #d7deea !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-top-actions .btn-primary,
+body[data-page="invoice"] #whatsappComposerModal .wa-send-btn,
+body[data-page="invoice"] #whatsappComposerModal .wa-action-main {
+    background: linear-gradient(180deg, #d98a52 0%, #b7662e 100%) !important;
+    border: 1px solid rgba(228, 155, 96, 0.72) !important;
+    color: #fff2e4 !important;
+    box-shadow: 0 10px 20px rgba(134, 72, 28, 0.35), inset 0 1px 0 rgba(255, 230, 209, 0.25) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .modal-close {
+    background: linear-gradient(180deg, #3b4352 0%, #2c3441 100%) !important;
+    border: 1px solid #596171 !important;
+    color: #d7deea !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-body,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-main {
+    background: rgba(33, 39, 49, 0.95) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-sidebar {
+    background: linear-gradient(180deg, rgba(45, 52, 62, 0.9) 0%, rgba(33, 39, 49, 0.94) 100%) !important;
+    border-right: 1px solid rgba(88, 96, 110, 0.72) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-detail {
+    background: linear-gradient(180deg, rgba(43, 49, 59, 0.9) 0%, rgba(31, 37, 47, 0.95) 100%) !important;
+    border-left: 1px solid rgba(88, 96, 110, 0.72) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-search.modern,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-status,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item,
+body[data-page="invoice"] #whatsappComposerModal .wa-conversation-shell,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-empty,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-conversation,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-form.modern,
+body[data-page="invoice"] #whatsappComposerModal .wa-detail-card,
+body[data-page="invoice"] #whatsappComposerModal .wa-monitor-mini,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-empty {
+    background: linear-gradient(180deg, rgba(28, 34, 43, 0.92) 0%, rgba(21, 26, 34, 0.92) 100%) !important;
+    border: 1px solid #4f5766 !important;
+    color: #eadfd2 !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-conversation-topbar,
+body[data-page="invoice"] #whatsappComposerModal .wa-date-separator span,
+body[data-page="invoice"] #whatsappComposerModal .wa-monitor-progress,
+body[data-page="invoice"] #whatsappComposerModal .wa-note-box {
+    background: linear-gradient(180deg, rgba(49, 55, 66, 0.78) 0%, rgba(40, 46, 57, 0.72) 100%) !important;
+    border: 1px solid rgba(82, 90, 102, 0.62) !important;
+    color: #d8cbbd !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-search.modern .form-input,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-target-grid.compact .form-input,
+body[data-page="invoice"] #whatsappComposerModal #waComposerMessageInput {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-search.modern i,
+body[data-page="invoice"] #whatsappComposerModal .wa-detail-item i,
+body[data-page="invoice"] #whatsappComposerModal .wa-ai-head span,
+body[data-page="invoice"] #whatsappComposerModal .wa-ai-use,
+body[data-page="invoice"] #whatsappComposerModal .wa-note-add-btn,
+body[data-page="invoice"] #whatsappComposerModal .wa-monitor-status-row strong {
+    color: #80e0be !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chip,
+body[data-page="invoice"] #whatsappComposerModal .wa-quick-chip {
+    background: linear-gradient(180deg, #3a4250 0%, #2b3340 100%) !important;
+    border: 1px solid #5a6270 !important;
+    color: #d7deea !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chip.is-active {
+    background: linear-gradient(180deg, #315a4d 0%, #27453c 100%) !important;
+    border-color: rgba(119, 219, 176, 0.58) !important;
+    color: #d5ffef !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item:hover {
+    border-color: rgba(217, 138, 82, 0.62) !important;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item.active {
+    background: linear-gradient(180deg, rgba(52, 88, 71, 0.38) 0%, rgba(33, 63, 50, 0.34) 100%) !important;
+    border-color: rgba(119, 219, 176, 0.58) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item-avatar,
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-avatar {
+    background: linear-gradient(180deg, #445a78 0%, #374861 100%) !important;
+    color: #f2f7ff !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item-head strong,
+body[data-page="invoice"] #whatsappComposerModal .wa-message-text,
+body[data-page="invoice"] #whatsappComposerModal .wa-detail-item,
+body[data-page="invoice"] #whatsappComposerModal .wa-monitor-mini strong,
+body[data-page="invoice"] #whatsappComposerModal .wa-note-box {
+    color: #f2e8dd !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-message-bubble {
+    background: linear-gradient(180deg, rgba(45, 51, 62, 0.9) 0%, rgba(34, 40, 50, 0.9) 100%) !important;
+    border: 1px solid #596171 !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-message-item.outgoing .wa-message-bubble {
+    background: linear-gradient(180deg, rgba(48, 105, 82, 0.5) 0%, rgba(35, 75, 59, 0.45) 100%) !important;
+    border-color: rgba(125, 228, 185, 0.48) !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-message-time,
+body[data-page="invoice"] #whatsappComposerModal .wa-monitor-mini small,
+body[data-page="invoice"] #whatsappComposerModal .wa-detail-heading,
+body[data-page="invoice"] #whatsappComposerModal .wa-compose-empty p {
+    color: #bfae99 !important;
+}
+
+body[data-page="invoice"] #whatsappComposerModal .wa-chat-item-badge {
+    background: rgba(50, 103, 82, 0.42) !important;
+    color: #b9f5db !important;
+    border: 1px solid rgba(119, 219, 176, 0.46) !important;
+}
+
+body[data-page="invoice"] .modal-info-label {
+    color: #b7ab9b !important;
+}
+
+body[data-page="invoice"] .modal-info-value,
+body[data-page="invoice"] .invoice-summary strong {
+    color: #f2e8dd !important;
+}
+
+body[data-page="invoice"] .confirm-icon.warning {
+    background: rgba(209, 128, 69, 0.22) !important;
+    color: #ffd0a3 !important;
+    border: 1px solid rgba(226, 153, 97, 0.46) !important;
+}
+
+body[data-page="invoice"] .confirm-icon.success {
+    background: rgba(34, 197, 94, 0.22) !important;
+    color: #d2ffea !important;
+    border: 1px solid rgba(87, 190, 142, 0.52) !important;
+}
+
+body[data-page="invoice"] .confirm-icon.danger {
+    background: rgba(239, 68, 68, 0.22) !important;
+    color: #ffd2d2 !important;
+    border: 1px solid rgba(239, 124, 124, 0.52) !important;
+}
+
+/* Pembayaran aligned to dark dashboard palette */
+body[data-page="pembayaran"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="pembayaran"] .stat-card,
+body[data-page="pembayaran"] .table-container {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="pembayaran"] .table-container::before {
+    content: none !important;
+}
+
+body[data-page="pembayaran"] .stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="pembayaran"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="pembayaran"] .stat-card .stat-info h4 {
+    color: #f3eadf !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="pembayaran"] .stat-card .stat-info p,
+body[data-page="pembayaran"] .stat-card .stat-info small {
+    color: #bfae99 !important;
+}
+
+body[data-page="pembayaran"] .search-container input,
+body[data-page="pembayaran"] .filter-dropdown select,
+body[data-page="pembayaran"] #yearFilter,
+body[data-page="pembayaran"] #monthFilter,
+body[data-page="pembayaran"] #statusFilter,
+body[data-page="pembayaran"] #typeFilter,
+body[data-page="pembayaran"] #paymentTypeFilter {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="pembayaran"] .filter-dropdown select,
+body[data-page="pembayaran"] #yearFilter,
+body[data-page="pembayaran"] #monthFilter,
+body[data-page="pembayaran"] #statusFilter,
+body[data-page="pembayaran"] #typeFilter,
+body[data-page="pembayaran"] #paymentTypeFilter {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="pembayaran"] .filter-dropdown select:hover,
+body[data-page="pembayaran"] #yearFilter:hover,
+body[data-page="pembayaran"] #monthFilter:hover,
+body[data-page="pembayaran"] #statusFilter:hover,
+body[data-page="pembayaran"] #typeFilter:hover,
+body[data-page="pembayaran"] #paymentTypeFilter:hover {
+    border-color: rgba(217, 138, 82, 0.78) !important;
+}
+
+body[data-page="pembayaran"] .search-container input:focus,
+body[data-page="pembayaran"] .filter-dropdown select:focus,
+body[data-page="pembayaran"] #yearFilter:focus,
+body[data-page="pembayaran"] #monthFilter:focus,
+body[data-page="pembayaran"] #statusFilter:focus,
+body[data-page="pembayaran"] #typeFilter:focus,
+body[data-page="pembayaran"] #paymentTypeFilter:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="pembayaran"] .filter-dropdown select option,
+body[data-page="pembayaran"] #yearFilter option,
+body[data-page="pembayaran"] #monthFilter option,
+body[data-page="pembayaran"] #statusFilter option,
+body[data-page="pembayaran"] #typeFilter option,
+body[data-page="pembayaran"] #paymentTypeFilter option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="pembayaran"] .filter-dropdown select option:checked,
+body[data-page="pembayaran"] #yearFilter option:checked,
+body[data-page="pembayaran"] #monthFilter option:checked,
+body[data-page="pembayaran"] #statusFilter option:checked,
+body[data-page="pembayaran"] #typeFilter option:checked,
+body[data-page="pembayaran"] #paymentTypeFilter option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="pembayaran"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="pembayaran"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="pembayaran"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: #212731 !important;
+}
+
+body[data-page="pembayaran"] .data-table tbody tr {
+    background: #212731 !important;
+}
+
+body[data-page="pembayaran"] .data-table tbody tr:nth-child(even) {
+    background: #252b35 !important;
+}
+
+body[data-page="pembayaran"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="pembayaran"] .invoice-number,
+body[data-page="pembayaran"] .customer-code {
+    color: #d98a52 !important;
+}
+
+body[data-page="pembayaran"] .payment-type-badge,
+body[data-page="pembayaran"] .status-badge {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="pembayaran"] .status-badge.paid {
+    background: linear-gradient(180deg, #38d996 0%, #22b274 100%) !important;
+    color: #f3fff8 !important;
+    border-color: rgba(170, 246, 214, 0.56) !important;
+    box-shadow:
+        0 8px 16px rgba(14, 95, 63, 0.34),
+        inset 0 1px 0 rgba(227, 255, 243, 0.32) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+}
+
+/* Piutang aligned to dark dashboard palette */
+body[data-page="piutang"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="piutang"] .stat-card,
+body[data-page="piutang"] .table-container {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="piutang"] .table-container::before {
+    content: none !important;
+}
+
+body[data-page="piutang"] .stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="piutang"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="piutang"] .stat-card .stat-info h4 {
+    color: #f3eadf !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="piutang"] .stat-card .stat-info p,
+body[data-page="piutang"] .stat-card .stat-info small {
+    color: #bfae99 !important;
+}
+
+body[data-page="piutang"] .search-container input,
+body[data-page="piutang"] .filter-dropdown select,
+body[data-page="piutang"] #typeFilter,
+body[data-page="piutang"] #statusFilter {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="piutang"] .filter-dropdown select,
+body[data-page="piutang"] #typeFilter,
+body[data-page="piutang"] #statusFilter {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="piutang"] .filter-dropdown select:hover,
+body[data-page="piutang"] #typeFilter:hover,
+body[data-page="piutang"] #statusFilter:hover {
+    border-color: rgba(217, 138, 82, 0.78) !important;
+}
+
+body[data-page="piutang"] .search-container input:focus,
+body[data-page="piutang"] .filter-dropdown select:focus,
+body[data-page="piutang"] #typeFilter:focus,
+body[data-page="piutang"] #statusFilter:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="piutang"] .filter-dropdown select option,
+body[data-page="piutang"] #typeFilter option,
+body[data-page="piutang"] #statusFilter option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="piutang"] .filter-dropdown select option:checked,
+body[data-page="piutang"] #typeFilter option:checked,
+body[data-page="piutang"] #statusFilter option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="piutang"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="piutang"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="piutang"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: #212731 !important;
+}
+
+body[data-page="piutang"] .data-table tbody tr {
+    background: #212731 !important;
+}
+
+body[data-page="piutang"] .data-table tbody tr:nth-child(even) {
+    background: #252b35 !important;
+}
+
+body[data-page="piutang"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="piutang"] .invoice-number,
+body[data-page="piutang"] .customer-code {
+    color: #d98a52 !important;
+}
+
+body[data-page="piutang"] .payment-type-badge,
+body[data-page="piutang"] .status-badge {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="piutang"] .status-badge.paid {
+    background: linear-gradient(180deg, #38d996 0%, #22b274 100%) !important;
+    color: #f3fff8 !important;
+    border-color: rgba(170, 246, 214, 0.56) !important;
+    box-shadow:
+        0 8px 16px rgba(14, 95, 63, 0.34),
+        inset 0 1px 0 rgba(227, 255, 243, 0.32) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+}
+
+/* Cashflow aligned to dark dashboard palette */
+body[data-page="cashflow"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="cashflow"] .stat-card,
+body[data-page="cashflow"] .card-shell,
+body[data-page="cashflow"] .table-shell,
+body[data-page="cashflow"] .table-container {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="cashflow"] .card-shell::before,
+body[data-page="cashflow"] .table-container::before {
+    content: none !important;
+}
+
+body[data-page="cashflow"] .stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="cashflow"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="cashflow"] .stat-card .stat-info h4,
+body[data-page="cashflow"] .card-header h3 {
+    color: #f3eadf !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="cashflow"] .stat-card .stat-info p,
+body[data-page="cashflow"] .stat-card .stat-info small,
+body[data-page="cashflow"] .card-header p {
+    color: #bfae99 !important;
+}
+
+body[data-page="cashflow"] .info-note {
+    background: linear-gradient(180deg, rgba(48, 62, 84, 0.7) 0%, rgba(34, 46, 66, 0.7) 100%) !important;
+    border: 1px solid rgba(92, 116, 154, 0.46) !important;
+    color: #c4d6f3 !important;
+}
+
+body[data-page="cashflow"] .month-pill {
+    background: rgba(53, 72, 101, 0.62) !important;
+    border: 1px solid rgba(107, 136, 182, 0.5) !important;
+    color: #dce8fb !important;
+}
+
+body[data-page="cashflow"] .search-container input,
+body[data-page="cashflow"] .filter-dropdown select,
+body[data-page="cashflow"] #yearFilter,
+body[data-page="cashflow"] #monthFilter {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="cashflow"] .filter-dropdown select,
+body[data-page="cashflow"] #yearFilter,
+body[data-page="cashflow"] #monthFilter {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="cashflow"] .filter-dropdown select:hover,
+body[data-page="cashflow"] #yearFilter:hover,
+body[data-page="cashflow"] #monthFilter:hover {
+    border-color: rgba(217, 138, 82, 0.78) !important;
+}
+
+body[data-page="cashflow"] .search-container input:focus,
+body[data-page="cashflow"] .filter-dropdown select:focus,
+body[data-page="cashflow"] #yearFilter:focus,
+body[data-page="cashflow"] #monthFilter:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="cashflow"] .filter-dropdown select option,
+body[data-page="cashflow"] #yearFilter option,
+body[data-page="cashflow"] #monthFilter option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="cashflow"] .filter-dropdown select option:checked,
+body[data-page="cashflow"] #yearFilter option:checked,
+body[data-page="cashflow"] #monthFilter option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="cashflow"] .card-header {
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+}
+
+body[data-page="cashflow"] .chart-wrapper {
+    background: linear-gradient(180deg, rgba(34, 40, 50, 0.78) 0%, rgba(31, 37, 47, 0.78) 100%) !important;
+}
+
+body[data-page="cashflow"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="cashflow"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="cashflow"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: #212731 !important;
+}
+
+body[data-page="cashflow"] .data-table tbody tr {
+    background: #212731 !important;
+}
+
+body[data-page="cashflow"] .data-table tbody tr:nth-child(even) {
+    background: #252b35 !important;
+}
+
+body[data-page="cashflow"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+/* Laporan Keuangan aligned to dark dashboard palette */
+body[data-page="laporan-keuangan"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card,
+body[data-page="laporan-keuangan"] .table-shell {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="laporan-keuangan"] .table-shell::before {
+    content: none !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card strong,
+body[data-page="laporan-keuangan"] .table-title {
+    color: #f3eadf !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card h3,
+body[data-page="laporan-keuangan"] .finance-card p,
+body[data-page="laporan-keuangan"] .summary-item span {
+    color: #bfae99 !important;
+}
+
+body[data-page="laporan-keuangan"] .quick-action-bar {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select,
+body[data-page="laporan-keuangan"] #yearFilter,
+body[data-page="laporan-keuangan"] #monthFilter,
+body[data-page="laporan-keuangan"] #statusFilter {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select,
+body[data-page="laporan-keuangan"] #yearFilter,
+body[data-page="laporan-keuangan"] #monthFilter,
+body[data-page="laporan-keuangan"] #statusFilter {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select:hover,
+body[data-page="laporan-keuangan"] #yearFilter:hover,
+body[data-page="laporan-keuangan"] #monthFilter:hover,
+body[data-page="laporan-keuangan"] #statusFilter:hover {
+    border-color: rgba(217, 138, 82, 0.78) !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select:focus,
+body[data-page="laporan-keuangan"] #yearFilter:focus,
+body[data-page="laporan-keuangan"] #monthFilter:focus,
+body[data-page="laporan-keuangan"] #statusFilter:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select option,
+body[data-page="laporan-keuangan"] #yearFilter option,
+body[data-page="laporan-keuangan"] #monthFilter option,
+body[data-page="laporan-keuangan"] #statusFilter option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select option:checked,
+body[data-page="laporan-keuangan"] #yearFilter option:checked,
+body[data-page="laporan-keuangan"] #monthFilter option:checked,
+body[data-page="laporan-keuangan"] #statusFilter option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="laporan-keuangan"] .table-title {
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: #212731 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table tbody tr {
+    background: #212731 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table tbody tr:nth-child(even) {
+    background: #252b35 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="laporan-keuangan"] .summary-item {
+    border-bottom: 1px solid rgba(82, 90, 102, 0.56) !important;
+}
+
+body[data-page="laporan-keuangan"] .summary-item strong {
+    color: #f2e8dd !important;
+}
+
+body[data-page="laporan-keuangan"] .status-chip {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="laporan-keuangan"] .status-chip.paid {
+    background: linear-gradient(180deg, #38d996 0%, #22b274 100%) !important;
+    color: #f3fff8 !important;
+    border-color: rgba(170, 246, 214, 0.56) !important;
+}
+
+/* Laporan Keuangan aligned to dark dashboard palette */
+body[data-page="laporan-keuangan"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card,
+body[data-page="laporan-keuangan"] .table-shell {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="laporan-keuangan"] .table-shell::before {
+    content: none !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card strong,
+body[data-page="laporan-keuangan"] .table-title {
+    color: #f3eadf !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+}
+
+body[data-page="laporan-keuangan"] .finance-card h3,
+body[data-page="laporan-keuangan"] .finance-card p,
+body[data-page="laporan-keuangan"] .summary-item span {
+    color: #bfae99 !important;
+}
+
+body[data-page="laporan-keuangan"] .quick-action-bar {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select,
+body[data-page="laporan-keuangan"] #yearFilter,
+body[data-page="laporan-keuangan"] #monthFilter,
+body[data-page="laporan-keuangan"] #statusFilter {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select,
+body[data-page="laporan-keuangan"] #yearFilter,
+body[data-page="laporan-keuangan"] #monthFilter,
+body[data-page="laporan-keuangan"] #statusFilter {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select:hover,
+body[data-page="laporan-keuangan"] #yearFilter:hover,
+body[data-page="laporan-keuangan"] #monthFilter:hover,
+body[data-page="laporan-keuangan"] #statusFilter:hover {
+    border-color: rgba(217, 138, 82, 0.78) !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select:focus,
+body[data-page="laporan-keuangan"] #yearFilter:focus,
+body[data-page="laporan-keuangan"] #monthFilter:focus,
+body[data-page="laporan-keuangan"] #statusFilter:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select option,
+body[data-page="laporan-keuangan"] #yearFilter option,
+body[data-page="laporan-keuangan"] #monthFilter option,
+body[data-page="laporan-keuangan"] #statusFilter option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="laporan-keuangan"] .filter-dropdown select option:checked,
+body[data-page="laporan-keuangan"] #yearFilter option:checked,
+body[data-page="laporan-keuangan"] #monthFilter option:checked,
+body[data-page="laporan-keuangan"] #statusFilter option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="laporan-keuangan"] .table-title {
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: #212731 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table tbody tr {
+    background: #212731 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table tbody tr:nth-child(even) {
+    background: #252b35 !important;
+}
+
+body[data-page="laporan-keuangan"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="laporan-keuangan"] .summary-item {
+    border-bottom: 1px solid rgba(82, 90, 102, 0.56) !important;
+}
+
+body[data-page="laporan-keuangan"] .summary-item strong {
+    color: #f2e8dd !important;
+}
+
+body[data-page="laporan-keuangan"] .status-chip {
+    border: 1px solid rgba(86, 94, 108, 0.7) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="laporan-keuangan"] .status-chip.paid {
+    background: linear-gradient(180deg, #38d996 0%, #22b274 100%) !important;
+    color: #f3fff8 !important;
+    border-color: rgba(170, 246, 214, 0.56) !important;
+}
+
+/* Paket page aligned to dark dashboard palette */
+body[data-page="paket"] .package-theme .stat-card-modern,
+body[data-page="paket"] .package-theme .tab-navigation,
+body[data-page="paket"] .package-theme .table-shell,
+body[data-page="paket"] .package-theme .modal-content-modern {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="paket"] .package-theme .stat-info-modern h3 {
+    color: #f0e7dc !important;
+}
+
+body[data-page="paket"] .package-theme .stat-info-modern p,
+body[data-page="paket"] .package-theme .panel-table th {
+    color: #b7ab9b !important;
+}
+
+body[data-page="paket"] .package-theme .panel-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+}
+
+body[data-page="paket"] .package-theme .panel-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="paket"] .package-theme .package-toolbar {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Final quick-action + scrollbar refinement */
+body[data-page] .quick-actions {
+    gap: 8px !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+body[data-page] .quick-action-btn {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    transition: all 0.18s ease !important;
+}
+
+body[data-page] .quick-action-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(209, 128, 69, 0.22) !important;
+}
+
+body[data-page="data-pelanggan"] .customer-table td.action-cell .quick-actions {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 999px !important;
+    box-shadow: none !important;
+    padding: 4px 6px !important;
+}
+
+html,
+body[data-page] {
+    scrollbar-color: #6f5c48 #1c2129;
+}
+
+html::-webkit-scrollbar,
+body[data-page]::-webkit-scrollbar,
+body[data-page] *::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+}
+
+html::-webkit-scrollbar-track,
+body[data-page]::-webkit-scrollbar-track,
+body[data-page] *::-webkit-scrollbar-track {
+    background: #1c2129;
+    border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb,
+body[data-page]::-webkit-scrollbar-thumb,
+body[data-page] *::-webkit-scrollbar-thumb {
+    background: #6f5c48;
+    border: 2px solid #1c2129;
+    border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body[data-page]::-webkit-scrollbar-thumb:hover,
+body[data-page] *::-webkit-scrollbar-thumb:hover {
+    background: #8b735b;
+}
+
+body[data-page="registrasi"] .section-card::before,
+body[data-page="registrasi"] .compact-card::before,
+body[data-page="registrasi"] .section-card::after,
+body[data-page="registrasi"] .compact-card::after {
+    content: none !important;
+    background: transparent !important;
+}
+
+body[data-page="registrasi"] .form-section-title {
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+body[data-page="registrasi"] .form-actions-custom {
+    position: relative;
+    overflow: hidden;
+}
+
+body[data-page="registrasi"] .form-actions-custom::before,
+body[data-page="registrasi"] .form-actions-custom::after {
+    content: none !important;
+}
+
+/* Unified scrollbar style across all pages/containers */
+html,
+body[data-page],
+body[data-page] * {
+    scrollbar-color: #6f5a46 #1f2530 !important;
+    scrollbar-width: thin;
+}
+
+html::-webkit-scrollbar,
+body[data-page]::-webkit-scrollbar,
+body[data-page] *::-webkit-scrollbar {
+    width: 10px !important;
+    height: 10px !important;
+}
+
+html::-webkit-scrollbar-track,
+body[data-page]::-webkit-scrollbar-track,
+body[data-page] *::-webkit-scrollbar-track {
+    background: #1f2530 !important;
+    border-radius: 999px !important;
+}
+
+html::-webkit-scrollbar-thumb,
+body[data-page]::-webkit-scrollbar-thumb,
+body[data-page] *::-webkit-scrollbar-thumb {
+    background: #6f5a46 !important;
+    border: 2px solid #1f2530 !important;
+    border-radius: 999px !important;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body[data-page]::-webkit-scrollbar-thumb:hover,
+body[data-page] *::-webkit-scrollbar-thumb:hover {
+    background: #8a7058 !important;
+}
+
+html::-webkit-scrollbar-corner,
+body[data-page]::-webkit-scrollbar-corner,
+body[data-page] *::-webkit-scrollbar-corner {
+    background: #1f2530 !important;
+}
+
+/* Network/System pages unified dark finance-style palette */
+body[data-page="mikrotik"] .page-wallboard-shell,
+body[data-page="network-server"] .page-wallboard-shell,
+body[data-page="acs"] .page-wallboard-shell,
+body[data-page="teknisi"] .page-wallboard-shell,
+body[data-page="reports"] .page-wallboard-shell,
+body[data-page="error-log"] .page-wallboard-shell,
+body[data-page="mapping"] .page-wallboard-shell,
+body[data-page="user-mgmt"] .page-wallboard-shell,
+body[data-page="company"] .page-wallboard-shell {
+    background: linear-gradient(180deg, #2c3039 0%, #22262f 100%) !important;
+    border: 1px solid #434751 !important;
+    box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.36) !important;
+}
+
+body[data-page="mikrotik"] .stat-card,
+body[data-page="network-server"] .stat-card,
+body[data-page="acs"] .stat-card,
+body[data-page="teknisi"] .stat-card,
+body[data-page="reports"] .stat-card,
+body[data-page="error-log"] .stat-card,
+body[data-page="mapping"] .stat-card,
+body[data-page="user-mgmt"] .stat-card,
+body[data-page="company"] .stat-card,
+body[data-page="mikrotik"] .table-container,
+body[data-page="network-server"] .table-container,
+body[data-page="acs"] .table-container,
+body[data-page="teknisi"] .table-container,
+body[data-page="reports"] .table-container,
+body[data-page="error-log"] .table-container,
+body[data-page="mapping"] .table-container,
+body[data-page="user-mgmt"] .table-container,
+body[data-page="company"] .table-container,
+body[data-page="mikrotik"] .table-shell,
+body[data-page="network-server"] .table-shell,
+body[data-page="acs"] .table-shell,
+body[data-page="teknisi"] .table-shell,
+body[data-page="reports"] .table-shell,
+body[data-page="error-log"] .table-shell,
+body[data-page="mapping"] .table-shell,
+body[data-page="user-mgmt"] .table-shell,
+body[data-page="company"] .table-shell,
+body[data-page="mikrotik"] .card-shell,
+body[data-page="network-server"] .card-shell,
+body[data-page="acs"] .card-shell,
+body[data-page="teknisi"] .card-shell,
+body[data-page="reports"] .card-shell,
+body[data-page="error-log"] .card-shell,
+body[data-page="mapping"] .card-shell,
+body[data-page="user-mgmt"] .card-shell,
+body[data-page="company"] .card-shell,
+body[data-page="mikrotik"] .hybrid-card,
+body[data-page="network-server"] .hybrid-card,
+body[data-page="acs"] .hybrid-card,
+body[data-page="teknisi"] .hybrid-card,
+body[data-page="reports"] .hybrid-card,
+body[data-page="error-log"] .hybrid-card,
+body[data-page="mapping"] .hybrid-card,
+body[data-page="user-mgmt"] .hybrid-card,
+body[data-page="company"] .hybrid-card,
+body[data-page="mikrotik"] .hybrid-table-shell,
+body[data-page="network-server"] .hybrid-table-shell,
+body[data-page="acs"] .hybrid-table-shell,
+body[data-page="teknisi"] .hybrid-table-shell,
+body[data-page="reports"] .hybrid-table-shell,
+body[data-page="error-log"] .hybrid-table-shell,
+body[data-page="mapping"] .hybrid-table-shell,
+body[data-page="user-mgmt"] .hybrid-table-shell,
+body[data-page="company"] .hybrid-table-shell,
+body[data-page="mikrotik"] .hybrid-modal-panel,
+body[data-page="network-server"] .hybrid-modal-panel,
+body[data-page="acs"] .hybrid-modal-panel,
+body[data-page="teknisi"] .hybrid-modal-panel,
+body[data-page="reports"] .hybrid-modal-panel,
+body[data-page="error-log"] .hybrid-modal-panel,
+body[data-page="mapping"] .hybrid-modal-panel,
+body[data-page="user-mgmt"] .hybrid-modal-panel,
+body[data-page="company"] .hybrid-modal-panel,
+body[data-page="reports"] .report-card,
+body[data-page="reports"] .reports-meta,
+body[data-page="reports"] .reports-intro,
+body[data-page="company"] .company-card,
+body[data-page="company"] .company-toolbar,
+body[data-page="company"] .bank-card,
+body[data-page="user-mgmt"] .user-modal-panel {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+    color: #eadfd2 !important;
+}
+
+body[data-page="mikrotik"] .stat-card,
+body[data-page="network-server"] .stat-card,
+body[data-page="acs"] .stat-card,
+body[data-page="teknisi"] .stat-card,
+body[data-page="reports"] .stat-card,
+body[data-page="error-log"] .stat-card,
+body[data-page="mapping"] .stat-card,
+body[data-page="user-mgmt"] .stat-card,
+body[data-page="company"] .stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+}
+
+body[data-page="mikrotik"] .stat-card::before,
+body[data-page="network-server"] .stat-card::before,
+body[data-page="acs"] .stat-card::before,
+body[data-page="teknisi"] .stat-card::before,
+body[data-page="reports"] .stat-card::before,
+body[data-page="error-log"] .stat-card::before,
+body[data-page="mapping"] .stat-card::before,
+body[data-page="user-mgmt"] .stat-card::before,
+body[data-page="company"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+    pointer-events: none !important;
+}
+
+body[data-page="mikrotik"] .search-container input,
+body[data-page="network-server"] .search-container input,
+body[data-page="acs"] .search-container input,
+body[data-page="teknisi"] .search-container input,
+body[data-page="reports"] .search-container input,
+body[data-page="error-log"] .search-container input,
+body[data-page="mapping"] .search-container input,
+body[data-page="user-mgmt"] .search-container input,
+body[data-page="company"] .search-container input,
+body[data-page="mikrotik"] .server-search input,
+body[data-page="network-server"] .server-search input,
+body[data-page="acs"] .server-search input,
+body[data-page="teknisi"] .server-search input,
+body[data-page="mikrotik"] .filter-dropdown select,
+body[data-page="network-server"] .filter-dropdown select,
+body[data-page="acs"] .filter-dropdown select,
+body[data-page="teknisi"] .filter-dropdown select,
+body[data-page="reports"] .filter-dropdown select,
+body[data-page="error-log"] .filter-dropdown select,
+body[data-page="mapping"] .filter-dropdown select,
+body[data-page="user-mgmt"] .filter-dropdown select,
+body[data-page="company"] .filter-dropdown select,
+body[data-page="mikrotik"] .form-select,
+body[data-page="network-server"] .form-select,
+body[data-page="acs"] .form-select,
+body[data-page="teknisi"] .form-select,
+body[data-page="reports"] .form-select,
+body[data-page="error-log"] .form-select,
+body[data-page="mapping"] .form-select,
+body[data-page="user-mgmt"] .form-select,
+body[data-page="company"] .form-select,
+body[data-page="mikrotik"] select,
+body[data-page="network-server"] select,
+body[data-page="acs"] select,
+body[data-page="teknisi"] select,
+body[data-page="reports"] select,
+body[data-page="error-log"] select,
+body[data-page="mapping"] select,
+body[data-page="user-mgmt"] select,
+body[data-page="company"] select {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="mikrotik"] .filter-dropdown select,
+body[data-page="network-server"] .filter-dropdown select,
+body[data-page="acs"] .filter-dropdown select,
+body[data-page="teknisi"] .filter-dropdown select,
+body[data-page="reports"] .filter-dropdown select,
+body[data-page="error-log"] .filter-dropdown select,
+body[data-page="mapping"] .filter-dropdown select,
+body[data-page="user-mgmt"] .filter-dropdown select,
+body[data-page="company"] .filter-dropdown select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+}
+
+body[data-page="mikrotik"] .filter-dropdown select:focus,
+body[data-page="network-server"] .filter-dropdown select:focus,
+body[data-page="acs"] .filter-dropdown select:focus,
+body[data-page="teknisi"] .filter-dropdown select:focus,
+body[data-page="reports"] .filter-dropdown select:focus,
+body[data-page="error-log"] .filter-dropdown select:focus,
+body[data-page="mapping"] .filter-dropdown select:focus,
+body[data-page="user-mgmt"] .filter-dropdown select:focus,
+body[data-page="company"] .filter-dropdown select:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="mikrotik"] .filter-dropdown select option,
+body[data-page="network-server"] .filter-dropdown select option,
+body[data-page="acs"] .filter-dropdown select option,
+body[data-page="teknisi"] .filter-dropdown select option,
+body[data-page="reports"] .filter-dropdown select option,
+body[data-page="error-log"] .filter-dropdown select option,
+body[data-page="mapping"] .filter-dropdown select option,
+body[data-page="user-mgmt"] .filter-dropdown select option,
+body[data-page="company"] .filter-dropdown select option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="mikrotik"] .filter-dropdown select option:checked,
+body[data-page="network-server"] .filter-dropdown select option:checked,
+body[data-page="acs"] .filter-dropdown select option:checked,
+body[data-page="teknisi"] .filter-dropdown select option:checked,
+body[data-page="reports"] .filter-dropdown select option:checked,
+body[data-page="error-log"] .filter-dropdown select option:checked,
+body[data-page="mapping"] .filter-dropdown select option:checked,
+body[data-page="user-mgmt"] .filter-dropdown select option:checked,
+body[data-page="company"] .filter-dropdown select option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+body[data-page="mikrotik"] .data-table thead,
+body[data-page="network-server"] .data-table thead,
+body[data-page="acs"] .data-table thead,
+body[data-page="teknisi"] .data-table thead,
+body[data-page="reports"] .data-table thead,
+body[data-page="error-log"] .data-table thead,
+body[data-page="mapping"] .data-table thead,
+body[data-page="user-mgmt"] .data-table thead,
+body[data-page="company"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="mikrotik"] .data-table th,
+body[data-page="network-server"] .data-table th,
+body[data-page="acs"] .data-table th,
+body[data-page="teknisi"] .data-table th,
+body[data-page="reports"] .data-table th,
+body[data-page="error-log"] .data-table th,
+body[data-page="mapping"] .data-table th,
+body[data-page="user-mgmt"] .data-table th,
+body[data-page="company"] .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+body[data-page="mikrotik"] .data-table td,
+body[data-page="network-server"] .data-table td,
+body[data-page="acs"] .data-table td,
+body[data-page="teknisi"] .data-table td,
+body[data-page="reports"] .data-table td,
+body[data-page="error-log"] .data-table td,
+body[data-page="mapping"] .data-table td,
+body[data-page="user-mgmt"] .data-table td,
+body[data-page="company"] .data-table td {
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+    background: #212731 !important;
+}
+
+body[data-page="mikrotik"] .data-table tbody tr:nth-child(even),
+body[data-page="network-server"] .data-table tbody tr:nth-child(even),
+body[data-page="acs"] .data-table tbody tr:nth-child(even),
+body[data-page="teknisi"] .data-table tbody tr:nth-child(even),
+body[data-page="reports"] .data-table tbody tr:nth-child(even),
+body[data-page="error-log"] .data-table tbody tr:nth-child(even),
+body[data-page="mapping"] .data-table tbody tr:nth-child(even),
+body[data-page="user-mgmt"] .data-table tbody tr:nth-child(even),
+body[data-page="company"] .data-table tbody tr:nth-child(even) {
+    background: #252b35 !important;
+}
+
+body[data-page="mikrotik"] .data-table tbody tr:hover,
+body[data-page="network-server"] .data-table tbody tr:hover,
+body[data-page="acs"] .data-table tbody tr:hover,
+body[data-page="teknisi"] .data-table tbody tr:hover,
+body[data-page="reports"] .data-table tbody tr:hover,
+body[data-page="error-log"] .data-table tbody tr:hover,
+body[data-page="mapping"] .data-table tbody tr:hover,
+body[data-page="user-mgmt"] .data-table tbody tr:hover,
+body[data-page="company"] .data-table tbody tr:hover {
+    background: rgba(209, 128, 69, 0.08) !important;
+}
+
+body[data-page="mikrotik"] .modal-backdrop,
+body[data-page="network-server"] .modal-backdrop,
+body[data-page="acs"] .modal-backdrop,
+body[data-page="teknisi"] .modal-backdrop,
+body[data-page="reports"] .modal-backdrop,
+body[data-page="error-log"] .modal-backdrop,
+body[data-page="mapping"] .modal-backdrop,
+body[data-page="user-mgmt"] .modal-backdrop,
+body[data-page="company"] .modal-backdrop {
+    background: rgba(9, 12, 18, 0.74) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="mikrotik"] .modal-content,
+body[data-page="network-server"] .modal-content,
+body[data-page="acs"] .modal-content,
+body[data-page="teknisi"] .modal-content,
+body[data-page="reports"] .modal-content,
+body[data-page="error-log"] .modal-content,
+body[data-page="mapping"] .modal-content,
+body[data-page="user-mgmt"] .modal-content,
+body[data-page="company"] .modal-content {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="mikrotik"] .modal-header,
+body[data-page="network-server"] .modal-header,
+body[data-page="acs"] .modal-header,
+body[data-page="teknisi"] .modal-header,
+body[data-page="reports"] .modal-header,
+body[data-page="error-log"] .modal-header,
+body[data-page="mapping"] .modal-header,
+body[data-page="user-mgmt"] .modal-header,
+body[data-page="company"] .modal-header,
+body[data-page="mikrotik"] .modal-footer,
+body[data-page="network-server"] .modal-footer,
+body[data-page="acs"] .modal-footer,
+body[data-page="teknisi"] .modal-footer,
+body[data-page="reports"] .modal-footer,
+body[data-page="error-log"] .modal-footer,
+body[data-page="mapping"] .modal-footer,
+body[data-page="user-mgmt"] .modal-footer,
+body[data-page="company"] .modal-footer {
+    border-color: rgba(82, 90, 102, 0.62) !important;
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+}
+
+body[data-page="mikrotik"] .modal-body,
+body[data-page="network-server"] .modal-body,
+body[data-page="acs"] .modal-body,
+body[data-page="teknisi"] .modal-body,
+body[data-page="reports"] .modal-body,
+body[data-page="error-log"] .modal-body,
+body[data-page="mapping"] .modal-body,
+body[data-page="user-mgmt"] .modal-body,
+body[data-page="company"] .modal-body {
+    background: linear-gradient(180deg, rgba(39, 45, 55, 0.92) 0%, rgba(32, 37, 47, 0.92) 100%) !important;
+    color: #e8ddd1 !important;
+}
+
+/* Mikrotik hard override to remove remaining white table/modal surfaces */
+body[data-page="mikrotik"] .hybrid-table-shell {
+    background: linear-gradient(180deg, #2c313b 0%, #232934 100%) !important;
+    border: 1px solid #4b5260 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="mikrotik"] .hybrid-table thead tr,
+body[data-page="mikrotik"] .hybrid-table thead {
+    background: linear-gradient(180deg, #3a404b 0%, #303640 100%) !important;
+}
+
+body[data-page="mikrotik"] .hybrid-table th {
+    color: #beb3a5 !important;
+    border-bottom: 1px solid #565d6b !important;
+}
+
+body[data-page="mikrotik"] .hybrid-table td {
+    background: #232933 !important;
+    color: #eadfd2 !important;
+    border-bottom: 1px solid rgba(86, 94, 106, 0.58) !important;
+}
+
+body[data-page="mikrotik"] .hybrid-table tbody tr:nth-child(even) td {
+    background: #272e38 !important;
+}
+
+body[data-page="mikrotik"] .hybrid-table tbody tr:hover td {
+    background: #2d3440 !important;
+}
+
+body[data-page="mikrotik"] .hybrid-modal {
+    background: rgba(9, 12, 18, 0.74) !important;
+    align-items: center !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="mikrotik"] .hybrid-modal-panel {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 20px 38px rgba(0, 0, 0, 0.42) !important;
+}
+
+body[data-page="mikrotik"] .status-chip.online {
+    background: linear-gradient(180deg, rgba(47, 82, 66, 0.94) 0%, rgba(35, 61, 50, 0.94) 100%) !important;
+    color: #86e5bb !important;
+    border: 1px solid rgba(90, 178, 136, 0.62) !important;
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+/* ACS page consistent dark palette (cards + table + modal) */
+body[data-page="acs"] .acs-card,
+body[data-page="acs"] .acs-table-container,
+body[data-page="acs"] .billing-card,
+body[data-page="acs"] .billing-table-card {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+    color: #eadfd2 !important;
+}
+
+body[data-page="acs"] .acs-kv.horizontal .acs-kv-item {
+    background: linear-gradient(180deg, rgba(41, 47, 58, 0.96) 0%, rgba(31, 36, 46, 0.96) 100%) !important;
+    border: 1px solid rgba(84, 91, 103, 0.72) !important;
+}
+
+body[data-page="acs"] .acs-table thead {
+    background: linear-gradient(180deg, #3b404a 0%, #30353f 100%) !important;
+}
+
+body[data-page="acs"] .acs-table th {
+    color: #beb3a5 !important;
+    border-bottom: 1px solid #565d6b !important;
+}
+
+body[data-page="acs"] .acs-table td {
+    color: #eadfd2 !important;
+    border-top: 1px solid rgba(86, 94, 106, 0.58) !important;
+    background: #232933 !important;
+}
+
+body[data-page="acs"] .acs-table tbody tr:nth-child(even) td {
+    background: #272e38 !important;
+}
+
+body[data-page="acs"] .acs-table tbody tr:hover td {
+    background: #2d3440 !important;
+}
+
+body[data-page="acs"] .acs-badge.online,
+body[data-page="acs"] .acs-badge.success {
+    background: linear-gradient(180deg, rgba(47, 82, 66, 0.94) 0%, rgba(35, 61, 50, 0.94) 100%) !important;
+    color: #86e5bb !important;
+    border: 1px solid rgba(90, 178, 136, 0.62) !important;
+}
+
+body[data-page="acs"] .acs-badge.offline,
+body[data-page="acs"] .acs-badge.failed {
+    background: linear-gradient(180deg, rgba(90, 49, 49, 0.94) 0%, rgba(69, 37, 37, 0.94) 100%) !important;
+    color: #ffb4a8 !important;
+    border: 1px solid rgba(194, 101, 90, 0.62) !important;
+}
+
+body[data-page="acs"] .acs-badge.pending {
+    background: linear-gradient(180deg, rgba(92, 74, 42, 0.94) 0%, rgba(73, 57, 31, 0.94) 100%) !important;
+    color: #ffd08f !important;
+    border: 1px solid rgba(199, 147, 76, 0.62) !important;
+}
+
+body[data-page="acs"] .acs-quick-action {
+    background: linear-gradient(180deg, rgba(39, 45, 55, 0.96) 0%, rgba(30, 35, 44, 0.96) 100%) !important;
+    border: 1px solid rgba(82, 90, 102, 0.66) !important;
+}
+
+body[data-page="acs"] .acs-quick-btn,
+body[data-page="acs"] .acs-quick-trigger {
+    background: linear-gradient(180deg, #444b57 0%, #353b46 100%) !important;
+    border: 1px solid #5b6270 !important;
+    color: #eadfd2 !important;
+}
+
+body[data-page="acs"] .acs-modal-overlay {
+    background: rgba(9, 12, 18, 0.76) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body[data-page="acs"] .acs-modal {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 26px 48px rgba(0, 0, 0, 0.46),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="acs"] .acs-modal::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02) 66%, transparent 100%) !important;
+}
+
+body[data-page="acs"] .acs-modal::after {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(68, 74, 86, 0.74) !important;
+}
+
+body[data-page="acs"] .acs-modal-header,
+body[data-page="acs"] .acs-modal-footer {
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+    border-color: rgba(82, 90, 102, 0.62) !important;
+}
+
+body[data-page="acs"] .acs-modal-body {
+    background: linear-gradient(180deg, rgba(39, 45, 55, 0.92) 0%, rgba(32, 37, 47, 0.92) 100%) !important;
+}
+
+body[data-page="acs"] .acs-input,
+body[data-page="acs"] .acs-select {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="acs"] .acs-input:focus,
+body[data-page="acs"] .acs-select:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+/* Teknisi: remove quick-action wrapper border + darken modal close button */
+body[data-page="teknisi"] .tech-quick-actions {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body[data-page="teknisi"] .tech-quick-actions:hover {
+    border: none !important;
+    background: transparent !important;
+}
+
+body[data-page="teknisi"] .modal-close {
+    background: linear-gradient(180deg, #444b57 0%, #353b46 100%) !important;
+    border: 1px solid #5b6270 !important;
+    color: #eadfd2 !important;
+    box-shadow:
+        0 6px 12px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+body[data-page="teknisi"] .modal-close:hover,
+body[data-page="teknisi"] .modal-close:focus {
+    background: linear-gradient(180deg, #555d6b 0%, #404754 100%) !important;
+    border-color: #707989 !important;
+    color: #ffffff !important;
+}
+
+/* Reports page: normalize card palette to consistent dark tone */
+body[data-page="reports"] .reports-meta {
+    background: linear-gradient(180deg, #2f3642 0%, #252c37 100%) !important;
+    border: 1px solid #4a5160 !important;
+    color: #d6cabd !important;
+    box-shadow:
+        0 12px 22px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body[data-page="reports"] .stat-card,
+body[data-page="reports"] .report-card {
+    position: relative !important;
+    overflow: hidden !important;
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="reports"] .stat-card::before,
+body[data-page="reports"] .report-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 26%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+}
+
+body[data-page="reports"] .report-summary-item {
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+}
+
+body[data-page="reports"] .report-summary-item span {
+    color: #c0b5a8 !important;
+}
+
+body[data-page="reports"] .report-summary-item strong,
+body[data-page="reports"] .report-card-copy h3,
+body[data-page="reports"] .stat-info h4,
+body[data-page="reports"] .reports-intro-copy h2 {
+    color: #f2e9de !important;
+}
+
+body[data-page="reports"] .report-card-copy p,
+body[data-page="reports"] .stat-info p,
+body[data-page="reports"] .stat-info small,
+body[data-page="reports"] .reports-intro-copy p {
+    color: #b8ad9f !important;
+}
+
+body[data-page="reports"] .report-actions .btn-primary {
+    background: linear-gradient(180deg, #db8d47 0%, #be6f2d 100%) !important;
+    border: 1px solid #d18a4b !important;
+    color: #fff7ef !important;
+}
+
+body[data-page="reports"] .report-actions .btn-primary:hover {
+    background: linear-gradient(180deg, #e39a56 0%, #c77938 100%) !important;
+    border-color: #df995e !important;
+}
+
+body[data-page="reports"] .reports-intro,
+body[data-page="reports"] .reports-intro-copy,
+body[data-page="reports"] .reports-meta {
+    border: none !important;
+}
+
+body[data-page="reports"] .reports-intro,
+body[data-page="reports"] .reports-intro-copy {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body[data-page="reports"] .reports-meta {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    color: #b8ad9f !important;
+}
+
+/* Error log page: card + filter dropdown consistency */
+body[data-page="error-log"] .stat-card {
+    position: relative !important;
+    overflow: hidden !important;
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="error-log"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 26%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+}
+
+body[data-page="error-log"] .stat-card h3,
+body[data-page="error-log"] .stat-card p {
+    color: #b8ad9f !important;
+}
+
+body[data-page="error-log"] .stat-card strong {
+    color: #f2e9de !important;
+}
+
+body[data-page="error-log"] .log-filter,
+body[data-page="error-log"] #errorStatusFilter {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 34px !important;
+    background-image:
+        linear-gradient(180deg, #1b1f27 0%, #141922 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23d8c8b4' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-position: 0 0, right 10px center !important;
+    background-size: auto, 12px 12px !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="error-log"] .log-filter:focus,
+body[data-page="error-log"] #errorStatusFilter:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}
+
+body[data-page="error-log"] .log-filter option,
+body[data-page="error-log"] #errorStatusFilter option {
+    background: #1a1f29 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="error-log"] .log-filter option:checked,
+body[data-page="error-log"] #errorStatusFilter option:checked {
+    background: #2f3a49 !important;
+    color: #ffe3c8 !important;
+}
+
+/* User management page: card + all modal + Full Access badge consistency */
+body[data-page="user-mgmt"] .stat-card,
+body[data-page="user-mgmt"] .table-container {
+    position: relative !important;
+    overflow: hidden !important;
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="user-mgmt"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    border-radius: inherit !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 26%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(120% 80% at 10% -20%, rgba(214, 141, 82, 0.16) 0%, rgba(214, 141, 82, 0) 65%) !important;
+}
+
+body[data-page="user-mgmt"] .table-container {
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38) !important;
+}
+
+body[data-page="user-mgmt"] .table-container .data-table thead,
+body[data-page="user-mgmt"] .table-container .data-table thead tr,
+body[data-page="user-mgmt"] .table-container .data-table thead th {
+    background: linear-gradient(180deg, #383e48 0%, #2c323c 100%) !important;
+    background-image: linear-gradient(180deg, #383e48 0%, #2c323c 100%) !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+body[data-page="user-mgmt"] .table-container .data-table th {
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+}
+
+/* Match pembayaran table header exactly */
+body[data-page="user-mgmt"] .data-table thead {
+    background: linear-gradient(180deg, #3a3f49 0%, #2e333c 100%) !important;
+}
+
+body[data-page="user-mgmt"] .data-table th {
+    background: transparent !important;
+    background-image: none !important;
+    color: #b7ab9b !important;
+    border-bottom: 1px solid #505765 !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+body[data-page="user-mgmt"] .table-container::before,
+body[data-page="user-mgmt"] .table-container::after,
+body[data-page="user-mgmt"] .data-table thead::before,
+body[data-page="user-mgmt"] .data-table thead::after,
+body[data-page="user-mgmt"] .data-table thead tr::before,
+body[data-page="user-mgmt"] .data-table thead tr::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+body[data-page="user-mgmt"] .data-table thead,
+body[data-page="user-mgmt"] .data-table thead tr,
+body[data-page="user-mgmt"] .data-table thead th {
+    background: #2e333c !important;
+    background-image: none !important;
+}
+
+/* Remove white gloss on table header for network-server page */
+body[data-page="network-server"] .table-container::before,
+body[data-page="network-server"] .table-container::after,
+body[data-page="network-server"] .data-table thead::before,
+body[data-page="network-server"] .data-table thead::after,
+body[data-page="network-server"] .data-table thead tr::before,
+body[data-page="network-server"] .data-table thead tr::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+body[data-page="network-server"] .data-table thead,
+body[data-page="network-server"] .data-table thead tr,
+body[data-page="network-server"] .data-table thead th {
+    background: #2e333c !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Company page consistency */
+body[data-page="company"] .company-toolbar,
+body[data-page="company"] .company-summary-card,
+body[data-page="company"] .company-section-card,
+body[data-page="company"] .bank-account-item,
+body[data-page="company"] .empty-state,
+body[data-page="company"] .company-error-state {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-page="company"] .company-section-head {
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+    border-bottom: 1px solid rgba(82, 90, 102, 0.62) !important;
+}
+
+body[data-page="company"] .company-pill.success {
+    background: linear-gradient(180deg, rgba(47, 82, 66, 0.94) 0%, rgba(35, 61, 50, 0.94) 100%) !important;
+    color: #86e5bb !important;
+    border: 1px solid rgba(90, 178, 136, 0.62) !important;
+}
+
+body[data-page="company"] .company-pill.read {
+    background: linear-gradient(180deg, rgba(50, 66, 93, 0.94) 0%, rgba(37, 50, 74, 0.94) 100%) !important;
+    color: #a9c5f7 !important;
+    border: 1px solid rgba(110, 143, 204, 0.58) !important;
+}
+
+body[data-page="company"] .modal-overlay {
+    background: rgba(9, 12, 18, 0.74) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="company"] .company-modal {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="company"] .company-modal .modal-header,
+body[data-page="company"] .company-modal .modal-footer {
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+    border-color: rgba(82, 90, 102, 0.62) !important;
+}
+
+body[data-page="company"] .company-modal .modal-body {
+    background: linear-gradient(180deg, rgba(39, 45, 55, 0.92) 0%, rgba(32, 37, 47, 0.92) 100%) !important;
+}
+
+body[data-page="company"] .company-modal .modal-close {
+    background: linear-gradient(180deg, #444b57 0%, #353b46 100%) !important;
+    border: 1px solid #5b6270 !important;
+    color: #eadfd2 !important;
+    border-radius: 10px !important;
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body[data-page="company"] .company-modal .modal-close:hover {
+    background: linear-gradient(180deg, #555d6b 0%, #404754 100%) !important;
+    border-color: #707989 !important;
+    color: #ffffff !important;
+}
+
+/* Company main form modal sizing (match requested compact size) */
+body[data-page="company"] #companyModal.company-modal {
+    top: 53% !important;
+    width: min(560px, calc(100% - 48px)) !important;
+    max-height: calc(100vh - 230px) !important;
+}
+
+body[data-page="company"] #companyModal .modal-body {
+    padding: 18px 20px !important;
+    max-height: calc(100vh - 320px) !important;
+    overflow-y: auto !important;
+}
+
+body[data-page="user-mgmt"] .access-badge.full {
+    background: linear-gradient(180deg, rgba(47, 82, 66, 0.94) 0%, rgba(35, 61, 50, 0.94) 100%) !important;
+    color: #86e5bb !important;
+    border: 1px solid rgba(90, 178, 136, 0.62) !important;
+    box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+body[data-page="user-mgmt"] .access-badge.read {
+    background: linear-gradient(180deg, rgba(50, 66, 93, 0.94) 0%, rgba(37, 50, 74, 0.94) 100%) !important;
+    color: #a9c5f7 !important;
+    border: 1px solid rgba(110, 143, 204, 0.58) !important;
+}
+
+body[data-page="user-mgmt"] .modal-backdrop {
+    background: rgba(9, 12, 18, 0.74) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body[data-page="user-mgmt"] .user-modal-panel,
+body[data-page="user-mgmt"] .modal-content.user-modal-panel {
+    background: linear-gradient(180deg, #333842 0%, #272c35 100%) !important;
+    border: 1px solid #464b55 !important;
+    box-shadow:
+        0 22px 40px rgba(0, 0, 0, 0.46),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-page="user-mgmt"] .user-modal-header,
+body[data-page="user-mgmt"] .user-modal-footer {
+    background: linear-gradient(180deg, rgba(52, 58, 69, 0.66) 0%, rgba(40, 46, 57, 0.62) 100%) !important;
+    border-color: rgba(82, 90, 102, 0.62) !important;
+}
+
+body[data-page="user-mgmt"] .user-modal-body {
+    background: linear-gradient(180deg, rgba(39, 45, 55, 0.92) 0%, rgba(32, 37, 47, 0.92) 100%) !important;
+}
+
+body[data-page="user-mgmt"] .modal-close-btn {
+    background: linear-gradient(180deg, #444b57 0%, #353b46 100%) !important;
+    border: 1px solid #5b6270 !important;
+    color: #eadfd2 !important;
+    box-shadow:
+        0 6px 12px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+body[data-page="user-mgmt"] .modal-close-btn:hover,
+body[data-page="user-mgmt"] .modal-close-btn:focus {
+    background: linear-gradient(180deg, #555d6b 0%, #404754 100%) !important;
+    border-color: #707989 !important;
+    color: #ffffff !important;
+}
+
+body[data-page="user-mgmt"] .user-modal-panel .form-input,
+body[data-page="user-mgmt"] .user-modal-panel .form-select {
+    background: linear-gradient(180deg, #1b1f27 0%, #141922 100%) !important;
+    border: 1px solid #525864 !important;
+    color: #e8ddd1 !important;
+}
+
+body[data-page="user-mgmt"] .user-modal-panel .form-input:focus,
+body[data-page="user-mgmt"] .user-modal-panel .form-select:focus {
+    border-color: rgba(217, 138, 82, 0.9) !important;
+    box-shadow: 0 0 0 2px rgba(209, 128, 69, 0.2), 0 8px 16px rgba(0, 0, 0, 0.26) !important;
+}

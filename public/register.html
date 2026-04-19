@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NMX | Registrasi Pelanggan ISP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui"],
+            mono: ["JetBrains Mono", "ui-monospace", "monospace"]
+          },
+          colors: {
+            nmx: {
+              950: "#07101f",
+              900: "#0b1224",
+              850: "#10192f",
+              800: "#15203a",
+              700: "#1d3156",
+              cyan: "#38bdf8",
+              cyanSoft: "#67e8f9",
+              violet: "#a855f7"
+            }
+          },
+          boxShadow: {
+            glass: "0 24px 60px rgba(3, 8, 23, 0.55), inset 0 1px 0 rgba(255,255,255,0.08)",
+            glow: "0 18px 48px rgba(56, 189, 248, 0.24), 0 12px 34px rgba(168, 85, 247, 0.16)"
+          },
+          backgroundImage: {
+            "nmx-gradient": "linear-gradient(135deg, #38bdf8 0%, #22d3ee 30%, #8b5cf6 75%, #c084fc 100%)",
+            "panel-gradient": "linear-gradient(180deg, rgba(16,25,47,0.88) 0%, rgba(8,12,24,0.95) 100%)"
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen overflow-x-hidden bg-[#07101f] font-sans text-slate-100 lg:h-screen lg:overflow-hidden">
+  <div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(168,85,247,0.16),transparent_24%),linear-gradient(180deg,#07101f_0%,#0b1224_45%,#08111f_100%)]"></div>
+  <div class="fixed inset-0 -z-10 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:44px_44px]"></div>
+
+  <main class="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-4 sm:px-5 lg:h-screen lg:px-6 lg:py-3">
+    <div class="grid w-full gap-4 lg:max-h-[calc(100vh-24px)] lg:grid-cols-[minmax(0,1.08fr)_minmax(340px,390px)]">
+      <section class="relative overflow-hidden rounded-[24px] border border-white/10 bg-panel-gradient p-5 shadow-glass backdrop-blur-xl sm:p-6 lg:p-5">
+        <div class="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0))] opacity-60"></div>
+        <div class="relative space-y-4 lg:space-y-3">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-200">
+            <span class="inline-flex h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)]"></span>
+            Platform Operasional ISP
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">
+              <span class="text-lg font-bold tracking-[0.25em] text-white">NMX<span class="text-cyan-300">.TAC</span></span>
+              <span>Registration Suite</span>
+            </div>
+            <div class="space-y-2">
+              <h1 class="max-w-2xl text-[2rem] font-extrabold leading-[1.05] text-white sm:text-[2.2rem] lg:max-w-xl lg:text-[2.05rem]">
+                Mulai onboarding perusahaan ISP Anda dalam hitungan menit.
+              </h1>
+              <p class="max-w-2xl text-[13px] leading-6 text-slate-300 lg:max-w-xl lg:text-[12.5px] lg:leading-5">
+                Registrasi ini dirancang untuk perusahaan ISP yang ingin langsung memiliki fondasi operasional yang rapi. Satu akun owner akan dibuat, lalu pendaftaran akan masuk ke antrian approval superadmin sebelum tenant diaktifkan.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid gap-2.5 sm:grid-cols-3">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-3.5">
+              <div class="text-[1.7rem] font-bold leading-none text-white">1 Panel</div>
+              <p class="mt-1.5 text-[10px] uppercase tracking-[0.1em] text-slate-400">Monitoring, billing, pelanggan, dan tiket dalam satu workspace</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-3.5">
+              <div class="text-[1.7rem] font-bold leading-none text-white">Trial</div>
+              <p class="mt-1.5 text-[10px] uppercase tracking-[0.1em] text-slate-400">Perusahaan baru masuk antrian approval sebelum aktif</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-3.5">
+              <div class="text-[1.7rem] font-bold leading-none text-white">Owner</div>
+              <p class="mt-1.5 text-[10px] uppercase tracking-[0.1em] text-slate-400">Akun pertama langsung menjadi owner perusahaan</p>
+            </div>
+          </div>
+
+          <div class="grid gap-2.5 sm:grid-cols-2">
+            <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
+              <h2 class="text-[13px] font-semibold text-white">Siap launch dengan cepat</h2>
+              <p class="mt-1.5 text-[12px] leading-5 text-slate-300">Form singkat, validasi jelas, dan alur registrasi aman agar tim Anda bisa segera mulai onboarding.</p>
+            </article>
+            <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
+              <h2 class="text-[13px] font-semibold text-white">Kesan profesional sejak awal</h2>
+              <p class="mt-1.5 text-[12px] leading-5 text-slate-300">Tampilan modern dan enterprise-ready membantu perusahaan terlihat lebih matang saat bertumbuh.</p>
+            </article>
+          </div>
+
+          <div class="flex flex-wrap items-start justify-between gap-3 border-t border-white/10 pt-3">
+            <div class="space-y-1.5">
+              <div class="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-cyan-200">Secure Registration Flow</div>
+              <p class="max-w-xl text-[12px] leading-5 text-slate-400">Email unik, username unik, password bcrypt hash, dan insert data berjalan lewat transaction untuk menjaga konsistensi data.</p>
+            </div>
+            <a href="http://localhost:8080/login" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:border-cyan-300/30 hover:text-cyan-200">
+              Sudah punya akun?
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="relative overflow-hidden rounded-[24px] border border-white/10 bg-panel-gradient p-5 shadow-glass backdrop-blur-xl sm:p-6 lg:p-5">
+        <div class="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0))] opacity-60"></div>
+        <div class="relative">
+          <div class="space-y-1.5">
+            <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-200">
+              Registrasi Perusahaan
+            </div>
+            <h2 class="text-[1.85rem] font-bold leading-[1.1] text-white lg:text-[1.7rem]">Buat akun owner perusahaan ISP</h2>
+            <p class="text-[12px] leading-5 text-slate-400">Lengkapi data inti di bawah ini. Semua field wajib diisi untuk membuat akun perusahaan baru.</p>
+          </div>
+
+          <div id="formAlert" class="mt-4 hidden rounded-2xl border px-4 py-2.5 text-[12px] leading-5"></div>
+
+          <form id="registerForm" class="mt-3.5 space-y-2" novalidate>
+            <div>
+              <label for="companyName" class="mb-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">Nama Perusahaan</label>
+              <input id="companyName" name="companyName" type="text" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="PT ISP Nusantara" required>
+              <p data-error-for="companyName" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+            </div>
+
+            <div>
+              <label for="email" class="mb-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">Email</label>
+              <input id="email" name="email" type="email" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="hello@ispanda.co.id" required>
+              <p data-error-for="email" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+            </div>
+
+            <div>
+              <label for="phone" class="mb-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">No HP</label>
+              <input id="phone" name="phone" type="tel" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="081234567890" required>
+              <p data-error-for="phone" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+            </div>
+
+            <div>
+              <label for="picName" class="mb-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">Nama PIC</label>
+              <input id="picName" name="picName" type="text" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="Nama penanggung jawab" required>
+              <p data-error-for="picName" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+            </div>
+
+            <div>
+              <label for="username" class="mb-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">Username</label>
+              <input id="username" name="username" type="text" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="ispowner" required>
+              <p data-error-for="username" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+            </div>
+
+            <div>
+              <div class="mb-0.5 flex items-center justify-between gap-3">
+                <label for="password" class="block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">Password</label>
+                <button type="button" id="togglePassword" class="text-[10px] font-semibold uppercase tracking-[0.12em] text-cyan-200 transition hover:text-cyan-100">Lihat Password</button>
+              </div>
+              <input id="password" name="password" type="password" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="Minimal 8 karakter" required>
+              <p data-error-for="password" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+              <div id="passwordGuide" class="mt-1 flex flex-wrap gap-1.5">
+                <span id="passwordRuleLength" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] text-slate-300">
+                  <span class="password-rule-icon">•</span>
+                  Minimum 8 karakter
+                </span>
+                <span id="passwordRuleUppercase" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] text-slate-300">
+                  <span class="password-rule-icon">•</span>
+                  1 huruf besar
+                </span>
+                <span id="passwordRuleSpecial" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] text-slate-300">
+                  <span class="password-rule-icon">•</span>
+                  1 karakter spesial
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label for="confirmPassword" class="mb-0.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">Repeat Password</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" class="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-1 text-[13px] text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40 focus:ring-2 focus:ring-cyan-400/20" placeholder="Ulangi password" required>
+              <p data-error-for="confirmPassword" class="mt-0.5 min-h-[8px] text-[11px] text-rose-300"></p>
+              <p id="confirmPasswordStatus" class="mt-1 hidden text-[11px] font-medium text-rose-300">incorrect password</p>
+            </div>
+
+            <div class="space-y-2.5 pt-1">
+              <button id="submitButton" type="submit" class="inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-nmx-gradient px-5 py-3 text-[12px] font-bold uppercase tracking-[0.14em] text-white shadow-glow transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70">
+                <span id="submitLabel">Daftarkan Perusahaan</span>
+              </button>
+              <div class="flex flex-wrap items-center justify-between gap-2.5 text-[11px] text-slate-400">
+                <span>Status awal perusahaan adalah <strong class="text-cyan-200">pending approval</strong>.</span>
+                <a href="http://localhost:8080/login" class="font-semibold text-cyan-200 transition hover:text-cyan-100">Kembali ke login</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/register.js"></script>
+</body>
+</html>

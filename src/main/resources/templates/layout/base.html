@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NMX | ISP Management</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}" href="/img/favicon.png">
+    <link rel="shortcut icon" type="image/png" th:href="@{/img/favicon.png}" href="/img/favicon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Unified CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <!-- Additional Page-specific styles -->
+    <th:block th:fragment="styles">
+    <style>
+        .header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* Alert styles */
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .alert-critical {
+            border-left: 4px solid var(--status-danger);
+            background: linear-gradient(180deg, rgba(126, 67, 59, 0.42), rgba(88, 47, 41, 0.42));
+        }
+        
+        .alert-warning {
+            border-left: 4px solid var(--status-warning);
+            background: linear-gradient(180deg, rgba(128, 96, 59, 0.4), rgba(91, 67, 42, 0.4));
+        }
+        
+        .alert-info {
+            border-left: 4px solid var(--status-info);
+            background: var(--status-info-bg);
+        }
+
+        .alert-billing {
+            border-left: 4px solid var(--nmx-primary);
+            background: linear-gradient(180deg, rgba(133, 85, 47, 0.44), rgba(95, 58, 31, 0.44));
+        }
+
+        /* Widget styles */
+        .widget-stat {
+            padding: 20px;
+        }
+        
+        .widget-stat-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        
+        .stat-breakdown {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Map styles */
+        .map-placeholder {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .map-legend {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: var(--bg-white);
+            padding: 12px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            font-size: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+    </th:block>
+</head>
+
+<body class="flex h-screen theme-dark-glass theme-wallboard" th:attr="data-page=${page}">
+    <!-- Background Grid -->
+    <div class="grid-bg"></div>
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" th:replace="~{layout/sidebar :: sidebar}">
+    </aside>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main-content">
+        
+        <!-- Header -->
+        <header th:replace="~{layout/header :: header}">
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-scroll custom-scroll">
+            <div class="page-wallboard-shell">
+                <th:block th:switch="${page}">
+                    <th:block th:case="'dashboard-home'">
+                        <div th:replace="~{dashboard/dashboard-home :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'superadmin-dashboard'">
+                        <div th:replace="~{system/superadmin-dashboard :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'registrasi'">
+                        <div th:replace="~{pelanggan/registrasi :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'data-pelanggan'">
+                        <div th:replace="~{pelanggan/data-pelanggan :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'paket'">
+                        <div th:replace="~{pelanggan/paket :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'history-payment'">
+                        <div th:replace="~{pelanggan/history-payment :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'trafik'">
+                        <div th:replace="~{monitoring/trafik :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'alert'">
+                        <div th:replace="~{monitoring/alert :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'invoice'">
+                        <div th:replace="~{finance/invoice :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'pembayaran'">
+                        <div th:replace="~{finance/pembayaran :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'piutang'">
+                        <div th:replace="~{finance/piutang :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'cashflow'">
+                        <div th:replace="~{finance/cashflow :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'laporan-keuangan'">
+                        <div th:replace="~{finance/laporan-keuangan :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'tiket-baru'">
+                        <div th:replace="~{ticketing/tiket-baru :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'tiket-aktif'">
+                        <div th:replace="~{ticketing/tiket-aktif :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'sla'">
+                        <div th:replace="~{ticketing/sla :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'teknisi'">
+                        <div th:replace="~{ticketing/teknisi :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'mikrotik'">
+                        <div th:replace="~{network/mikrotik :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'network-server'">
+                        <div th:replace="~{network/server :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'acs'">
+                        <div th:replace="~{network/acs :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'vpn'">
+                        <div th:replace="~{network/vpn :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'ip-pool'">
+                        <div th:replace="~{network/ip-pool :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'reports'">
+                        <div th:replace="~{reports/reports :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'user-mgmt'">
+                        <div th:replace="~{user/user-mgmt :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'automation'">
+                        <div th:replace="~{automation/automation :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'system'">
+                        <div th:replace="~{system/system :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'process-log'">
+                        <div th:replace="~{system/log-proses :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'error-log'">
+                        <div th:replace="~{system/log-error :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'tenant-approval'">
+                        <div th:replace="~{system/tenant-approval :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'tenant-directory'">
+                        <div th:replace="~{system/tenant-directory :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'crm'">
+                        <div th:replace="~{crm/crm :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'mapping'">
+                        <div th:replace="~{mapping/mapping :: content}"></div>
+                    </th:block>
+                    <th:block th:case="'company'">
+                        <div th:replace="~{company/company :: content}"></div>
+                    </th:block>
+                    <th:block th:case="*">
+                        <div th:replace="~{dashboard/dashboard-home :: content}"></div>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer th:replace="~{layout/footer :: footer}">
+        </footer>
+    </main>
+
+    <!-- WhatsApp Floating -->
+    <button type="button" class="wa-float" onclick="openWaComposer(event)" aria-label="Buka WhatsApp">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </button>
+
+    <div class="superadmin-modal-overlay" id="superadminDeleteOverlay" style="display: none;">
+        <div class="superadmin-modal">
+            <div class="superadmin-modal-header">
+                <h3>Masukan Password Superadmin</h3>
+                <p>Untuk menghapus data secara permanen, masukan password superadmin.</p>
+            </div>
+            <div class="superadmin-modal-body">
+                <input id="superadminDeletePassword" type="password" class="form-input" placeholder="Password superadmin">
+                <p id="superadminDeleteError" class="superadmin-modal-error" style="display: none;"></p>
+            </div>
+            <div class="superadmin-modal-footer">
+                <button id="superadminDeleteCancel" class="btn btn-secondary" type="button">Batal</button>
+                <button id="superadminDeleteConfirm" class="btn btn-danger" type="button">Konfirmasi Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="superadmin-modal-overlay" id="confirmModalOverlay" style="display: none;">
+        <div class="superadmin-modal">
+            <div class="superadmin-modal-header">
+                <h3 id="confirmModalTitle">Konfirmasi</h3>
+                <p id="confirmModalMessage">Apakah Anda yakin?</p>
+            </div>
+            <div class="superadmin-modal-footer">
+                <button id="confirmModalCancel" class="btn btn-secondary" type="button">Batal</button>
+                <button id="confirmModalConfirm" class="btn btn-danger" type="button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="superadmin-notify-overlay" id="nmxNotifyOverlay" hidden>
+        <div class="superadmin-notify-card" id="nmxNotifyCard" role="status" aria-live="polite" aria-atomic="true">
+            <div class="superadmin-notify-icon" id="nmxNotifyIcon">
+                <i class="fas fa-circle-info" aria-hidden="true"></i>
+            </div>
+            <div class="superadmin-notify-copy">
+                <h3 id="nmxNotifyTitle">Informasi</h3>
+                <p id="nmxNotifyMessage">Notifikasi sistem.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="whatsappSettingsModal" aria-hidden="true">
+        <div class="modal-backdrop" data-wa-close="true"></div>
+        <div class="modal-content wa-modal-shell">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">Setting BOT WA</div>
+                    <div class="modal-subtitle">Login dengan nomor WhatsApp milik user dan simpan session secara persisten.</div>
+                </div>
+                <button class="modal-close" type="button" data-wa-close="true" aria-label="Tutup">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wa-settings-grid">
+                    <section class="wa-panel-card wa-status-hero">
+                        <div id="waStatusBadge" class="wa-status-badge muted">Nonaktif</div>
+                        <div class="wa-status-heading">
+                            <h4 id="waStatusText">Nonaktif</h4>
+                            <p id="waStatusNote">Gateway belum diinisialisasi.</p>
+                        </div>
+                        <div class="wa-qr-wrap" id="waQrWrap" hidden>
+                            <div class="wa-qr-frame">
+                                <img id="waQrImage" alt="">
+                            </div>
+                            <p id="waQrHint">QR akan muncul saat session membutuhkan login.</p>
+                        </div>
+                    </section>
+                    <section class="wa-panel-card wa-settings-side">
+                        <div class="wa-reminder-card" id="waGatewayInstallCard">
+                            <div class="wa-reminder-header">
+                                <div>
+                                    <h5>Analisa Gateway</h5>
+                                </div>
+                                <div id="waGatewayInstallBadge" class="wa-status-badge muted">Belum Dicek</div>
+                            </div>
+                            <div class="wa-meta-grid">
+                                <div class="wa-meta-item" hidden>
+                                    <span>Source</span>
+                                    <strong id="waGatewaySourceValue">-</strong>
+                                </div>
+                                <div class="wa-meta-item" hidden>
+                                    <span>Dependency</span>
+                                    <strong id="waGatewayInstalledValue">-</strong>
+                                </div>
+                                <div class="wa-meta-item" hidden>
+                                    <span>Runtime</span>
+                                    <strong id="waGatewayRuntimeValue">-</strong>
+                                </div>
+                            </div>
+                            <div class="wa-meta-grid">
+                                <div class="wa-meta-item" hidden>
+                                    <span>Session</span>
+                                    <strong id="waSessionValue">default</strong>
+                                </div>
+                                <div class="wa-meta-item">
+                                    <span>Service</span>
+                                    <strong id="waGatewayReachableValue">-</strong>
+                                </div>
+                                <div class="wa-meta-item">
+                                    <span>QR Diperbarui</span>
+                                    <strong id="waQrUpdatedAtValue">-</strong>
+                                </div>
+                                <div class="wa-meta-item">
+                                    <span>Terhubung</span>
+                                    <strong id="waConnectedAtValue">-</strong>
+                                </div>
+                                <div class="wa-meta-item">
+                                    <span>Terputus</span>
+                                    <strong id="waDisconnectedAtValue">-</strong>
+                                </div>
+                                <div class="wa-meta-item" style="grid-column: 1 / -1;">
+                                    <span>Error Terakhir</span>
+                                    <strong id="waLastErrorValue">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wa-reminder-card">
+                            <div class="wa-reminder-header">
+                                <div>
+                                    <h5>Reminder Invoice Otomatis</h5>
+                                </div>
+                                <label class="wa-reminder-toggle">
+                                    <input id="waReminderEnabled" type="checkbox">
+                                    <span>Aktifkan</span>
+                                </label>
+                            </div>
+                            <div class="wa-radio-group" id="waReminderLeadGroup">
+                                <label class="wa-radio-option">
+                                    <input type="radio" name="waReminderLeadDays" value="1">
+                                    <span>-1 Hari</span>
+                                </label>
+                                <label class="wa-radio-option">
+                                    <input type="radio" name="waReminderLeadDays" value="3" checked>
+                                    <span>-3 Hari</span>
+                                </label>
+                                <label class="wa-radio-option">
+                                    <input type="radio" name="waReminderLeadDays" value="7">
+                                    <span>-7 Hari</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="wa-action-row">
+                            <button id="waConnectButton" data-wa-action="connect" type="button" class="btn btn-primary">Hubungkan</button>
+                            <button id="waRefreshQrButton" data-wa-action="refresh-qr" type="button" class="btn btn-secondary">Refresh QR</button>
+                            <button id="waLogoutButton" data-wa-action="logout" type="button" class="btn btn-secondary">Disconnect</button>
+                            <button id="waResetSessionButton" data-wa-action="reset" type="button" class="btn btn-danger">Reset Session</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="whatsappComposerModal" aria-hidden="true">
+        <div class="modal-backdrop" data-wa-compose-close="true"></div>
+        <div class="modal-content wa-compose-shell">
+            <div class="modal-header">
+                <div class="wa-compose-branding">
+                    <div class="wa-compose-brand-icon"><i class="fas fa-comments"></i></div>
+                    <div>
+                        <div class="modal-title">SIP Chat</div>
+                        <div class="modal-subtitle">Customer service dashboard untuk percakapan WhatsApp real-time.</div>
+                    </div>
+                </div>
+                <div class="wa-compose-header-actions">
+                    <button type="button" class="btn btn-secondary" id="waComposerOpenSettingsButton">Setting BOT WA</button>
+                    <button class="modal-close" type="button" data-wa-compose-close="true" aria-label="Tutup">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body wa-compose-body">
+                <aside class="wa-compose-sidebar">
+                    <div class="wa-sidebar-title-row">
+                        <h4>SIP Chat</h4>
+                        <span class="wa-sidebar-title-accent">CS</span>
+                    </div>
+                    <div class="wa-compose-search modern">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <input type="search" id="waComposerSearchInput" class="form-input" placeholder="Search name, phone, ID...">
+                        <button type="button" class="btn btn-secondary" id="waComposerRefreshButton">Refresh</button>
+                    </div>
+                    <div class="wa-filter-chips" id="waComposerFilterChips">
+                        <button type="button" class="wa-chip is-active" data-wa-filter="all">All</button>
+                        <button type="button" class="wa-chip" data-wa-filter="active">Active</button>
+                        <button type="button" class="wa-chip" data-wa-filter="waiting">Waiting</button>
+                        <button type="button" class="wa-chip" data-wa-filter="resolved">Resolved</button>
+                        <button type="button" class="wa-chip" data-wa-filter="vip">VIP</button>
+                    </div>
+                    <div class="wa-compose-status" id="waComposerStatusBanner">Memuat chat WhatsApp...</div>
+                    <div class="wa-chat-list" id="waComposerChatList"></div>
+                </aside>
+                <section class="wa-compose-main">
+                    <div class="wa-conversation-shell">
+                        <div class="wa-conversation-topbar">
+                            <div class="wa-chat-identity">
+                                <div class="wa-chat-avatar" id="waComposerHeaderAvatar">A</div>
+                                <div>
+                                    <h4 id="waComposerChatTitle">Pilih Percakapan</h4>
+                                    <p id="waComposerChatMeta">Active now • SIP-1029</p>
+                                </div>
+                            </div>
+                            <div class="wa-chat-top-actions">
+                                <button type="button" class="btn btn-secondary">Assign</button>
+                                <button type="button" class="btn btn-primary">Close Ticket</button>
+                                <button type="button" class="btn btn-ghost wa-dot-menu" aria-label="Menu"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                        <div class="wa-compose-empty" id="waComposerEmptyState">
+                            <h4>Mulai percakapan</h4>
+                            <p>Pilih chat dari kiri atau isi nomor baru untuk membuat pesan seperti di WhatsApp Web.</p>
+                        </div>
+                        <div class="wa-compose-conversation" id="waComposerConversation" hidden>
+                            <div class="wa-message-list" id="waComposerMessageList"></div>
+                        </div>
+                        <div class="wa-ai-suggestion" id="waAiSuggestionCard">
+                            <div class="wa-ai-head">
+                                <span><i class="fas fa-bolt"></i> AI Suggestion</span>
+                                <button type="button" class="wa-ai-use" id="waAiUseResponseButton">USE RESPONSE</button>
+                            </div>
+                            <p id="waAiSuggestionText">Mohon diinformasikan ID pelanggan agar kami bisa cek status jaringan lebih lanjut.</p>
+                        </div>
+                        <div class="wa-quick-replies" id="waQuickReplyBar">
+                            <button type="button" class="wa-quick-chip" data-wa-quick="Halo, ada yang bisa kami bantu saat ini?">Greetings</button>
+                            <button type="button" class="wa-quick-chip" data-wa-quick="Baik, kami bantu cek billing Anda. Mohon konfirmasi ID pelanggan.">Check Billing</button>
+                            <button type="button" class="wa-quick-chip" data-wa-quick="Silakan coba reset perangkat ONT/router terlebih dahulu, lalu informasikan hasilnya.">Reset Password</button>
+                            <button type="button" class="wa-quick-chip" data-wa-quick="Kami buatkan tiket teknis untuk tim lapangan. Mohon tunggu informasi berikutnya.">Technical Ticket</button>
+                            <button type="button" class="wa-quick-chip" data-wa-quick="Kasus ini kami eskalasi ke tim terkait. Kami update secepatnya.">Escalate</button>
+                        </div>
+                    </div>
+                    <form class="wa-compose-form modern" id="waComposerForm">
+                        <div class="wa-compose-target-grid compact">
+                            <div>
+                                <label class="form-label" for="waComposerPhoneInput">Nomor Tujuan</label>
+                                <input type="text" class="form-input" id="waComposerPhoneInput" placeholder="08xx atau 62xx untuk chat baru">
+                            </div>
+                            <div>
+                                <label class="form-label" for="waComposerActiveChatInput">Chat Aktif</label>
+                                <input type="text" class="form-input" id="waComposerActiveChatInput" placeholder="Belum ada chat dipilih" readonly>
+                            </div>
+                        </div>
+                        <div class="wa-message-input-row">
+                            <div class="wa-message-tools">
+                                <button type="button" class="btn btn-ghost" title="Emoji"><i class="far fa-smile"></i></button>
+                                <button type="button" class="btn btn-ghost" title="Lampiran"><i class="fas fa-paperclip"></i></button>
+                            </div>
+                            <textarea class="form-input" id="waComposerMessageInput" rows="2" placeholder="Type your message here..."></textarea>
+                            <button type="submit" class="btn btn-primary wa-send-btn" id="waComposerSendButton" aria-label="Kirim Pesan">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>Kirim</span>
+                            </button>
+                        </div>
+                        <div class="wa-compose-form-actions">
+                            <button type="button" class="btn btn-secondary" id="waComposerNewChatButton">Chat Baru</button>
+                        </div>
+                    </form>
+                </section>
+                <aside class="wa-compose-detail">
+                    <section class="wa-detail-card">
+                        <div class="wa-detail-heading">CUSTOMER DETAILS</div>
+                        <div class="wa-detail-list">
+                            <div class="wa-detail-item"><i class="fas fa-user"></i><span id="waDetailName">-</span></div>
+                            <div class="wa-detail-item"><i class="fas fa-id-badge"></i><span id="waDetailCustomerId">-</span></div>
+                            <div class="wa-detail-item"><i class="fas fa-phone"></i><span id="waDetailPhone">-</span></div>
+                            <div class="wa-detail-item"><i class="fas fa-map-marker-alt"></i><span id="waDetailLocation">-</span></div>
+                        </div>
+                    </section>
+                    <section class="wa-detail-card">
+                        <div class="wa-detail-heading">REAL-TIME MONITORING</div>
+                        <div class="wa-monitor-status-row">
+                            <span>Network Status</span>
+                            <strong id="waDetailNetworkStatus">Stable</strong>
+                        </div>
+                        <div class="wa-monitor-progress">
+                            <span id="waDetailNetworkProgress" style="width:84%;"></span>
+                        </div>
+                        <div class="wa-monitor-grid">
+                            <div class="wa-monitor-mini">
+                                <small>ONT Up time</small>
+                                <strong id="waDetailOntUptime">12d 4h 22m</strong>
+                            </div>
+                            <div class="wa-monitor-mini">
+                                <small>SLA Timer</small>
+                                <strong id="waDetailSlaTimer">00:45:12</strong>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="wa-detail-card">
+                        <div class="wa-detail-heading with-action">
+                            <span>INTERNAL NOTES</span>
+                            <button type="button" class="wa-note-add-btn">+ ADD</button>
+                        </div>
+                        <div class="wa-note-box" id="waDetailInternalNote">Belum ada catatan internal. Anda bisa menambahkan note penanganan customer di sini.</div>
+                    </section>
+                    <div class="wa-detail-actions">
+                        <button type="button" class="btn btn-dark wa-action-main">View Full SIP Profile</button>
+                        <button type="button" class="btn btn-outline wa-action-outline">Generate Troubleshooting PDF</button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>    <div class="nmx-loading-overlay" id="nmxLoadingOverlay" hidden>
+        <div class="nmx-loading-card" role="status" aria-live="polite" aria-atomic="true">
+            <div class="nmx-loading-spinner" aria-hidden="true"></div>
+            <h3 id="nmxLoadingTitle">Memproses...</h3>
+            <p id="nmxLoadingMessage">Mohon tunggu sebentar.</p>
+        </div>
+    </div>
+
+    <style>
+.stats-row {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card,
+        .stats-row .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--surface-gradient) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: var(--shadow-card);
+        }
+
+        .stat-info h4 {
+            font-size: 28px;
+            line-height: 1;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .stat-info p {
+            margin: 6px 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 14px 12px 42px !important;
+            background: var(--bg-input) !important;
+            border: 1px solid var(--input-border) !important;
+            border-radius: 12px !important;
+            color: var(--text-primary);
+            font-size: 13px;
+            box-shadow: var(--shadow-inset), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .search-container input:focus {
+            background: var(--bg-input-focus) !important;
+            border-color: var(--input-border-focus) !important;
+            box-shadow: var(--focus-ring), var(--shadow-inset) !important;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .table-container,
+        .table-scroll,
+        .customer-table,
+        .data-table {
+            background: transparent;
+        }
+
+        .table-container,
+        .table-scroll,
+        .modal-content,
+        .form-card {
+            border-radius: 16px !important;
+        }
+
+        .table-container,
+        .modal-content,
+        .form-card {
+            background: var(--surface-gradient) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: var(--shadow-card);
+        }
+
+        .data-table thead,
+        .customer-table thead,
+        .table thead {
+            background: linear-gradient(180deg, rgba(34, 40, 51, 0.94) 0%, rgba(24, 28, 35, 0.98) 100%) !important;
+        }
+
+        .data-table th,
+        .customer-table th,
+        .table th {
+            color: var(--text-secondary) !important;
+            border-bottom: 1px solid var(--border) !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.08em;
+        }
+
+        .data-table td,
+        .customer-table td,
+        .table td {
+            color: var(--text-secondary) !important;
+            border-bottom: 1px solid var(--border-light) !important;
+        }
+
+        .data-table tbody tr:hover,
+        .customer-table tbody tr:hover,
+        .table tbody tr:hover {
+            background: var(--bg-elevated) !important;
+        }
+
+        .invoice-number,
+        .customer-code,
+        .device-ip,
+        .ticket-number,
+        .interface-name,
+        .item-code {
+            color: var(--nmx-primary-dark) !important;
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+
+        .action-btn > button,
+        .dropdown-menu,
+        .filter-tab,
+        .payment-badge,
+        .status-badge,
+        .priority-badge {
+            border-radius: 10px !important;
+        }
+
+        .action-btn > button {
+            background: linear-gradient(180deg, rgba(34, 40, 51, 0.96) 0%, rgba(22, 26, 32, 1) 100%) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .action-btn > button:hover {
+            border-color: var(--nmx-primary-light) !important;
+            color: var(--nmx-primary-dark) !important;
+        }
+
+        .dropdown-menu {
+            background: linear-gradient(180deg, rgba(34, 40, 51, 0.96) 0%, rgba(22, 26, 32, 1) 100%) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: var(--shadow-lg) !important;
+            backdrop-filter: blur(14px);
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-elevated) !important;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            color: var(--text-dim);
+        }
+
+        .filter-tab {
+            background: linear-gradient(180deg, rgba(34, 40, 51, 0.96) 0%, rgba(22, 26, 32, 1) 100%) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: var(--nmx-gradient-light) !important;
+            border-color: rgba(255, 122, 60, 0.2) !important;
+            color: var(--nmx-primary-light) !important;
+        }
+
+        .alert-message.success {
+            background: rgba(34, 197, 94, 0.1) !important;
+            border-color: rgba(34, 197, 94, 0.2) !important;
+            color: var(--status-success-text) !important;
+        }
+
+        .alert-message.error {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border-color: rgba(239, 68, 68, 0.2) !important;
+            color: var(--status-danger-text) !important;
+        }
+
+        .alert-message.info {
+            background: var(--status-info-bg) !important;
+            border-color: rgba(255, 122, 60, 0.2) !important;
+            color: var(--status-info-text) !important;
+        }
+
+        .form-card {
+            padding: 24px !important;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section-title {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            color: var(--text-primary) !important;
+            border-bottom: 1px solid var(--border) !important;
+            padding-bottom: 10px !important;
+            margin-bottom: 20px !important;
+        }
+
+        .form-row {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px !important;
+        }
+
+        .form-group.full-width,
+        .md\:col-span-2,
+        .lg\:col-span-2 {
+            grid-column: 1 / -1;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea,
+        .modal-content .form-input,
+        .modal-content .form-select,
+        .modal-content .form-textarea {
+            background: var(--bg-input) !important;
+            border: 1px solid var(--input-border) !important;
+            border-radius: 10px !important;
+            padding: 10px 12px !important;
+            box-shadow: var(--shadow-inset), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            background: var(--bg-input-focus) !important;
+            border-color: var(--input-border-focus) !important;
+            box-shadow: var(--focus-ring), var(--shadow-inset) !important;
+        }
+
+        .form-actions-custom,
+        .form-actions,
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .wa-float {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 56px;
+            height: 56px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 16px;
+            background: #25D366;
+            color: #fff;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.16) !important;
+        }
+
+        .superadmin-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1400;
+            padding: 24px;
+        }
+
+        .superadmin-modal {
+            width: min(420px, 100%);
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            padding: 22px;
+            color: var(--text-primary);
+        }
+
+        .superadmin-modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .superadmin-modal-header p {
+            margin: 6px 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .superadmin-modal-body {
+            margin-top: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .superadmin-modal-error {
+            margin: 0;
+            font-size: 12px;
+            color: #fca5a5;
+        }
+
+        .superadmin-modal-footer {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .superadmin-notify-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(2, 6, 23, 0.42);
+            backdrop-filter: blur(4px);
+            z-index: 1450;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.18s ease, visibility 0.18s ease;
+            pointer-events: none;
+        }
+
+        .superadmin-notify-overlay.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .superadmin-notify-card {
+            width: min(440px, calc(100vw - 32px));
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 16px;
+            align-items: center;
+            padding: 22px 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(34, 40, 51, 0.98) 0%, rgba(18, 23, 31, 0.98) 100%);
+            box-shadow: 0 24px 60px rgba(2, 6, 23, 0.4);
+            transform: translateY(14px) scale(0.96);
+            transition: transform 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .superadmin-notify-overlay.is-visible .superadmin-notify-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .superadmin-notify-card[data-type="success"] {
+            border-color: rgba(34, 197, 94, 0.28);
+            box-shadow: 0 24px 60px rgba(5, 46, 22, 0.32);
+        }
+
+        .superadmin-notify-card[data-type="error"] {
+            border-color: rgba(239, 68, 68, 0.28);
+            box-shadow: 0 24px 60px rgba(69, 10, 10, 0.35);
+        }
+
+        .superadmin-notify-card[data-type="warning"] {
+            border-color: rgba(245, 158, 11, 0.28);
+            box-shadow: 0 24px 60px rgba(120, 53, 15, 0.32);
+        }
+
+        .superadmin-notify-card[data-type="info"] {
+            border-color: rgba(59, 130, 246, 0.28);
+            box-shadow: 0 24px 60px rgba(30, 64, 175, 0.28);
+        }
+
+        .superadmin-notify-icon {
+            width: 52px;
+            height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 22px;
+            background: rgba(148, 163, 184, 0.12);
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        .superadmin-notify-card[data-type="success"] .superadmin-notify-icon {
+            background: rgba(34, 197, 94, 0.16);
+            color: #86efac;
+        }
+
+        .superadmin-notify-card[data-type="error"] .superadmin-notify-icon {
+            background: rgba(239, 68, 68, 0.16);
+            color: #fca5a5;
+        }
+
+        .superadmin-notify-card[data-type="warning"] .superadmin-notify-icon {
+            background: rgba(245, 158, 11, 0.16);
+            color: #fcd34d;
+        }
+
+        .superadmin-notify-card[data-type="info"] .superadmin-notify-icon {
+            background: rgba(59, 130, 246, 0.16);
+            color: #93c5fd;
+        }
+
+        .superadmin-notify-copy h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .superadmin-notify-copy p {
+            margin: 6px 0 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .nmx-loading-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(15, 23, 42, 0.28);
+            backdrop-filter: blur(8px);
+            z-index: 1440;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.18s ease, visibility 0.18s ease;
+        }
+
+        .nmx-loading-overlay.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nmx-loading-card {
+            width: min(320px, calc(100vw - 32px));
+            display: grid;
+            justify-items: center;
+            gap: 12px;
+            padding: 28px 24px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .nmx-loading-card h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nmx-loading-card p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .nmx-loading-spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 4px solid #dbe5f2;
+            border-top-color: var(--nmx-primary);
+            border-right-color: rgba(37, 99, 235, 0.45);
+            box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.08);
+            animation: nmx-loading-spin 0.9s linear infinite;
+        }
+
+        @keyframes nmx-loading-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .document-branding {
+            display: none !important;
+        }
+
+        @media print {
+            .document-branding {
+                display: flex !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+.form-row {
+                grid-template-columns: 1fr !important;
+            }
+
+            .form-actions-custom,
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions-custom .btn,
+            .form-actions .btn,
+            .header-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .superadmin-notify-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                justify-items: center;
+                padding: 20px;
+            }
+
+            .superadmin-notify-copy p {
+                margin-top: 8px;
+            }
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="/js/navigation.js"></script>
+    <script src="/js/paket.js"></script>
+    <script src="/js/billing-sync.js"></script>
+    <script src="/js/whatsapp-panel.js"></script>
+    <script th:if="${page == 'history-payment'}" th:src="@{/js/history-payment.js(v='20260402-1')}"></script>
+    <script th:if="${page == 'invoice'}" th:src="@{/js/invoice-page-quick-actions.js(v='20260411-1')}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/css/high-impact-polish.css?v=20260415-39">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- CSRF Token for API calls -->
+    <script th:if="${_csrf}" th:inline="javascript">
+        // Expose CSRF token globally for API calls
+        window.csrfToken = /*[[${_csrf.token}]]*/ '';
+        window.csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+    </script>
+    <script th:unless="${_csrf}">
+        // Fallback for pages without CSRF (shouldn't happen in normal flow)
+        window.csrfToken = '';
+        window.csrfHeader = 'X-CSRF-TOKEN';
+    </script>
+    
+    <script>
+        // Expose sidebar handlers first so inline onclick always finds them.
+        window.toggleMenu = function(menuId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            const allMenus = document.querySelectorAll('.nav-dropdown');
+            allMenus.forEach(function(dropdown) {
+                const submenu = dropdown.querySelector('.submenu');
+                if (submenu && submenu.id !== menuId) {
+                    dropdown.classList.remove('open');
+                }
+            });
+
+            const menu = document.getElementById(menuId);
+            if (menu && menu.parentElement) {
+                menu.parentElement.classList.toggle('open');
+            }
+        };
+
+        window.handleSubmenuClick = function(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+        };
+
+        function getSidebarElement() {
+            return document.querySelector('.sidebar');
+        }
+
+        function isMobileViewport() {
+            return window.matchMedia('(max-width: 768px)').matches;
+        }
+
+        window.setSidebarCollapsed = function(collapsed) {
+            const sidebar = getSidebarElement();
+            if (!sidebar) {
+                return;
+            }
+
+            const shouldCollapse = Boolean(collapsed) && !isMobileViewport();
+            sidebar.classList.toggle('collapsed', shouldCollapse);
+        };
+
+        window.toggleUserMenu = function(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+
+            const userMenu = document.querySelector('.user-menu');
+            const toggle = document.getElementById('userMenuToggle');
+            if (!userMenu || !toggle) {
+                return;
+            }
+
+            const isOpen = userMenu.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+
+        // Initialize Icons defensively. Font Awesome is primary; Lucide is optional.
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const clockEl = document.getElementById('clock');
+            if (clockEl) clockEl.textContent = h + ':' + m + ':' + s;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Close all dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                const allDropdowns = document.querySelectorAll('.nav-dropdown');
+                allDropdowns.forEach(function(dropdown) {
+                    dropdown.classList.remove('open');
+                });
+            }
+
+            if (!e.target.closest('.user-menu')) {
+                const userMenu = document.querySelector('.user-menu');
+                const toggle = document.getElementById('userMenuToggle');
+                if (userMenu) {
+                    userMenu.classList.remove('open');
+                }
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+
+        // Initialize submenu click handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = getSidebarElement();
+            let sidebarFocusTimer = null;
+
+            function applySidebarInteractionState() {
+                if (isMobileViewport()) {
+                    window.setSidebarCollapsed(false);
+                    return;
+                }
+                window.setSidebarCollapsed(true);
+            }
+
+            applySidebarInteractionState();
+
+            if (sidebar) {
+                sidebar.addEventListener('mouseenter', function() {
+                    if (isMobileViewport()) return;
+                    window.setSidebarCollapsed(false);
+                });
+
+                sidebar.addEventListener('mouseleave', function() {
+                    if (isMobileViewport()) return;
+                    window.setSidebarCollapsed(true);
+                });
+
+                sidebar.addEventListener('focusin', function() {
+                    if (sidebarFocusTimer) {
+                        window.clearTimeout(sidebarFocusTimer);
+                        sidebarFocusTimer = null;
+                    }
+                    if (isMobileViewport()) return;
+                    window.setSidebarCollapsed(false);
+                });
+
+                sidebar.addEventListener('focusout', function() {
+                    if (isMobileViewport()) return;
+                    if (sidebarFocusTimer) {
+                        window.clearTimeout(sidebarFocusTimer);
+                    }
+                    sidebarFocusTimer = window.setTimeout(function() {
+                        if (!sidebar.contains(document.activeElement)) {
+                            window.setSidebarCollapsed(true);
+                        }
+                    }, 0);
+                });
+            }
+
+            window.addEventListener('resize', applySidebarInteractionState);
+
+            function normalizePath(path) {
+                const value = String(path || '').trim();
+                if (!value) {
+                    return '/';
+                }
+                const cleaned = value.replace(/\/+$/, '');
+                return cleaned || '/';
+            }
+
+            function firstMatchingText(root, selectors) {
+                if (!root || !Array.isArray(selectors)) {
+                    return '';
+                }
+
+                for (const selector of selectors) {
+                    const node = root.querySelector(selector);
+                    const text = node ? String(node.textContent || '').trim() : '';
+                    if (text) {
+                        return text;
+                    }
+                }
+
+                return '';
+            }
+
+            function resolveSidebarHeaderContext() {
+                const currentPath = normalizePath(window.location.pathname);
+                const links = document.querySelectorAll('.sidebar-nav a[href]');
+
+                for (const link of links) {
+                    const href = normalizePath(link.getAttribute('href'));
+                    if (href !== currentPath) {
+                        continue;
+                    }
+
+                    const linkLabel = firstMatchingText(link, ['span']) || String(link.textContent || '').trim();
+                    const dropdown = link.closest('.nav-dropdown');
+                    const parentLabel = dropdown
+                        ? firstMatchingText(dropdown.querySelector('.nav-item'), ['span'])
+                        : '';
+
+                    return {
+                        title: linkLabel,
+                        subtitle: parentLabel ? parentLabel + ' / ' + linkLabel : 'Operational summary for the current session'
+                    };
+                }
+
+                return null;
+            }
+
+            function syncHeaderTitle() {
+                const titleEl = document.getElementById('current-page-path');
+                const subtitleEl = document.getElementById('current-page-subtitle');
+                const contentRoot = document.querySelector('.content-scroll');
+                const initialSubtitle = subtitleEl ? String(subtitleEl.textContent || '').trim() : '';
+
+                if (!titleEl || !contentRoot) {
+                    return;
+                }
+
+                const contentTitle = firstMatchingText(contentRoot, [
+                    '.noc-title h2',
+                    '.page-header-custom h2',
+                    '.page-title h1',
+                    '.page-title h2',
+                    '.page-header h1',
+                    '.page-header h2',
+                    '[data-page-title]'
+                ]);
+
+                const contentSubtitle = firstMatchingText(contentRoot, [
+                    '.noc-title p',
+                    '.page-header-custom p',
+                    '.page-title p',
+                    '.page-header p',
+                    '[data-page-subtitle]'
+                ]);
+
+                const sidebarContext = resolveSidebarHeaderContext();
+                const resolvedTitle = contentTitle || (sidebarContext && sidebarContext.title);
+                const resolvedSubtitle = contentSubtitle || initialSubtitle || (sidebarContext && sidebarContext.subtitle);
+
+                if (resolvedTitle) {
+                    titleEl.textContent = resolvedTitle;
+                }
+
+                if (subtitleEl && resolvedSubtitle) {
+                    subtitleEl.textContent = resolvedSubtitle;
+                }
+            }
+
+            const submenuItems = document.querySelectorAll('.submenu-item');
+            submenuItems.forEach(function(item) {
+                item.addEventListener('click', window.handleSubmenuClick);
+            });
+
+            const userToggle = document.getElementById('userMenuToggle');
+            if (userToggle) {
+                userToggle.addEventListener('click', window.toggleUserMenu);
+            }
+
+            syncHeaderTitle();
+        });
+    </script>
+
+    <script>
+        (function() {
+            const overlay = document.getElementById('nmxNotifyOverlay');
+            const card = document.getElementById('nmxNotifyCard');
+            const iconEl = document.getElementById('nmxNotifyIcon');
+            const titleEl = document.getElementById('nmxNotifyTitle');
+            const messageEl = document.getElementById('nmxNotifyMessage');
+            let hideTimer = null;
+            let hideFrame = null;
+
+            const configByType = {
+                success: { title: 'Berhasil', icon: 'fa-circle-check' },
+                error: { title: 'Gagal', icon: 'fa-circle-xmark' },
+                warning: { title: 'Perhatian', icon: 'fa-triangle-exclamation' },
+                info: { title: 'Informasi', icon: 'fa-circle-info' }
+            };
+
+            function normalizeType(type) {
+                const key = String(type || 'info').toLowerCase();
+                return configByType[key] ? key : 'info';
+            }
+
+            function normalizeOptions(typeOrOptions, message, options) {
+                if (typeOrOptions && typeof typeOrOptions === 'object' && !Array.isArray(typeOrOptions)) {
+                    return Object.assign({}, typeOrOptions);
+                }
+
+                return Object.assign({}, options || {}, {
+                    type: typeOrOptions,
+                    message: message
+                });
+            }
+
+            function hideNotification() {
+                if (!overlay || !card) {
+                    return;
+                }
+
+                if (hideTimer) {
+                    window.clearTimeout(hideTimer);
+                    hideTimer = null;
+                }
+
+                overlay.classList.remove('is-visible');
+
+                if (hideFrame) {
+                    window.clearTimeout(hideFrame);
+                }
+
+                hideFrame = window.setTimeout(function() {
+                    overlay.hidden = true;
+                    hideFrame = null;
+                }, 180);
+            }
+
+            function showNotification(typeOrOptions, message, options) {
+                if (!overlay || !card) {
+                    return;
+                }
+
+                if (window.nmxLoading && typeof window.nmxLoading.hide === 'function') {
+                    window.nmxLoading.hide(true);
+                }
+
+                const settings = normalizeOptions(typeOrOptions, message, options);
+                const type = normalizeType(settings.type);
+                const defaults = configByType[type];
+                const title = String(settings.title || defaults.title);
+                const content = String(settings.message || settings.text || '').trim();
+                const duration = Number(settings.duration);
+
+                if (!content) {
+                    return;
+                }
+
+                card.dataset.type = type;
+                if (titleEl) {
+                    titleEl.textContent = title;
+                }
+                if (messageEl) {
+                    messageEl.textContent = content;
+                }
+                if (iconEl) {
+                    iconEl.innerHTML = '<i class="fas ' + (settings.icon || defaults.icon) + '" aria-hidden="true"></i>';
+                }
+
+                overlay.hidden = false;
+                window.requestAnimationFrame(function() {
+                    overlay.classList.add('is-visible');
+                });
+
+                if (hideTimer) {
+                    window.clearTimeout(hideTimer);
+                }
+
+                hideTimer = window.setTimeout(hideNotification, Number.isFinite(duration) && duration > 0 ? duration : 2800);
+            }
+
+            function parseLegacyNotification(element) {
+                if (!element || !element.classList) {
+                    return null;
+                }
+
+                if (element.classList.contains('alert-message')) {
+                    return {
+                        type: element.classList.contains('success')
+                            ? 'success'
+                            : element.classList.contains('error')
+                                ? 'error'
+                                : element.classList.contains('warning')
+                                    ? 'warning'
+                                    : 'info',
+                        message: (element.textContent || '').trim()
+                    };
+                }
+
+                if (element.classList.contains('toast')) {
+                    const titleNode = element.querySelector('.toast-title');
+                    const messageNode = element.querySelector('.toast-message');
+                    return {
+                        type: element.classList.contains('success')
+                            ? 'success'
+                            : element.classList.contains('error')
+                                ? 'error'
+                                : element.classList.contains('warning')
+                                    ? 'warning'
+                                    : 'info',
+                        title: titleNode ? titleNode.textContent.trim() : '',
+                        message: messageNode ? messageNode.textContent.trim() : (element.textContent || '').trim()
+                    };
+                }
+
+                if (element.classList.contains('company-toast')) {
+                    return {
+                        type: element.classList.contains('success')
+                            ? 'success'
+                            : element.classList.contains('error')
+                                ? 'error'
+                                : 'info',
+                        message: (element.textContent || '').trim()
+                    };
+                }
+
+                return null;
+            }
+
+            function consumeLegacyNotification(element) {
+                if (!element || element.closest('#nmxNotifyOverlay')) {
+                    return;
+                }
+
+                const payload = parseLegacyNotification(element);
+                if (!payload || !payload.message) {
+                    return;
+                }
+
+                showNotification(payload);
+
+                if (element.classList.contains('company-toast')) {
+                    element.classList.remove('show');
+                    return;
+                }
+
+                element.remove();
+            }
+
+            function scanLegacyNotifications(root) {
+                if (!root || !root.querySelectorAll) {
+                    return;
+                }
+
+                root.querySelectorAll('.alert-message, .toast, .company-toast.show').forEach(consumeLegacyNotification);
+            }
+
+            if (document.body && typeof MutationObserver === 'function') {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach(function(node) {
+                                if (!(node instanceof Element)) {
+                                    return;
+                                }
+
+                                if (node.matches('.alert-message, .toast, .company-toast.show')) {
+                                    consumeLegacyNotification(node);
+                                    return;
+                                }
+
+                                scanLegacyNotifications(node);
+                            });
+                        }
+
+                        if (
+                            mutation.type === 'attributes'
+                            && mutation.target instanceof Element
+                            && mutation.target.matches('.company-toast.show')
+                        ) {
+                            consumeLegacyNotification(mutation.target);
+                        }
+                    });
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                scanLegacyNotifications(document.body);
+            });
+
+            window.nmxNotify = showNotification;
+            window.nmxNotify.hide = hideNotification;
+        })();
+    </script>
+
+    <script>
+        (function() {
+            const overlay = document.getElementById('nmxLoadingOverlay');
+            const titleEl = document.getElementById('nmxLoadingTitle');
+            const messageEl = document.getElementById('nmxLoadingMessage');
+            let activeRequests = 0;
+            let showTimer = null;
+            let maxTimer = null;
+            let visible = false;
+            const MAX_LOADING_DURATION_MS = 30 * 1000;
+
+            function setCopy(title, message) {
+                if (titleEl) {
+                    titleEl.textContent = title || 'Memproses...';
+                }
+                if (messageEl) {
+                    messageEl.textContent = message || 'Mohon tunggu sebentar.';
+                }
+            }
+
+            function reveal() {
+                if (!overlay) {
+                    return;
+                }
+                overlay.hidden = false;
+                window.requestAnimationFrame(function() {
+                    overlay.classList.add('is-visible');
+                });
+                visible = true;
+            }
+
+            function hideImmediately() {
+                if (!overlay) {
+                    return;
+                }
+                if (showTimer) {
+                    window.clearTimeout(showTimer);
+                    showTimer = null;
+                }
+                if (maxTimer) {
+                    window.clearTimeout(maxTimer);
+                    maxTimer = null;
+                }
+                overlay.classList.remove('is-visible');
+                overlay.hidden = true;
+                visible = false;
+            }
+
+            function armMaxTimeout() {
+                if (maxTimer) {
+                    return;
+                }
+                maxTimer = window.setTimeout(function() {
+                    maxTimer = null;
+                    activeRequests = 0;
+                    hideImmediately();
+                    if (window.nmxNotify && typeof window.nmxNotify === 'function') {
+                        window.nmxNotify({
+                            type: 'error',
+                            title: 'Proses Terlalu Lama',
+                            message: 'Permintaan melebihi batas 30 detik. Silakan coba lagi.'
+                        });
+                    }
+                }, MAX_LOADING_DURATION_MS);
+            }
+
+            function show(options) {
+                const settings = options && typeof options === 'object' ? options : {};
+                setCopy(settings.title, settings.message);
+                if (showTimer) {
+                    window.clearTimeout(showTimer);
+                    showTimer = null;
+                }
+                const delay = Number.isFinite(settings.delay) ? settings.delay : 120;
+                showTimer = window.setTimeout(function() {
+                    showTimer = null;
+                    reveal();
+                }, Math.max(0, delay));
+            }
+
+            function hide(force) {
+                if (force) {
+                    activeRequests = 0;
+                    hideImmediately();
+                    return;
+                }
+                if (activeRequests > 0) {
+                    activeRequests -= 1;
+                }
+                if (activeRequests === 0) {
+                    hideImmediately();
+                }
+            }
+
+            function begin(options) {
+                activeRequests += 1;
+                armMaxTimeout();
+                if (!visible) {
+                    show(options);
+                }
+            }
+
+            function shouldHandleNavigation(anchor) {
+                if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) {
+                    return false;
+                }
+                const href = anchor.getAttribute('href') || '';
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) {
+                    return false;
+                }
+                const url = new URL(anchor.href, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    return false;
+                }
+                return url.href !== window.location.href;
+            }
+
+            function shouldTrackFetch(input, init) {
+                const pageLoadingConfig = window.nmxPageLoading;
+                if (pageLoadingConfig) {
+                    if (pageLoadingConfig.disableFetchOverlay === true) {
+                        return false;
+                    }
+                    if (typeof pageLoadingConfig.shouldTrackFetch === 'function') {
+                        const decision = pageLoadingConfig.shouldTrackFetch(input, init);
+                        if (decision === false) {
+                            return false;
+                        }
+                    }
+                }
+                const request = input instanceof Request ? input : null;
+                const method = String((init && init.method) || (request && request.method) || 'GET').toUpperCase();
+                if (method === 'HEAD' || method === 'OPTIONS') {
+                    return false;
+                }
+                const urlValue = request ? request.url : String(input || '');
+                return !urlValue.startsWith('data:');
+            }
+
+            document.addEventListener('click', function(event) {
+                const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null;
+                if (!shouldHandleNavigation(anchor)) {
+                    return;
+                }
+                begin({
+                    title: 'Membuka Halaman...',
+                    message: 'Menyiapkan tampilan yang dipilih.',
+                    delay: 0
+                });
+            }, true);
+
+            document.addEventListener('submit', function(event) {
+                const form = event.target;
+                if (!(form instanceof HTMLFormElement)) {
+                    return;
+                }
+                if (form.dataset.nmxLoading === 'manual') {
+                    return;
+                }
+                begin({
+                    title: 'Mengirim Data...',
+                    message: 'Permintaan sedang diproses.',
+                    delay: 0
+                });
+            }, true);
+
+            window.addEventListener('pageshow', function() {
+                hideImmediately();
+            });
+
+            const currentFetch = window.fetch.bind(window);
+            window.fetch = async function(input, init) {
+                const track = shouldTrackFetch(input, init);
+                if (track) {
+                    begin({
+                        title: 'Memproses...',
+                        message: 'Mohon tunggu sebentar.',
+                        delay: 150
+                    });
+                }
+                try {
+                    return await currentFetch(input, init);
+                } finally {
+                    if (track) {
+                        hide(false);
+                    }
+                }
+            };
+
+            window.nmxLoading = {
+                show: function(options) {
+                    begin(options);
+                },
+                hide: function(force) {
+                    hide(Boolean(force));
+                }
+            };
+        })();
+    </script>
+
+    <script>
+        (function() {
+            const overlay = document.getElementById('confirmModalOverlay');
+            const titleEl = document.getElementById('confirmModalTitle');
+            const messageEl = document.getElementById('confirmModalMessage');
+            const cancelBtn = document.getElementById('confirmModalCancel');
+            const confirmBtn = document.getElementById('confirmModalConfirm');
+            let pendingResolve = null;
+
+            function openModal(options) {
+                if (!overlay) {
+                    return Promise.resolve(false);
+                }
+                const settings = options || {};
+                if (titleEl) {
+                    titleEl.textContent = settings.title || 'Konfirmasi';
+                }
+                if (messageEl) {
+                    messageEl.textContent = settings.message || '';
+                }
+                if (cancelBtn) {
+                    cancelBtn.textContent = settings.cancelText || 'Batal';
+                    cancelBtn.style.display = settings.showCancel === false ? 'none' : 'inline-flex';
+                }
+                if (confirmBtn) {
+                    confirmBtn.textContent = settings.confirmText || 'OK';
+                    confirmBtn.className = settings.confirmClass || 'btn btn-danger';
+                }
+
+                overlay.style.display = 'flex';
+                return new Promise(function(resolve) {
+                    pendingResolve = resolve;
+                });
+            }
+
+            function closeModal() {
+                if (!overlay) {
+                    return;
+                }
+                overlay.style.display = 'none';
+                pendingResolve = null;
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function() {
+                    if (pendingResolve) {
+                        pendingResolve(false);
+                    }
+                    closeModal();
+                });
+            }
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function() {
+                    if (pendingResolve) {
+                        pendingResolve(true);
+                    }
+                    closeModal();
+                });
+            }
+
+            window.nmxConfirm = function(message, options) {
+                if (!overlay) {
+                    return Promise.resolve(window.confirm ? window.confirm(message) : false);
+                }
+                return openModal(Object.assign({
+                    title: 'Konfirmasi',
+                    message: message || '',
+                    confirmText: 'Konfirmasi',
+                    confirmClass: 'btn btn-danger',
+                    showCancel: true
+                }, options || {}));
+            };
+
+            window.nmxAlert = function(message, options) {
+                if (!overlay) {
+                    if (window.alert) {
+                        window.alert(message);
+                    }
+                    return Promise.resolve();
+                }
+                return openModal(Object.assign({
+                    title: 'Informasi',
+                    message: message || '',
+                    confirmText: 'OK',
+                    confirmClass: 'btn btn-primary',
+                    showCancel: false
+                }, options || {})).then(function() {
+                    return true;
+                });
+            };
+        })();
+    </script>
+
+    <script>
+        (function() {
+            const overlay = document.getElementById('superadminDeleteOverlay');
+            const passwordInput = document.getElementById('superadminDeletePassword');
+            const errorText = document.getElementById('superadminDeleteError');
+            const cancelBtn = document.getElementById('superadminDeleteCancel');
+            const confirmBtn = document.getElementById('superadminDeleteConfirm');
+            let pendingResolve = null;
+
+            function openModal() {
+                if (!overlay) {
+                    return Promise.resolve(null);
+                }
+                overlay.style.display = 'flex';
+                passwordInput.value = '';
+                hideError();
+                passwordInput.focus();
+                return new Promise(function(resolve) {
+                    pendingResolve = resolve;
+                });
+            }
+
+            function closeModal() {
+                if (!overlay) {
+                    return;
+                }
+                overlay.style.display = 'none';
+                pendingResolve = null;
+            }
+
+            function showError(message) {
+                if (!errorText) {
+                    return;
+                }
+                errorText.textContent = message || 'Password tidak sesuai.';
+                errorText.style.display = 'block';
+            }
+
+            function hideError() {
+                if (errorText) {
+                    errorText.style.display = 'none';
+                }
+            }
+
+            async function verifyPassword(password) {
+                const response = await window.__originalFetch('/api/security/confirm-delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [window.csrfHeader || 'X-CSRF-TOKEN']: window.csrfToken || ''
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ password: password })
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Password superadmin tidak sesuai.');
+                }
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function() {
+                    if (pendingResolve) {
+                        pendingResolve(null);
+                    }
+                    closeModal();
+                });
+            }
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', async function() {
+                    const password = passwordInput.value || '';
+                    if (!password.trim()) {
+                        showError('Password wajib diisi.');
+                        return;
+                    }
+                    try {
+                        await verifyPassword(password);
+                        if (pendingResolve) {
+                            pendingResolve(password);
+                        }
+                        closeModal();
+                    } catch (error) {
+                        showError(error.message);
+                    }
+                });
+            }
+
+            window.nmxRequestSuperadminPassword = function() {
+                return openModal();
+            };
+
+            if (!window.__originalFetch) {
+                window.__originalFetch = window.fetch.bind(window);
+                window.fetch = async function(input, init) {
+                    const request = input instanceof Request ? input : null;
+                    const baseInit = init || {};
+                    const method = String(baseInit.method || (request && request.method) || 'GET').toUpperCase();
+                    if (method !== 'DELETE') {
+                        return window.__originalFetch(input, init);
+                    }
+
+                    const baseHeaders = new Headers(baseInit.headers || (request && request.headers) || {});
+                    if (baseHeaders.get('X-DELETE-CONFIRMED') === '1') {
+                        return window.__originalFetch(input, init);
+                    }
+
+                    const password = await openModal();
+                    if (!password) {
+                        return new Response(JSON.stringify({
+                            success: false,
+                            message: 'Penghapusan dibatalkan.',
+                            data: null
+                        }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+                    }
+
+                    baseHeaders.set('X-DELETE-CONFIRMED', '1');
+                    baseHeaders.set('X-SUPERADMIN-PASSWORD', password);
+                    if (!baseHeaders.get(window.csrfHeader || 'X-CSRF-TOKEN')) {
+                        baseHeaders.set(window.csrfHeader || 'X-CSRF-TOKEN', window.csrfToken || '');
+                    }
+
+                    const nextInit = Object.assign({}, baseInit, {
+                        headers: baseHeaders,
+                        credentials: baseInit.credentials || 'same-origin'
+                    });
+
+                    return window.__originalFetch(input, nextInit);
+                };
+            }
+        })();
+    </script>
+</body>
+</html>
+
+
+
+
+

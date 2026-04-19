@@ -1,0 +1,408 @@
+<div th:fragment="content">
+    <style>
+        :root { --company-modal-viewport-gap: 24px; --company-modal-side-gap: 24px; }
+        .company-page, .company-dashboard-shell, .company-empty-block, .loading-state { display: grid; gap: 16px; }
+        .company-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; background: linear-gradient(180deg, rgba(15,23,42,.96), rgba(15,23,42,.92)); border: 1px solid var(--border); border-radius: 12px; backdrop-filter: blur(10px); box-shadow: 0 18px 36px rgba(2,6,23,.22); }
+        .company-toolbar-main, .company-toolbar-actions, .company-header-meta, .bank-account-item-actions, .company-summary-actions, .company-summary-head, .company-section-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .company-logo { width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, #f97316, #ea580c); display: inline-flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 14px 30px rgba(249,115,22,.22); }
+        .company-logo.fallback { color: #fff; font-size: 24px; font-weight: 700; letter-spacing: .08em; }
+        .company-logo img { width: 100%; height: 100%; object-fit: contain; background: rgba(255,255,255,.96); }
+        .company-header-copy { min-width: 0; display: grid; gap: 4px; }
+        .company-header-copy h1 { margin: 0; font-size: 22px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .company-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+        .company-pill.success { background: rgba(34,197,94,.12); color: #22c55e; border-color: rgba(34,197,94,.18); }
+        .company-pill.read { background: rgba(59,130,246,.12); color: #60a5fa; border-color: rgba(59,130,246,.18); }
+        .company-summary-card, .company-section-card { background: linear-gradient(180deg, rgba(19,29,47,.96), rgba(15,23,42,.96)); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 16px 32px rgba(2,6,23,.16); }
+        .company-summary-card { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 22px 24px; }
+        .company-summary-head { align-items: flex-start; flex: 1; min-width: 0; }
+        .company-summary-copy { display: grid; gap: 4px; min-width: 0; }
+        .company-summary-copy h2 { margin: 0; font-size: 18px; color: var(--text-primary); }
+        .company-summary-copy p { margin: 0; color: var(--text-muted); font-size: 13px; }
+        .company-summary-note { color: var(--text-secondary) !important; }
+        .company-summary-actions { justify-content: flex-end; }
+        .company-summary-actions .btn { white-space: nowrap; }
+        .company-section-card { overflow: hidden; }
+        .company-section-head { justify-content: space-between; padding: 14px 18px; background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); border-bottom: 1px solid rgba(255,255,255,.06); }
+        .company-section-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--text-primary); display: inline-flex; align-items: center; gap: 8px; }
+        .company-section-body { padding: 16px 18px; }
+        .company-data-table { display: grid; gap: 12px; }
+        .company-data-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 14px; align-items: start; font-size: 13px; line-height: 1.45; }
+        .company-data-label { color: var(--text-muted); font-weight: 600; }
+        .company-data-value { color: var(--text-primary); word-break: break-word; }
+        .bank-account-list { display: grid; gap: 10px; }
+        .bank-account-item { padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.03); }
+        .bank-account-item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+        .bank-account-item-title { margin: 0; font-size: 14px; color: var(--text-primary); }
+        .bank-account-badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(34,197,94,.12); color: #22c55e; border: 1px solid rgba(34,197,94,.18); }
+        .bank-account-icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: .18s ease; }
+        .bank-account-icon-btn:hover { color: var(--text-primary); border-color: rgba(249,115,22,.28); background: rgba(255,255,255,.05); }
+        .bank-account-icon-btn.danger:hover { color: #f87171; border-color: rgba(248,113,113,.3); }
+        .bank-account-meta { display: grid; gap: 6px; }
+        .loading-state { gap: 16px; }
+        .company-skeleton-toolbar, .company-skeleton-tabs, .company-skeleton-card { border-radius: 12px; border: 1px solid var(--border); background: linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(255,255,255,.08) 37%, rgba(255,255,255,.04) 63%); background-size: 400% 100%; animation: company-shimmer 1.35s ease infinite; }
+        .company-skeleton-toolbar { height: 92px; }
+        .company-skeleton-tabs { height: 56px; }
+        .company-skeleton-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .company-skeleton-card { height: 210px; }
+        @keyframes company-shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+        .empty-state, .company-error-state { text-align: center; padding: 48px 20px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 12px; }
+        .empty-state i, .company-error-state i { font-size: 34px; color: var(--text-muted); margin-bottom: 12px; }
+        .empty-state h3, .company-error-state h3 { margin: 0 0 8px; font-size: 18px; color: var(--text-primary); }
+        .empty-state p, .company-error-state p { margin: 0 0 18px; color: var(--text-muted); }
+        .modal-overlay { position: fixed; inset: 0; padding: var(--company-modal-viewport-gap) var(--company-modal-side-gap); background: rgba(2,6,23,.6); backdrop-filter: blur(8px); z-index: 1200; box-sizing: border-box; }
+        div.company-modal { display: none; position: fixed; top: 50% !important; left: 50% !important; margin-top: 0 !important; transform: translate(-50%, -50%) !important; width: 760px; max-width: calc(100% - (var(--company-modal-side-gap) * 2)); background: var(--bg-card) !important; border: 1px solid var(--border); border-radius: var(--radius-lg) !important; max-height: calc(100vh - (var(--company-modal-viewport-gap) * 2)) !important; overflow: hidden !important; box-shadow: 0 24px 60px rgba(2,6,23,.42) !important; z-index: 1201 !important; box-sizing: border-box; }
+        div.company-modal.open { display: flex; flex-direction: column; }
+        #bankAccountModal { max-height: calc(100% - (var(--company-modal-viewport-gap) * 2)) !important; }
+        .company-modal .modal-body { flex: 1; padding: 24px; overflow-y: auto; overflow-x: hidden; min-height: 0; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .modal-header h3 { font-size: 18px; font-weight: 600; margin: 0; }
+        .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 4px; }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid var(--border); flex-shrink: 0; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .form-group { margin-bottom: 0; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; background: var(--bg-primary); color: var(--text-primary); box-sizing: border-box; }
+        .form-textarea { min-height: 84px; resize: vertical; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary); }
+        .form-select:disabled { opacity: .7; cursor: wait; }
+        .form-help { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+        .form-section-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 24px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .form-section-title:first-of-type { margin-top: 0; }
+        .company-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: var(--radius); font-size: 14px; z-index: 2000; display: none; }
+        .company-toast.show { display: block; }
+        .company-toast.success { background: #10b981; color: #fff; }
+        .company-toast.error { background: #ef4444; color: #fff; }
+        .company-toast.info { background: #2563eb; color: #fff; }
+        .company-muted-empty { color: var(--text-muted); }
+        @media (max-width: 1024px) { .company-summary-card { align-items: flex-start; flex-direction: column; } .company-summary-actions { justify-content: flex-start; } }
+        @media (max-width: 768px) {
+            :root { --company-modal-side-gap: 14px; }
+            .company-toolbar, .company-summary-card { display: grid; align-items: stretch; }
+            .company-toolbar-main, .company-toolbar-actions { align-items: stretch; }
+            .company-toolbar-actions .btn { flex: 1 1 calc(50% - 8px); justify-content: center; }
+            .company-summary-actions { justify-content: stretch; }
+            .company-summary-actions .btn { flex: 1 1 calc(50% - 8px); justify-content: center; }
+            .company-data-row, .company-skeleton-grid, .form-grid { width: 100%; min-width: 0; grid-template-columns: 1fr; }
+            div.company-modal { width: calc(100% - (var(--company-modal-side-gap) * 2)); }
+        }
+    </style>
+
+    <div class="company-page">
+        <div id="companyLoadingState" class="loading-state">
+            <div class="company-skeleton-toolbar"></div>
+            <div class="company-skeleton-tabs"></div>
+            <div class="company-skeleton-grid">
+                <div class="company-skeleton-card"></div>
+                <div class="company-skeleton-card"></div>
+            </div>
+        </div>
+
+        <div id="companyErrorState" class="company-error-state" style="display: none;">
+            <i class="fas fa-triangle-exclamation"></i>
+            <h3>Gagal memuat data company</h3>
+            <p>Silakan coba muat ulang halaman ini atau periksa koneksi aplikasi.</p>
+            <button class="btn btn-secondary" type="button" onclick="loadCompanyData()"><i class="fas fa-rotate-right"></i> Muat Ulang</button>
+        </div>
+
+        <div id="companyEmptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-building"></i>
+            <h3>Data company belum tersedia</h3>
+            <p>Tambahkan profil perusahaan supaya branding, alamat, legal, kanal, dan rekening bisa dikelola dari satu dashboard ringkas.</p>
+            <button th:if="${permissionLevel == 'FULL'}" class="btn btn-primary" type="button" onclick="openCompanyModal('create')"><i class="fas fa-plus"></i> Tambah Company</button>
+        </div>
+
+        <div id="companyDataContent" class="company-dashboard-shell" style="display: none;">
+            <section class="company-toolbar">
+                <div class="company-toolbar-actions" th:if="${permissionLevel == 'FULL'}">
+                    <button class="btn btn-primary" type="button" onclick="openCompanyModal('create')"><i class="fas fa-plus"></i> Tambah Company</button>
+                    <button class="btn btn-secondary" type="button" onclick="exportDatabaseBackup()"><i class="fas fa-download"></i> Export Database</button>
+                    <button class="btn btn-secondary" type="button" onclick="triggerDatabaseImport()"><i class="fas fa-upload"></i> Import Database</button>
+                </div>
+                <div class="company-header-meta">
+                    <span class="company-pill" th:classappend="${permissionLevel == 'FULL'} ? ' success' : ' read'"><i th:class="${permissionLevel == 'FULL'} ? 'fas fa-lock-open' : 'fas fa-eye'"></i><span th:text="${permissionLevel == 'FULL'} ? 'FULL ACCESS' : 'READ ONLY'">READ ONLY</span></span>
+                </div>
+            </section>
+
+            <section class="company-summary-card">
+                <div class="company-summary-head">
+                    <div class="company-logo fallback" id="displayLogo">NM</div>
+                    <div class="company-summary-copy">
+                        <h2 id="displayName">Company</h2>
+                        <p id="displayTagline">Data Kosong</p>
+                        <p class="company-summary-note">Logo dokumen disarankan PNG transparan 1000 x 300 px, maksimal 2 MB.</p>
+                    </div>
+                </div>
+                <div class="company-summary-actions" th:if="${permissionLevel == 'FULL'}">
+                    <button class="btn btn-secondary" type="button" onclick="openBankAccountModal()"><i class="fas fa-building-columns"></i> Tambah Rekening Bank</button>
+                    <button class="btn btn-secondary" type="button" onclick="openCompanyModal('edit')"><i class="fas fa-pen-to-square"></i> Edit</button>
+                    <button class="btn btn-secondary" type="button" id="uploadLogoButton" onclick="triggerLogoUpload()"><i class="fas fa-image"></i> Tambah Logo</button>
+                    <button class="btn btn-danger" type="button" onclick="openDeleteConfirmModal()"><i class="fas fa-trash"></i> Hapus</button>
+                </div>
+            </section>
+
+            <section class="company-section-card">
+                <div class="company-section-head">
+                    <h3 class="company-section-title"><i class="fas fa-building"></i> Informasi Perusahaan</h3>
+                </div>
+                <div class="company-section-body">
+                    <div class="company-data-table" id="companyInfoTable"></div>
+                </div>
+            </section>
+
+            <section class="company-section-card">
+                <div class="company-section-head">
+                    <h3 class="company-section-title"><i class="fas fa-location-dot"></i> Alamat Server Default</h3>
+                </div>
+                <div class="company-section-body">
+                    <div class="company-data-table" id="serverAddressTable"></div>
+                </div>
+            </section>
+
+            <section class="company-section-card">
+                <div class="company-section-head">
+                    <h3 class="company-section-title"><i class="fas fa-file-invoice"></i> Pajak dan Legal</h3>
+                </div>
+                <div class="company-section-body">
+                    <div class="company-data-table" id="legalInfoTable"></div>
+                </div>
+            </section>
+
+            <section class="company-section-card">
+                <div class="company-section-head">
+                    <h3 class="company-section-title"><i class="fas fa-share-nodes"></i> Kanal Publik</h3>
+                </div>
+                <div class="company-section-body">
+                    <div class="company-data-table" id="channelInfoTable"></div>
+                </div>
+            </section>
+
+            <section class="company-section-card">
+                <div class="company-section-head">
+                    <h3 class="company-section-title"><i class="fas fa-building-columns"></i> Rekening Bank</h3>
+                    <button th:if="${permissionLevel == 'FULL'}" class="btn btn-secondary btn-sm" type="button" onclick="openBankAccountModal()"><i class="fas fa-plus"></i> Tambah Rekening</button>
+                </div>
+                <div class="company-section-body">
+                    <div id="bankAccountList" class="bank-account-list"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <input type="file" id="companyLogoInput" accept=".png,.jpg,.jpeg,.webp,.svg" style="display: none;">
+    <input type="file" id="databaseImportInput" accept=".json,application/json" style="display: none;">
+
+    <div class="modal-overlay" id="modalOverlay" style="display: none;" onclick="closeCompanyModalOnOverlay(event)"></div>
+    <div class="company-modal" id="companyModal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Tambah Company</h3>
+            <button class="modal-close" onclick="closeCompanyModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="companyForm">
+                <input type="hidden" id="companyId" name="id">
+
+                <div class="form-section-title">Informasi Dasar</div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label" for="inputName">Nama Perusahaan *</label>
+                        <input type="text" class="form-input" id="inputName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputPhone">Telepon</label>
+                        <input type="text" class="form-input" id="inputPhone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputEmail">Email</label>
+                        <input type="email" class="form-input" id="inputEmail" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputWebsite">Website</label>
+                        <input type="text" class="form-input" id="inputWebsite" name="website">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputTagline">Tagline</label>
+                        <input type="text" class="form-input" id="inputTagline" name="tagline">
+                    </div>
+                </div>
+
+                <div class="form-section-title">Alamat Server Default</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="inputProvince">Provinsi</label>
+                        <select class="form-select" id="inputProvince" name="provinceCode">
+                            <option value="">Pilih Provinsi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputRegency">Kota / Kabupaten</label>
+                        <select class="form-select" id="inputRegency" name="regencyCode" disabled>
+                            <option value="">Pilih Kota / Kabupaten</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputDistrict">Kecamatan</label>
+                        <select class="form-select" id="inputDistrict" name="districtCode" disabled>
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputVillage">Kelurahan / Desa</label>
+                        <select class="form-select" id="inputVillage" name="villageCode" disabled>
+                            <option value="">Pilih Kelurahan / Desa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputStreet">Nama Jalan</label>
+                        <input type="text" class="form-input" id="inputStreet" name="streetName" placeholder="Contoh: Merdeka">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputBuildingNumber">No. Bangunan</label>
+                        <input type="text" class="form-input" id="inputBuildingNumber" name="buildingNumber" placeholder="Contoh: 12A">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputRt">RT</label>
+                        <input type="text" class="form-input" id="inputRt" name="rt" placeholder="001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputRw">RW</label>
+                        <input type="text" class="form-input" id="inputRw" name="rw" placeholder="002">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label" for="inputCoordinates">Koordinat Google Maps</label>
+                        <input type="text" class="form-input" id="inputCoordinates" name="googleMapsCoordinates" placeholder="-5.147665, 119.432732">
+                        <div class="form-help">Koordinat ini dipakai sebagai default titik server pada dokumen dan mapping.</div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label" for="inputAddressNote">Patokan / Alamat Tambahan</label>
+                        <textarea class="form-textarea" id="inputAddressNote" name="address" placeholder="Contoh: Sebelah kantor desa atau gedung utama."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section-title">Pajak dan Legal</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="inputNpwp">NPWP</label>
+                        <input type="text" class="form-input" id="inputNpwp" name="npwp">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputPkp">PKP Number</label>
+                        <input type="text" class="form-input" id="inputPkp" name="pkpNumber">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label" for="inputBusiness">Bidang Usaha</label>
+                        <input type="text" class="form-input" id="inputBusiness" name="businessType">
+                    </div>
+                </div>
+
+                <div class="form-section-title">Kanal Publik</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="inputFacebook">Facebook</label>
+                        <input type="text" class="form-input" id="inputFacebook" name="facebook" placeholder="@username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputInstagram">Instagram</label>
+                        <input type="text" class="form-input" id="inputInstagram" name="instagram" placeholder="@username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputWhatsapp">WhatsApp</label>
+                        <input type="text" class="form-input" id="inputWhatsapp" name="whatsapp" placeholder="+62 xxx">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inputSupport">Support Email</label>
+                        <input type="email" class="form-input" id="inputSupport" name="supportEmail">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeCompanyModal()">Batal</button>
+            <button type="button" class="btn btn-primary" onclick="saveCompanyData()">Simpan</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteModalOverlay" style="display: none;" onclick="closeDeleteConfirmModalOnOverlay(event)"></div>
+    <div class="company-modal" id="deleteConfirmModal" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-triangle-exclamation" style="color: #ef4444; margin-right: 8px;"></i> Konfirmasi Hapus</h3>
+            <button class="modal-close" onclick="closeDeleteConfirmModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 14px; color: var(--text-primary); margin-bottom: 16px;">Apakah Anda yakin ingin menghapus data company?</p>
+            <div style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border);">
+                <strong id="deleteCompanyName" style="font-size: 14px;">-</strong>
+            </div>
+            <p style="font-size: 13px; color: #ef4444; margin-top: 16px;"><i class="fas fa-info-circle"></i> Tindakan ini tidak dapat dibatalkan.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeDeleteConfirmModal()">Batal</button>
+            <button type="button" class="btn btn-danger" onclick="deleteCompanyData()"><i class="fas fa-trash"></i> Hapus</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bankAccountModalOverlay" style="display: none;" onclick="closeBankAccountModalOnOverlay(event)"></div>
+    <div class="company-modal" id="bankAccountModal" style="width: 820px; max-width: calc(100% - 32px);">
+        <div class="modal-header">
+            <h3><i class="fas fa-building-columns"></i> Kelola Rekening Bank</h3>
+            <button class="modal-close" onclick="closeBankAccountModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="bankAccountForm">
+                <input type="hidden" id="bankAccountId" name="bankAccountId">
+                <div class="form-section-title">Tambah Rekening Bank</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="bankName">Nama Bank *</label>
+                        <select class="form-select" id="bankName" name="bankName" required>
+                            <option value="">Pilih Bank</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="accountName">Nama Pemilik *</label>
+                        <input type="text" class="form-input" id="accountName" name="accountName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="accountNumber">Nomor Rekening *</label>
+                        <input type="text" class="form-input" id="accountNumber" name="accountNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="bankIsPrimary">Jadikan Rekening Utama</label>
+                        <select class="form-select" id="bankIsPrimary" name="primary">
+                            <option value="false">Tidak</option>
+                            <option value="true">Ya</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label" for="bankInstructions">Instruksi Transfer</label>
+                        <textarea class="form-textarea" id="bankInstructions" name="instructions" placeholder="Instruksi tambahan untuk pelanggan."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeBankAccountModal()">Tutup</button>
+            <button th:if="${permissionLevel == 'FULL'}" type="button" class="btn btn-primary" onclick="saveBankAccount()"><i class="fas fa-save"></i> Simpan Rekening</button>
+        </div>
+    </div>
+
+    <div class="company-toast" id="companyToast"></div>
+
+    <script th:inline="javascript">
+        window.csrfToken = /*[[${_csrf.token}]]*/ '';
+        window.csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+        window.permissionLevel = /*[[${permissionLevel}]]*/ 'READ';
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.syncCompanyModalViewport === 'function') { window.syncCompanyModalViewport(); }
+            if (typeof window.loadCompanyData === 'function') { window.loadCompanyData(); }
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key !== 'Escape') { return; }
+            if (typeof window.closeCompanyModal === 'function') { window.closeCompanyModal(); }
+            if (typeof window.closeDeleteConfirmModal === 'function') { window.closeDeleteConfirmModal(); }
+        });
+    </script>
+
+    <script src="/js/company-page.js"></script>
+</div>

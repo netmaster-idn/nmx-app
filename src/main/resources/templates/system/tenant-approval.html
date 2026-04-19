@@ -1,0 +1,561 @@
+<div th:fragment="content">
+    <style>
+        .tenant-approval-page {
+            display: grid;
+            gap: 22px;
+        }
+
+        .tenant-approval-hero,
+        .tenant-approval-table-card {
+            position: relative;
+            border-radius: 26px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--surface-gradient-soft);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(var(--blur-md));
+            -webkit-backdrop-filter: blur(var(--blur-md));
+            overflow: hidden;
+        }
+
+        .tenant-approval-hero::before,
+        .tenant-approval-table-card::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px auto 1px;
+            height: 32%;
+            border-radius: inherit;
+            background: var(--glass-top-highlight);
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .tenant-approval-hero-inner,
+        .tenant-approval-table-inner {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+        }
+
+        .tenant-approval-hero-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .tenant-approval-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .tenant-approval-title {
+            margin-top: 14px;
+            font-size: clamp(24px, 2.8vw, 34px);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .tenant-approval-copy {
+            margin-top: 10px;
+            max-width: 640px;
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .tenant-approval-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .tenant-approval-stat {
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tenant-approval-stat-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tenant-approval-stat-value {
+            margin-top: 10px;
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .tenant-approval-side {
+            display: grid;
+            gap: 12px;
+        }
+
+        .tenant-approval-highlight {
+            padding: 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(34, 211, 238, 0.08) 35%, rgba(168, 85, 247, 0.16) 100%);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.08), 0 0 26px rgba(168, 85, 247, 0.08);
+        }
+
+        .tenant-approval-highlight h3 {
+            margin: 0;
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .tenant-approval-highlight p {
+            margin: 8px 0 0;
+            color: rgba(255,255,255,0.78);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .tenant-approval-note {
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        .tenant-approval-table-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .tenant-approval-table-title {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .tenant-approval-table-subtitle {
+            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .tenant-approval-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(251, 191, 36, 0.18);
+            background: rgba(251, 191, 36, 0.12);
+            color: #fde68a;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .tenant-approval-table-wrap {
+            overflow-x: auto;
+        }
+
+        .tenant-approval-table {
+            width: 100%;
+            min-width: 1040px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .tenant-approval-table th {
+            padding: 0 14px 8px;
+            text-align: left;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tenant-approval-row td {
+            padding: 16px 14px;
+            vertical-align: top;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .tenant-approval-row td:first-child {
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px 0 0 18px;
+        }
+
+        .tenant-approval-row td:last-child {
+            border-right: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0 18px 18px 0;
+        }
+
+        .tenant-approval-company {
+            display: grid;
+            gap: 6px;
+        }
+
+        .tenant-approval-company strong {
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .tenant-approval-slug {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.16);
+            color: #bae6fd;
+            font-size: 11px;
+            font-family: var(--font-mono);
+        }
+
+        .tenant-approval-owner {
+            display: grid;
+            gap: 6px;
+        }
+
+        .tenant-approval-owner strong,
+        .tenant-approval-link {
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .tenant-approval-link {
+            text-decoration: none;
+        }
+
+        .tenant-approval-link:hover {
+            color: var(--nmx-primary-light);
+        }
+
+        .tenant-approval-muted {
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .tenant-approval-plan {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(168, 85, 247, 0.18);
+            background: rgba(168, 85, 247, 0.12);
+            color: #d8b4fe;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .tenant-approval-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tenant-approval-empty {
+            padding: 42px 24px;
+            border-radius: 24px;
+            border: 1px dashed rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.03);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .tenant-approval-empty h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .tenant-approval-empty p {
+            margin: 10px auto 0;
+            max-width: 520px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1180px) {
+            .tenant-approval-hero-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tenant-approval-stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tenant-approval-table-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+
+    <div class="tenant-approval-page">
+        <section class="tenant-approval-hero">
+            <div class="tenant-approval-hero-inner">
+                <div>
+                    <span class="tenant-approval-kicker">
+                        <i class="fas fa-user-shield"></i>
+                        Superadmin Control Plane
+                    </span>
+                    <h1 class="tenant-approval-title">Panel approval perusahaan ISP baru yang mendaftar ke platform.</h1>
+                    <p class="tenant-approval-copy">
+                        Halaman ini hanya tampil untuk akun <strong>ROLE_SUPER_ADMIN</strong>. Dari sini Anda bisa meninjau tenant yang masih
+                        berstatus <strong>PENDING</strong>, lalu melakukan approve atau reject dengan jejak audit yang tersimpan di master database.
+                    </p>
+
+                    <div class="tenant-approval-stat-grid">
+                        <article class="tenant-approval-stat">
+                            <div class="tenant-approval-stat-label">Pending Saat Ini</div>
+                            <div class="tenant-approval-stat-value" th:text="${pendingRegistrationsCount}">0</div>
+                        </article>
+                        <article class="tenant-approval-stat">
+                            <div class="tenant-approval-stat-label">Visible In Sidebar</div>
+                            <div class="tenant-approval-stat-value" th:text="${superadminPendingTenantCount}">0</div>
+                        </article>
+                        <article class="tenant-approval-stat">
+                            <div class="tenant-approval-stat-label">Scope Akses</div>
+                            <div class="tenant-approval-stat-value" style="font-size:22px;">Developer</div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="tenant-approval-side">
+                    <div class="tenant-approval-highlight">
+                        <h3>Approval yang Anda lakukan akan langsung memprovision tenant</h3>
+                        <p>Approve akan membuat database tenant, menjalankan baseline schema, membuat tenant admin, dan menyimpan metadata koneksi.</p>
+                    </div>
+                    <div class="tenant-approval-note">
+                        Reject akan mempertahankan data registrasi di master database dengan status <strong>REJECTED</strong> beserta alasan penolakan.
+                        Semua aksi tercatat ke <code>audit_logs</code> dan <code>approval_history</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tenant-approval-table-card">
+            <div class="tenant-approval-table-inner">
+                <div class="tenant-approval-table-head">
+                    <div>
+                        <h2 class="tenant-approval-table-title">Daftar Tenant Pending Approval</h2>
+                        <div class="tenant-approval-table-subtitle">Review cepat data perusahaan, PIC owner, dan paket yang diminta sebelum tenant diaktifkan.</div>
+                    </div>
+                    <div class="tenant-approval-chip">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span th:text="${pendingRegistrationsCount + ' pending'}">0 pending</span>
+                    </div>
+                </div>
+
+                <div class="tenant-approval-empty" th:if="${#lists.isEmpty(pendingRegistrations)}">
+                    <h3>Tidak ada tenant yang menunggu approval</h3>
+                    <p>Begitu ada perusahaan ISP baru yang mendaftar, data mereka akan muncul di panel ini dan badge sidebar akan ikut bertambah otomatis.</p>
+                </div>
+
+                <div class="tenant-approval-table-wrap" th:if="${!#lists.isEmpty(pendingRegistrations)}">
+                    <table class="tenant-approval-table">
+                        <thead>
+                        <tr>
+                            <th>Perusahaan</th>
+                            <th>PIC Owner</th>
+                            <th>Kontak</th>
+                            <th>Plan</th>
+                            <th>Didaftarkan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="tenant-approval-row" th:each="registration : ${pendingRegistrations}" th:attr="data-registration-id=${registration.id}">
+                            <td>
+                                <div class="tenant-approval-company">
+                                    <strong th:text="${registration.companyName}">PT Example Net</strong>
+                                    <span class="tenant-approval-slug" th:text="${registration.slug}">example-net</span>
+                                    <span class="tenant-approval-muted" th:text="${registration.address != null && !#strings.isEmpty(registration.address) ? registration.address : 'Alamat belum diisi'}">Alamat</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tenant-approval-owner">
+                                    <strong th:text="${registration.ownerName}">Owner Name</strong>
+                                    <span class="tenant-approval-muted" th:text="${registration.ownerUsername}">owneruser</span>
+                                    <a class="tenant-approval-link" th:href="'mailto:' + ${registration.ownerEmail}" th:text="${registration.ownerEmail}">owner@email.com</a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tenant-approval-owner">
+                                    <a class="tenant-approval-link" th:href="'mailto:' + ${registration.email}" th:text="${registration.email}">company@mail.com</a>
+                                    <span class="tenant-approval-muted" th:text="${registration.phone}">0812</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="tenant-approval-plan" th:text="${registration.requestedPlanCode != null && !#strings.isEmpty(registration.requestedPlanCode) ? registration.requestedPlanCode : 'TRIAL'}">TRIAL</span>
+                            </td>
+                            <td>
+                                <div class="tenant-approval-owner">
+                                    <strong th:text="${#temporals.format(registration.createdAt, 'dd MMM yyyy')}">04 Apr 2026</strong>
+                                    <span class="tenant-approval-muted" th:text="${#temporals.format(registration.createdAt, 'HH:mm')} + ' WITA'">23:58 WITA</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tenant-approval-actions">
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            th:attr="data-action='approve',data-id=${registration.id},data-company=${registration.companyName},data-plan=${registration.requestedPlanCode != null && !#strings.isEmpty(registration.requestedPlanCode) ? registration.requestedPlanCode : 'TRIAL'}">
+                                        <i class="fas fa-check"></i>
+                                        <span>Approve</span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-secondary btn-sm"
+                                            th:attr="data-action='reject',data-id=${registration.id},data-company=${registration.companyName}">
+                                        <i class="fas fa-xmark"></i>
+                                        <span>Reject</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function api(url, method, body) {
+                const options = {
+                    method: method || 'GET',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                if (options.method !== 'GET' && options.method !== 'HEAD') {
+                    options.headers[window.csrfHeader || 'X-CSRF-TOKEN'] = window.csrfToken || '';
+                }
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                return fetch(url, options).then(async function (response) {
+                    const payload = await response.json().catch(function () {
+                        return { success: false, message: 'Response server tidak valid.' };
+                    });
+                    if (!response.ok || !payload.success) {
+                        throw new Error(payload.message || 'Request gagal diproses.');
+                    }
+                    return payload;
+                });
+            }
+
+            async function approveTenant(button) {
+                const id = button.dataset.id;
+                const company = button.dataset.company || 'tenant ini';
+                const plan = button.dataset.plan || 'TRIAL';
+                const confirmed = await window.nmxConfirm(
+                    'Approve ' + company + ' dan lanjutkan provisioning database tenant?',
+                    {
+                        title: 'Approve Tenant',
+                        message: 'Tenant akan diaktifkan, database tenant dibuat, schema dijalankan, dan admin tenant disiapkan.',
+                        confirmText: 'Approve Tenant',
+                        confirmClass: 'btn btn-primary'
+                    }
+                );
+                if (!confirmed) {
+                    return;
+                }
+                button.disabled = true;
+                try {
+                    await api('/system/tenant-approval/' + id + '/approve', 'POST', { subscriptionPlanCode: plan });
+                    const row = button.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                    if (window.nmxNotify) {
+                        window.nmxNotify({ type: 'success', title: 'Tenant Approved', message: company + ' berhasil diaktifkan.' });
+                    }
+                    window.setTimeout(function () {
+                        window.location.reload();
+                    }, 500);
+                } catch (error) {
+                    button.disabled = false;
+                    if (window.nmxNotify) {
+                        window.nmxNotify({ type: 'error', title: 'Approval Gagal', message: error.message });
+                    }
+                }
+            }
+
+            async function rejectTenant(button) {
+                const id = button.dataset.id;
+                const company = button.dataset.company || 'tenant ini';
+                const reason = window.prompt('Masukkan alasan reject untuk ' + company + ':');
+                if (!reason || !reason.trim()) {
+                    return;
+                }
+                button.disabled = true;
+                try {
+                    await api('/system/tenant-approval/' + id + '/reject', 'POST', { reason: reason.trim() });
+                    const row = button.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                    if (window.nmxNotify) {
+                        window.nmxNotify({ type: 'success', title: 'Tenant Rejected', message: company + ' berhasil ditolak.' });
+                    }
+                    window.setTimeout(function () {
+                        window.location.reload();
+                    }, 500);
+                } catch (error) {
+                    button.disabled = false;
+                    if (window.nmxNotify) {
+                        window.nmxNotify({ type: 'error', title: 'Reject Gagal', message: error.message });
+                    }
+                }
+            }
+
+            document.querySelectorAll('[data-action="approve"]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    approveTenant(button);
+                });
+            });
+
+            document.querySelectorAll('[data-action="reject"]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    rejectTenant(button);
+                });
+            });
+        });
+    </script>
+</div>

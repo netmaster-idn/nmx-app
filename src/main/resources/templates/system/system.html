@@ -1,0 +1,53 @@
+<div th:fragment="content">
+    <style>
+            .page-header-custom { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+            .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+            .settings-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+            .settings-card-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+            .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .settings-item:last-child { border-bottom: none; }
+            .settings-label { font-size: 13px; color: var(--text-secondary); }
+            .settings-value { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+            .version-info { text-align: center; padding: 40px; color: var(--text-muted); }
+            .version-info h3 { font-size: 24px; color: var(--nmx-orange); margin-bottom: 8px; }
+        </style>
+    <div><div class="settings-grid">
+                        <div class="settings-card">
+                            <div class="settings-card-title"><i class="fas fa-server"></i> Server Information</div>
+                            <div class="settings-item"><div class="settings-label">Application</div><div class="settings-value">NMX ISP Management</div></div>
+                            <div class="settings-item"><div class="settings-label">Version</div><div class="settings-value">1.0.0</div></div>
+                            <div class="settings-item"><div class="settings-label">Java Version</div><div class="settings-value">17</div></div>
+                            <div class="settings-item"><div class="settings-label">Spring Boot</div><div class="settings-value">3.2.0</div></div>
+                        </div>
+                        <div class="settings-card">
+                            <div class="settings-card-title"><i class="fas fa-database"></i> Database</div>
+                            <div class="settings-item"><div class="settings-label">Database</div><div class="settings-value">PostgreSQL</div></div>
+                            <div class="settings-item"><div class="settings-label">Connection</div><div class="settings-value">Active</div></div>
+                            <div class="settings-item"><div class="settings-label">Pool Size</div><div class="settings-value">10</div></div>
+                        </div>
+                        <div class="settings-card">
+                            <div class="settings-card-title"><i class="fas fa-cog"></i> General</div>
+                            <div class="settings-item"><div class="settings-label">Timezone</div><div class="settings-value">Asia/Jakarta</div></div>
+                            <div class="settings-item"><div class="settings-label">Language</div><div class="settings-value">Indonesia</div></div>
+                            <div class="settings-item"><div class="settings-label">Currency</div><div class="settings-value">IDR (Rupiah)</div></div>
+                        </div>
+                        <div class="settings-card">
+                            <div class="settings-card-title"><i class="fas fa-shield-alt"></i> Security</div>
+                            <div class="settings-item"><div class="settings-label">Session Timeout</div><div class="settings-value">30 minutes</div></div>
+                            <div class="settings-item"><div class="settings-label">Password Policy</div><div class="settings-value">Strong</div></div>
+                            <div class="settings-item"><div class="settings-label">2FA</div><div class="settings-value">Enabled</div></div>
+                        </div>
+                    </div>
+                    <div class="version-info">
+                        <h3>NMX ISP MANAGEMENT</h3>
+                        <p>Tactical Network Operating System</p>
+                        <p style="margin-top: 20px; font-size: 12px;">Â© 2024 NetMaster. All rights reserved.</p>
+                    </div>
+                </div>
+    </div>
+    <script>
+            lucide.createIcons();
+            function updateClock(){const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0');const e=document.getElementById('clock');if(e)e.textContent=`${h}:${m}:${s}`;}
+            setInterval(updateClock,1000);updateClock();</script>
+</div>
+

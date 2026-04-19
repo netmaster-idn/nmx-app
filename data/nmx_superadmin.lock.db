@@ -1,0 +1,6 @@
+#FileLock
+#Sun Apr 19 08:51:47 WITA 2026
+hostName=NETMaster
+id=19da338dc6026c61358f5113db090b9879501956b69
+method=file
+server=192.168.1.9\:56008

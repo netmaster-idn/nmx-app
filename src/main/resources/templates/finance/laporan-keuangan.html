@@ -1,0 +1,350 @@
+<div th:fragment="content">
+    <style>
+        .finance-page { display: flex; flex-direction: column; gap: 12px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .finance-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 14px; box-shadow: var(--shadow-sm); }
+        .finance-card h3 { margin: 0 0 6px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+        .finance-card strong { display: block; font-size: 22px; line-height: 1.1; color: var(--text-primary); }
+        .finance-card p { margin: 4px 0 0; font-size: 11px; color: var(--text-muted); line-height: 1.35; }
+        .report-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px; align-items: start; }
+        .table-shell { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+        .table-title { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-primary); font-size: 13px; font-weight: 600; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead { background: #161616; }
+        .data-table th { padding: 8px 12px; text-align: left; font-size: 10px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .data-table td { padding: 8px 12px; font-size: 12px; color: var(--text-secondary); border-bottom: 1px solid #1a1a1a; line-height: 1.25; }
+        .status-chip { display: inline-flex; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+        .status-chip.paid { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+        .status-chip.partial { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .status-chip.pending { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .status-chip.overdue { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .summary-list { display: grid; gap: 8px; padding: 12px 14px; }
+        .summary-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .summary-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .summary-item span { color: var(--text-muted); font-size: 12px; }
+        .summary-item strong { color: var(--text-primary); font-size: 14px; }
+        .empty-state { padding: 14px 12px; color: var(--text-muted); font-size: 12px; }
+        .quick-action-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 0; }
+        .filter-dropdown select { min-width: 126px; padding: 7px 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-secondary); font-size: 11px; }
+        .table-scroll { max-height: calc(100vh - 420px); overflow: auto; }
+        .document-branding { padding: 10px 12px !important; border-radius: 12px !important; }
+        .document-branding-logo { width: 34px !important; height: 34px !important; font-size: 13px !important; }
+        .document-branding-copy strong { font-size: 13px !important; }
+        .document-branding-copy p { margin: 2px 0 !important; font-size: 11px !important; line-height: 1.3 !important; }
+        @media (max-width: 980px) { .report-grid { grid-template-columns: 1fr; } }
+    </style>
+
+    <div class="finance-page">
+        <div class="quick-action-bar">
+            <div class="filter-dropdown">
+                <select id="yearFilter"></select>
+            </div>
+            <div class="filter-dropdown">
+                <select id="monthFilter"></select>
+            </div>
+            <div class="filter-dropdown">
+                <select id="statusFilter">
+                    <option value="all">Semua Status</option>
+                    <option value="unpaid">Belum Bayar</option>
+                    <option value="overdue">Jatuh Tempo</option>
+                    <option value="paid">Sudah Bayar</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="document-branding" data-company-branding>
+            <div class="document-branding-logo" data-company-logo>NM</div>
+            <div class="document-branding-copy">
+                <strong data-company-name>NetMaster</strong>
+                <p data-company-tagline>Branding dokumen otomatis dari company setting</p>
+                <p data-company-address>Alamat company belum diatur</p>
+                <p data-company-contact>Data kontak company belum diatur</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="finance-card">
+                <h3>Total Revenue</h3>
+                <strong id="totalRevenue">Rp 0</strong>
+                <p>Akumulasi pembayaran masuk dari seluruh invoice.</p>
+            </div>
+            <div class="finance-card">
+                <h3>Pembayaran Bulan Ini</h3>
+                <strong id="paidThisMonth">Rp 0</strong>
+                <p>Total kas masuk pada bulan berjalan.</p>
+            </div>
+            <div class="finance-card">
+                <h3>Piutang Berjalan</h3>
+                <strong id="pendingAmount">Rp 0</strong>
+                <p>Sisa tagihan dari invoice pending, partial, dan overdue.</p>
+            </div>
+            <div class="finance-card">
+                <h3>Invoice Aktif</h3>
+                <strong id="activeInvoiceCount">0</strong>
+                <p id="invoiceBreakdown">0 lunas, 0 outstanding</p>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <div class="table-shell">
+                <div class="table-title">Transaksi Terbaru</div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Invoice</th>
+                                <th>Pelanggan</th>
+                                <th>Jenis Pembayaran</th>
+                                <th>Dibayar</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTransactionBody"></tbody>
+                    </table>
+                </div>
+                <div id="recentEmptyState" class="empty-state" style="display:none;">Belum ada transaksi invoice.</div>
+            </div>
+
+            <div class="table-shell">
+                <div class="table-title">Ringkasan Status</div>
+                <div class="summary-list">
+                    <div class="summary-item"><span>Total Invoice</span><strong id="totalInvoices">0</strong></div>
+                    <div class="summary-item"><span>Invoice Lunas</span><strong id="paidInvoices">0</strong></div>
+                    <div class="summary-item"><span>Invoice Partial</span><strong id="partialInvoices">0</strong></div>
+                    <div class="summary-item"><span>Invoice Pending</span><strong id="pendingInvoices">0</strong></div>
+                    <div class="summary-item"><span>Invoice Overdue</span><strong id="overdueInvoices">0</strong></div>
+                    <div class="summary-item"><span>Transaksi Pembayaran</span><strong id="paymentTransactions">0</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let reportRows = [];
+        let filteredReportRows = [];
+        let selectedYear = '';
+        let selectedMonth = '';
+        let selectedStatus = 'all';
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeFilters();
+            loadReportData();
+            setupFilterEvents();
+            if (window.nmxBilling) {
+                window.nmxBilling.onRefresh(() => loadReportData());
+            }
+        });
+
+        async function initializeFilters() {
+            const now = new Date();
+            const yearFilter = document.getElementById('yearFilter');
+            const monthFilter = document.getElementById('monthFilter');
+            yearFilter.innerHTML = '';
+
+            const availableYears = await fetchAvailableYears();
+            availableYears.forEach(year => {
+                const option = document.createElement('option');
+                option.value = String(year);
+                option.textContent = String(year);
+                yearFilter.appendChild(option);
+            });
+            selectedYear = resolvePreferredValue(availableYears, now.getFullYear());
+            yearFilter.value = selectedYear;
+
+            await populateMonthFilter(selectedYear, String(now.getMonth() + 1), monthFilter);
+        }
+
+        function setupFilterEvents() {
+            document.getElementById('yearFilter').addEventListener('change', async function(event) {
+                selectedYear = event.target.value || selectedYear;
+                await populateMonthFilter(selectedYear, selectedMonth, document.getElementById('monthFilter'));
+                loadReportData();
+            });
+            document.getElementById('monthFilter').addEventListener('change', function(event) {
+                selectedMonth = event.target.value || selectedMonth;
+                loadReportData();
+            });
+            document.getElementById('statusFilter').addEventListener('change', function(event) {
+                selectedStatus = event.target.value || 'all';
+                loadReportData();
+            });
+        }
+
+        async function loadReportData() {
+            try {
+                const response = await fetch(`/pelanggan/api/invoices${buildInvoiceQuery()}`);
+                const result = await response.json();
+                if (!result.success || !Array.isArray(result.data)) {
+                    throw new Error(result.message || 'Gagal memuat laporan keuangan');
+                }
+                reportRows = [...result.data];
+                applyStatusFilterAndRender();
+            } catch (error) {
+                console.error('Error loading finance report:', error);
+            }
+        }
+
+        async function fetchAvailableYears() {
+            try {
+                const response = await fetch('/pelanggan/api/invoices/years');
+                const result = await response.json();
+                return result.success && Array.isArray(result.data) ? result.data : [];
+            } catch (error) {
+                console.error('Error loading report years:', error);
+                return [];
+            }
+        }
+
+        async function fetchAvailableMonths(year) {
+            if (!year) {
+                return [];
+            }
+
+            try {
+                const response = await fetch(`/pelanggan/api/invoices/months?year=${encodeURIComponent(year)}`);
+                const result = await response.json();
+                return result.success && Array.isArray(result.data) ? result.data : [];
+            } catch (error) {
+                console.error('Error loading report months:', error);
+                return [];
+            }
+        }
+
+        async function populateMonthFilter(year, preferredMonth, monthFilter) {
+            const availableMonths = await fetchAvailableMonths(year);
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            monthFilter.innerHTML = '';
+
+            availableMonths.forEach(month => {
+                const option = document.createElement('option');
+                option.value = String(month);
+                option.textContent = monthNames[month - 1] || String(month);
+                monthFilter.appendChild(option);
+            });
+
+            selectedMonth = resolvePreferredValue(availableMonths, preferredMonth);
+            monthFilter.value = selectedMonth;
+        }
+
+        function resolvePreferredValue(values, preferredValue) {
+            const normalizedValues = Array.isArray(values) ? values.map(value => String(value)) : [];
+            const preferred = String(preferredValue || '');
+            if (preferred && normalizedValues.includes(preferred)) {
+                return preferred;
+            }
+            return normalizedValues.length > 0 ? normalizedValues[0] : '';
+        }
+
+        function buildInvoiceQuery() {
+            const params = new URLSearchParams();
+            if (selectedYear) {
+                params.set('year', selectedYear);
+            }
+            if (selectedMonth) {
+                params.set('month', selectedMonth);
+            }
+            if (selectedStatus && selectedStatus !== 'all') {
+                params.set('status', selectedStatus);
+            }
+            const query = params.toString();
+            return query ? `?${query}` : '';
+        }
+
+        function applyStatusFilterAndRender() {
+            let rows = [...reportRows];
+            if (selectedStatus === 'paid') {
+                rows = rows.filter(row => row.status === 'paid');
+            } else if (selectedStatus === 'overdue') {
+                rows = rows.filter(row => row.status === 'overdue');
+            } else if (selectedStatus === 'unpaid') {
+                rows = rows.filter(row => row.status === 'pending' || row.status === 'partial');
+            }
+
+            filteredReportRows = rows;
+            renderSummary();
+            renderRecentTransactions();
+        }
+
+        function renderSummary() {
+            const totalRevenue = filteredReportRows
+                .filter(row => row.status !== 'cancelled')
+                .reduce((sum, row) => sum + Number(row.amountPaid || 0), 0);
+            const paidThisMonth = filteredReportRows
+                .reduce((sum, row) => sum + Number(row.amountPaid || 0), 0);
+            const pendingAmount = filteredReportRows
+                .filter(row => row.status !== 'paid' && row.status !== 'cancelled')
+                .reduce((sum, row) => sum + Number(row.outstandingAmount || 0), 0);
+
+            const paidInvoices = filteredReportRows.filter(row => row.status === 'paid').length;
+            const partialInvoices = filteredReportRows.filter(row => row.status === 'partial').length;
+            const pendingInvoices = filteredReportRows.filter(row => row.status === 'pending').length;
+            const overdueInvoices = filteredReportRows.filter(row => row.status === 'overdue').length;
+            const cancelledInvoices = filteredReportRows.filter(row => row.status === 'cancelled').length;
+            const paymentTransactions = filteredReportRows.filter(row => row.paymentDate || Number(row.amountPaid || 0) > 0).length;
+
+            document.getElementById('totalRevenue').textContent = formatRupiah(totalRevenue);
+            document.getElementById('paidThisMonth').textContent = formatRupiah(paidThisMonth);
+            document.getElementById('pendingAmount').textContent = formatRupiah(pendingAmount);
+            document.getElementById('activeInvoiceCount').textContent = filteredReportRows.length - cancelledInvoices;
+            document.getElementById('invoiceBreakdown').textContent = `${paidInvoices} lunas, ${pendingInvoices + partialInvoices + overdueInvoices} outstanding`;
+
+            document.getElementById('totalInvoices').textContent = filteredReportRows.length;
+            document.getElementById('paidInvoices').textContent = paidInvoices;
+            document.getElementById('partialInvoices').textContent = partialInvoices;
+            document.getElementById('pendingInvoices').textContent = pendingInvoices;
+            document.getElementById('overdueInvoices').textContent = overdueInvoices;
+            document.getElementById('paymentTransactions').textContent = paymentTransactions;
+        }
+
+        function renderRecentTransactions() {
+            const rows = [...filteredReportRows]
+                .sort((a, b) => new Date(b.paymentDate || b.billingMonth || 0) - new Date(a.paymentDate || a.billingMonth || 0))
+                .slice(0, 8);
+
+            const tbody = document.getElementById('recentTransactionBody');
+            const emptyState = document.getElementById('recentEmptyState');
+
+            if (!rows.length) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tbody.innerHTML = rows.map(row => `
+                <tr>
+                    <td>${formatDate(row.paymentDate || row.billingMonth)}</td>
+                    <td>${escapeHtml(row.invoiceNumber || '-')}</td>
+                    <td>${escapeHtml(row.customerName || '-')}</td>
+                    <td>${escapeHtml(row.invoiceTypeLabel || 'Pembayaran Langganan Bulanan')}</td>
+                    <td>${formatRupiah(row.amountPaid || 0)}</td>
+                    <td><span class="status-chip ${row.status || 'pending'}">${getStatusText(row.status)}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            return window.nmxBilling ? window.nmxBilling.getStatusLabel(status) : (status === 'paid' ? 'Lunas' : 'Belum Lunas');
+        }
+
+        function formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('id-ID');
+        }
+
+        function formatRupiah(amount) {
+            return `Rp. ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Number(amount || 0))}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</div>

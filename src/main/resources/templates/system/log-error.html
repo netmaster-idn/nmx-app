@@ -1,0 +1,408 @@
+<div th:fragment="content">
+    <style>
+        .error-log-page { position: relative; display: flex; flex-direction: column; gap: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+        .stat-card h3 { margin: 0 0 8px; font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-card strong { display: block; font-size: 26px; color: var(--text-primary); }
+        .stat-card p { margin: 6px 0 0; font-size: 12px; color: var(--text-muted); }
+        .log-shell { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+        .log-toolbar { display: flex; gap: 12px; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+        .toolbar-group { display: flex; gap: 12px; align-items: center; width: 100%; flex-wrap: nowrap; }
+        .log-search { flex: 1 1 auto; min-width: 0; }
+        .log-search input, .log-filter { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); padding: 11px 14px; font-size: 13px; }
+        .log-filter { width: 170px; min-width: 170px; flex: 0 0 170px; }
+        .table-wrap { overflow: auto; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead { background: #161616; }
+        .data-table th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .data-table td { padding: 14px 16px; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+        .mono { font-family: var(--font-mono); color: var(--nmx-primary-dark); }
+        .error-type { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(239, 68, 68, 0.12); color: #ef4444; font-size: 11px; font-weight: 600; }
+        .status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+        .status-chip.client { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .status-chip.server { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .btn-refresh { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 12px; background: transparent; color: var(--text-secondary); padding: 10px 14px; cursor: pointer; }
+        .btn-refresh:hover { border-color: var(--nmx-primary-light); color: var(--nmx-primary-dark); }
+        .error-message strong { display: block; color: var(--text-primary); margin-bottom: 6px; }
+        .error-message span { color: var(--text-secondary); line-height: 1.5; }
+        .btn-detail { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.02); color: var(--text-secondary); padding: 10px 14px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .btn-detail:hover { border-color: var(--nmx-primary-light); color: var(--nmx-primary-dark); }
+        .error-modal-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.68); display: none; align-items: flex-start; justify-content: center; padding: 20px; z-index: 20; border-radius: 20px; }
+        .error-modal-overlay.show { display: flex; }
+        .error-modal { width: min(720px, calc(100% - 24px)); max-height: calc(100% - 40px); margin: 0 auto; overflow: auto; border-radius: 20px; background: linear-gradient(180deg, rgba(34, 40, 51, 0.98) 0%, rgba(22, 26, 32, 1) 100%); border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
+        .error-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+        .error-modal-header h3 { margin: 0; color: var(--text-primary); font-size: 18px; }
+        .error-modal-header p { margin: 6px 0 0; color: var(--text-muted); font-size: 13px; }
+        .error-modal-close { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); cursor: pointer; }
+        .error-modal-close:hover { border-color: var(--nmx-primary-light); color: var(--nmx-primary-dark); }
+        .error-modal-body { display: grid; gap: 16px; padding: 20px 22px 22px; }
+        .error-modal-section { border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; background: rgba(15, 23, 42, 0.26); padding: 16px; }
+        .error-modal-section h4 { margin: 0 0 12px; color: var(--text-primary); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .error-modal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .error-modal-field span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 4px; }
+        .error-modal-field strong { display: block; color: var(--text-primary); font-size: 13px; line-height: 1.5; word-break: break-word; }
+        .error-modal-field pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--font-mono); font-size: 11px; color: #cbd5e1; }
+        .empty-state { padding: 28px 18px; color: var(--text-muted); font-size: 13px; text-align: center; }
+        @media (max-width: 900px) {
+            .log-toolbar { overflow-x: auto; align-items: center; }
+            .toolbar-group { min-width: max-content; }
+            .btn-refresh { flex: 0 0 auto; }
+            .error-modal-overlay { padding: 12px; }
+            .error-modal { width: min(100%, calc(100% - 12px)); max-height: calc(100% - 24px); }
+            .error-modal-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <div class="error-log-page">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Error</h3>
+                <strong id="errorTotalStat" th:text="${errorLogTotal}">0</strong>
+                <p>Jumlah error yang sedang tampil di halaman ini.</p>
+            </div>
+            <div class="stat-card">
+                <h3>Error 4xx</h3>
+                <strong id="error4xxStat" th:text="${errorLog4xx}">0</strong>
+                <p>Request gagal karena validasi atau input tidak sesuai.</p>
+            </div>
+            <div class="stat-card">
+                <h3>Error 5xx</h3>
+                <strong id="error5xxStat" th:text="${errorLog5xx}">0</strong>
+                <p>Gangguan proses internal server atau exception berat.</p>
+            </div>
+            <div class="stat-card">
+                <h3>User Terdampak</h3>
+                <strong id="errorUserStat" th:text="${errorLogKnownUsers}">0</strong>
+                <p>Jumlah user unik yang muncul di log error.</p>
+            </div>
+        </div>
+
+        <div class="log-shell">
+            <div class="log-toolbar">
+                <div class="toolbar-group">
+                    <div class="log-search">
+                        <input type="text" id="errorSearchInput" placeholder="Cari user, error type, path, atau pesan error...">
+                    </div>
+                    <select id="errorStatusFilter" class="log-filter">
+                        <option value="">Semua Status</option>
+                        <option value="4xx">4xx Client Error</option>
+                        <option value="5xx">5xx Server Error</option>
+                    </select>
+                    <button type="button" id="refreshErrorLogs" class="btn-refresh">
+                        <i class="fas fa-rotate-right"></i>
+                        Refresh Error
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Pengguna</th>
+                            <th>Modul</th>
+                            <th>Request</th>
+                            <th>Status</th>
+                            <th>Error</th>
+                            <th>Pesan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="errorLogBody">
+                        <tr th:each="row : ${errorLogRows}">
+                            <td class="mono" th:text="${#temporals.format(row.createdAt, 'dd/MM/yyyy HH:mm:ss')}">16/03/2026 10:00:00</td>
+                            <td>
+                                <div class="error-message">
+                                    <strong th:text="${row.fullName != null ? row.fullName : row.username}">netmaster</strong>
+                                    <span th:text="${row.username}">netmaster</span>
+                                </div>
+                            </td>
+                            <td th:text="${row.moduleName}">Pelanggan</td>
+                            <td>
+                                <div class="error-message">
+                                    <strong th:text="${row.actionLabel != null ? row.actionLabel : '-'}">Validasi request API</strong>
+                                    <span class="mono" th:text="${row.httpMethod + ' ' + row.requestPath}">POST /pelanggan/api/customers</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-chip" th:classappend="${row.statusCode != null && row.statusCode >= 500 ? 'server' : 'client'}" th:text="${row.statusCode}">400</span>
+                            </td>
+                            <td><span class="error-type" th:text="${row.errorType}">IllegalArgumentException</span></td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn-detail"
+                                    th:attr="data-created-at=${row.createdAt},
+                                             data-username=${row.username},
+                                             data-full-name=${row.fullName},
+                                             data-module=${row.moduleName},
+                                             data-action-label=${row.actionLabel},
+                                             data-http-method=${row.httpMethod},
+                                             data-request-path=${row.requestPath},
+                                             data-status-code=${row.statusCode},
+                                             data-error-type=${row.errorType},
+                                             data-error-message=${row.errorMessage},
+                                             data-root-cause=${row.rootCauseMessage},
+                                             data-stack-trace=${row.stackTrace}">
+                                    <i class="fas fa-eye"></i>
+                                    Tampilkan Data
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="errorEmptyState" class="empty-state" th:style="${errorLogRows.isEmpty()} ? '' : 'display:none;'">
+                Belum ada data log error.
+            </div>
+        </div>
+    </div>
+
+    <div class="error-modal-overlay" id="errorDetailModal" aria-hidden="true">
+        <div class="error-modal" role="dialog" aria-modal="true" aria-labelledby="errorDetailTitle">
+            <div class="error-modal-header">
+                <div>
+                    <h3 id="errorDetailTitle">Detail Pesan Error</h3>
+                    <p>Informasi lengkap error akan ditampilkan saat tombol di tabel diklik.</p>
+                </div>
+                <button type="button" class="error-modal-close" id="closeErrorDetailModal" aria-label="Tutup detail error">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+            <div class="error-modal-body">
+                <section class="error-modal-section">
+                    <h4>Ringkasan</h4>
+                    <div class="error-modal-grid">
+                        <div class="error-modal-field"><span>Waktu</span><strong id="modalErrorCreatedAt">-</strong></div>
+                        <div class="error-modal-field"><span>Pengguna</span><strong id="modalErrorUser">-</strong></div>
+                        <div class="error-modal-field"><span>Modul</span><strong id="modalErrorModule">-</strong></div>
+                        <div class="error-modal-field"><span>Status</span><strong id="modalErrorStatus">-</strong></div>
+                        <div class="error-modal-field"><span>Error Type</span><strong id="modalErrorType">-</strong></div>
+                        <div class="error-modal-field"><span>Request</span><strong id="modalErrorRequest">-</strong></div>
+                    </div>
+                </section>
+                <section class="error-modal-section">
+                    <h4>Pesan Error</h4>
+                    <div class="error-modal-field">
+                        <span>Error Message</span>
+                        <strong id="modalErrorMessage">-</strong>
+                    </div>
+                </section>
+                <section class="error-modal-section">
+                    <h4>Root Cause</h4>
+                    <div class="error-modal-field">
+                        <span>Root Cause Message</span>
+                        <strong id="modalRootCauseMessage">-</strong>
+                    </div>
+                </section>
+                <section class="error-modal-section">
+                    <h4>Stack Trace</h4>
+                    <div class="error-modal-field">
+                        <span>Detail Teknis</span>
+                        <pre id="modalStackTrace">-</pre>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        window.errorLogInitialRows = /*[[${errorLogRows}]]*/ [];
+    </script>
+    <script>
+        (function() {
+            const initialRows = Array.isArray(window.errorLogInitialRows) ? window.errorLogInitialRows : [];
+            const state = { rows: initialRows.slice() };
+
+            const body = document.getElementById('errorLogBody');
+            const emptyState = document.getElementById('errorEmptyState');
+            const searchInput = document.getElementById('errorSearchInput');
+            const statusFilter = document.getElementById('errorStatusFilter');
+            const refreshButton = document.getElementById('refreshErrorLogs');
+            const detailModal = document.getElementById('errorDetailModal');
+            const detailModalClose = document.getElementById('closeErrorDetailModal');
+
+            if (!body || !emptyState || !searchInput || !statusFilter || !refreshButton || !detailModal || !detailModalClose) {
+                return;
+            }
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function formatDateTime(value) {
+                if (!value) return '-';
+                const date = Array.isArray(value)
+                    ? new Date(
+                        Number(value[0] || 0),
+                        Math.max(Number(value[1] || 1) - 1, 0),
+                        Number(value[2] || 1),
+                        Number(value[3] || 0),
+                        Number(value[4] || 0),
+                        Number(value[5] || 0)
+                    )
+                    : new Date(value);
+                if (Number.isNaN(date.getTime())) return '-';
+                return date.toLocaleString('id-ID');
+            }
+
+            function renderStats(rows) {
+                const uniqueUsers = new Set(rows.map(row => row.username).filter(Boolean).filter(username => username !== 'anonymous'));
+                document.getElementById('errorTotalStat').textContent = rows.length;
+                document.getElementById('error4xxStat').textContent = rows.filter(row => row.statusCode >= 400 && row.statusCode < 500).length;
+                document.getElementById('error5xxStat').textContent = rows.filter(row => row.statusCode >= 500).length;
+                document.getElementById('errorUserStat').textContent = uniqueUsers.size;
+            }
+
+            function setModalField(id, value) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value || '-';
+                }
+            }
+
+            function openDetailModal(row) {
+                setModalField('modalErrorCreatedAt', formatDateTime(row.createdAt));
+                setModalField('modalErrorUser', row.fullName || row.username || 'anonymous');
+                setModalField('modalErrorModule', row.moduleName || '-');
+                setModalField('modalErrorStatus', row.statusCode != null ? String(row.statusCode) : '-');
+                setModalField('modalErrorType', row.errorType || 'UnknownError');
+                setModalField('modalErrorRequest', `${row.httpMethod || '-'} ${row.requestPath || '-'}`);
+                setModalField('modalErrorMessage', row.errorMessage || '-');
+                setModalField('modalRootCauseMessage', row.rootCauseMessage || '-');
+                setModalField('modalStackTrace', row.stackTrace || '-');
+                detailModal.classList.add('show');
+                detailModal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeDetailModal() {
+                detailModal.classList.remove('show');
+                detailModal.setAttribute('aria-hidden', 'true');
+            }
+
+            function renderTable(rows) {
+                renderStats(rows);
+
+                if (!rows.length) {
+                    body.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                body.innerHTML = rows.map(row => `
+                    <tr>
+                        <td class="mono">${escapeHtml(formatDateTime(row.createdAt))}</td>
+                        <td>
+                            <div class="error-message">
+                                <strong>${escapeHtml(row.fullName || row.username || 'anonymous')}</strong>
+                                <span>${escapeHtml(row.username || 'anonymous')}</span>
+                            </div>
+                        </td>
+                        <td>${escapeHtml(row.moduleName || '-')}</td>
+                        <td>
+                            <div class="error-message">
+                                <strong>${escapeHtml(row.actionLabel || '-')}</strong>
+                                <span class="mono">${escapeHtml((row.httpMethod || '-') + ' ' + (row.requestPath || '-'))}</span>
+                            </div>
+                        </td>
+                        <td><span class="status-chip ${row.statusCode >= 500 ? 'server' : 'client'}">${escapeHtml(row.statusCode != null ? String(row.statusCode) : '-')}</span></td>
+                        <td><span class="error-type">${escapeHtml(row.errorType || 'UnknownError')}</span></td>
+                        <td>
+                            <button
+                                type="button"
+                                class="btn-detail"
+                                data-index="${state.rows.indexOf(row)}">
+                                <i class="fas fa-eye"></i>
+                                Tampilkan Data
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            function applyFilters() {
+                const keyword = searchInput.value.trim().toLowerCase();
+                const status = statusFilter.value;
+
+                const filtered = state.rows.filter(row => {
+                    const haystack = [
+                        row.username,
+                        row.fullName,
+                        row.moduleName,
+                        row.actionLabel,
+                        row.requestPath,
+                        row.errorType,
+                        row.errorMessage,
+                        row.rootCauseMessage
+                    ].join(' ').toLowerCase();
+
+                    const matchesKeyword = !keyword || haystack.includes(keyword);
+                    const matchesStatus = !status
+                        || (status === '4xx' && row.statusCode >= 400 && row.statusCode < 500)
+                        || (status === '5xx' && row.statusCode >= 500);
+
+                    return matchesKeyword && matchesStatus;
+                });
+
+                renderTable(filtered);
+            }
+
+            async function refreshLogs() {
+                refreshButton.disabled = true;
+                try {
+                    const response = await fetch('/api/logs/errors?limit=250');
+                    const result = await response.json();
+                    if (!result.success || !Array.isArray(result.data)) {
+                        throw new Error(result.message || 'Gagal memuat log error');
+                    }
+                    state.rows = result.data;
+                    applyFilters();
+                } catch (error) {
+                    if (window.nmxNotify) {
+                        window.nmxNotify({ type: 'error', message: error.message || 'Gagal memuat log error' });
+                    }
+                } finally {
+                    refreshButton.disabled = false;
+                }
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            refreshButton.addEventListener('click', refreshLogs);
+            body.addEventListener('click', function(event) {
+                const button = event.target.closest('.btn-detail');
+                if (!button) {
+                    return;
+                }
+
+                const index = Number(button.dataset.index);
+                const row = Number.isInteger(index) && index >= 0 ? state.rows[index] : null;
+                if (!row) {
+                    return;
+                }
+
+                openDetailModal(row);
+            });
+            detailModalClose.addEventListener('click', closeDetailModal);
+            detailModal.addEventListener('click', function(event) {
+                if (event.target === detailModal) {
+                    closeDetailModal();
+                }
+            });
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && detailModal.classList.contains('show')) {
+                    closeDetailModal();
+                }
+            });
+
+            applyFilters();
+        })();
+    </script>
+</div>

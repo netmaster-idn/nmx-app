@@ -1,0 +1,732 @@
+<div th:fragment="content">
+    <style>
+        .tenant-directory-page {
+            display: grid;
+            gap: 22px;
+        }
+
+        .tenant-directory-hero,
+        .tenant-directory-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--surface-gradient-soft);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(var(--blur-md));
+            -webkit-backdrop-filter: blur(var(--blur-md));
+        }
+
+        .tenant-directory-hero::before,
+        .tenant-directory-card::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px auto 1px;
+            height: 34%;
+            border-radius: inherit;
+            background: var(--glass-top-highlight);
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .tenant-directory-hero-inner,
+        .tenant-directory-card-inner {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+        }
+
+        .tenant-directory-hero-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+            gap: 20px;
+        }
+
+        .tenant-directory-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .tenant-directory-title {
+            margin: 14px 0 0;
+            font-size: clamp(24px, 2.8vw, 34px);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .tenant-directory-copy {
+            margin: 10px 0 0;
+            max-width: 680px;
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .tenant-directory-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .tenant-directory-stat {
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tenant-directory-stat-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tenant-directory-stat-value {
+            margin-top: 10px;
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .tenant-directory-stat-sub {
+            margin-top: 6px;
+            color: var(--text-dim);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tenant-directory-side {
+            display: grid;
+            gap: 12px;
+        }
+
+        .tenant-directory-highlight {
+            padding: 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(6, 182, 212, 0.1) 38%, rgba(16, 185, 129, 0.18) 100%);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.08), 0 0 26px rgba(16, 185, 129, 0.08);
+        }
+
+        .tenant-directory-highlight h3,
+        .tenant-directory-note h3 {
+            margin: 0;
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .tenant-directory-banner {
+            padding: 14px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(34,197,94,0.24);
+            background: rgba(34,197,94,0.1);
+            color: #bbf7d0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .tenant-directory-highlight p,
+        .tenant-directory-note p {
+            margin: 8px 0 0;
+            color: rgba(255,255,255,0.78);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .tenant-directory-note {
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .tenant-directory-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .tenant-directory-toolbar-copy h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .tenant-directory-toolbar-copy p {
+            margin: 4px 0 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .tenant-directory-toolbar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tenant-directory-search {
+            min-width: min(320px, 100%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15, 23, 42, 0.35);
+        }
+
+        .tenant-directory-search i {
+            color: var(--text-muted);
+        }
+
+        .tenant-directory-search input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 12px 0;
+            font-size: 13px;
+        }
+
+        .tenant-directory-filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tenant-directory-filter {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .tenant-directory-filter.active,
+        .tenant-directory-filter:hover {
+            background: linear-gradient(135deg, #0f766e, #0ea5e9);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .tenant-directory-table-wrap {
+            overflow-x: auto;
+        }
+
+        .tenant-directory-table {
+            width: 100%;
+            min-width: 1160px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .tenant-directory-table th {
+            padding: 0 14px 8px;
+            text-align: left;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tenant-directory-row td {
+            padding: 16px 14px;
+            vertical-align: top;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .tenant-directory-row td:first-child {
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px 0 0 18px;
+        }
+
+        .tenant-directory-row td:last-child {
+            border-right: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0 18px 18px 0;
+        }
+
+        .tenant-directory-company,
+        .tenant-directory-contact,
+        .tenant-directory-meta {
+            display: grid;
+            gap: 6px;
+        }
+
+        .tenant-directory-company strong,
+        .tenant-directory-contact strong {
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .tenant-directory-slug,
+        .tenant-directory-plan {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+        }
+
+        .tenant-directory-slug {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.16);
+            color: #bae6fd;
+        }
+
+        .tenant-directory-plan {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.18);
+            color: #d8b4fe;
+        }
+
+        .tenant-directory-muted {
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .tenant-directory-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .tenant-directory-status::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .tenant-status-active {
+            background: rgba(34, 197, 94, 0.14);
+            color: #86efac;
+        }
+
+        .tenant-status-pending {
+            background: rgba(251, 191, 36, 0.14);
+            color: #fde68a;
+        }
+
+        .tenant-status-suspended {
+            background: rgba(248, 113, 113, 0.14);
+            color: #fca5a5;
+        }
+
+        .tenant-status-rejected,
+        .tenant-status-deleted {
+            background: rgba(148, 163, 184, 0.14);
+            color: #cbd5e1;
+        }
+
+        .tenant-directory-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tenant-directory-recycle {
+            display: grid;
+            gap: 16px;
+        }
+
+        .tenant-directory-recycle-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .tenant-directory-recycle-copy h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .tenant-directory-recycle-copy p {
+            margin: 4px 0 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .tenant-directory-recycle-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(148,163,184,0.14);
+            border: 1px solid rgba(148,163,184,0.18);
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tenant-directory-recycle-note {
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(148,163,184,0.16);
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .tenant-directory-empty {
+            padding: 42px 24px;
+            border-radius: 24px;
+            border: 1px dashed rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.03);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .tenant-directory-empty h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .tenant-directory-empty p {
+            margin: 10px auto 0;
+            max-width: 520px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1180px) {
+            .tenant-directory-hero-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tenant-directory-card-inner,
+            .tenant-directory-hero-inner {
+                padding: 18px;
+            }
+
+            .tenant-directory-search {
+                min-width: 100%;
+            }
+        }
+    </style>
+
+    <div class="tenant-directory-page">
+        <div class="tenant-directory-banner" th:if="${successMessage}" th:text="${successMessage}">
+            Tenant dari recycle bin berhasil direstore.
+        </div>
+
+        <section class="tenant-directory-hero">
+            <div class="tenant-directory-hero-inner">
+                <div>
+                    <span class="tenant-directory-kicker">
+                        <i class="fas fa-building-shield"></i>
+                        Tenant Workspace
+                    </span>
+                    <h2 class="tenant-directory-title">Daftar tenant yang sudah mendaftar dan menggunakan aplikasi</h2>
+                    <p class="tenant-directory-copy">
+                        Halaman ini membantu superadmin melihat tenant yang aktif, tenant yang masih menunggu approval,
+                        dan workspace yang perlu ditindaklanjuti sebelum masa langganannya berakhir.
+                    </p>
+
+                    <div class="tenant-directory-stat-grid">
+                        <article class="tenant-directory-stat">
+                            <div class="tenant-directory-stat-label">Total Tenant</div>
+                            <div class="tenant-directory-stat-value" th:text="${tenantDirectoryCount}">0</div>
+                            <div class="tenant-directory-stat-sub">Seluruh tenant yang pernah terdaftar di master workspace.</div>
+                        </article>
+                        <article class="tenant-directory-stat">
+                            <div class="tenant-directory-stat-label">Tenant Active</div>
+                            <div class="tenant-directory-stat-value" th:text="${tenantDirectoryActiveCount}">0</div>
+                            <div class="tenant-directory-stat-sub">Tenant yang sudah aktif dan dapat memakai aplikasi.</div>
+                        </article>
+                        <article class="tenant-directory-stat">
+                            <div class="tenant-directory-stat-label">Menunggu Approval</div>
+                            <div class="tenant-directory-stat-value" th:text="${tenantDirectoryPendingCount}">0</div>
+                            <div class="tenant-directory-stat-sub">Prospek tenant yang sudah daftar tetapi belum diaktifkan.</div>
+                        </article>
+                        <article class="tenant-directory-stat">
+                            <div class="tenant-directory-stat-label">Akan Expired</div>
+                            <div class="tenant-directory-stat-value" th:text="${tenantDirectoryExpiringSoonCount}">0</div>
+                            <div class="tenant-directory-stat-sub">Tenant aktif dengan masa langganan berakhir dalam 14 hari.</div>
+                        </article>
+                        <article class="tenant-directory-stat">
+                            <div class="tenant-directory-stat-label">Recycle Bin</div>
+                            <div class="tenant-directory-stat-value" th:text="${tenantDirectoryDeletedCount}">0</div>
+                            <div class="tenant-directory-stat-sub">Tenant soft-delete yang masih bisa dilacak dan direstore.</div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="tenant-directory-side">
+                    <div class="tenant-directory-highlight">
+                        <h3>Snapshot operasional tenant</h3>
+                        <p>
+                            Gunakan direktori ini sebagai pintu masuk untuk melihat tenant yang paling sehat,
+                            tenant yang tertahan di proses approval, dan tenant aktif yang butuh follow-up renewal.
+                        </p>
+                    </div>
+                    <div class="tenant-directory-note">
+                        <h3>Status yang perlu diperhatikan</h3>
+                        <p>
+                            <strong>Active</strong> berarti tenant siap dipakai, <strong>Pending</strong> menunggu proses approve,
+                            dan <strong>Suspended</strong> menandakan workspace perlu penanganan sebelum dipakai kembali.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tenant-directory-card">
+            <div class="tenant-directory-card-inner">
+                <div class="tenant-directory-recycle">
+                    <div class="tenant-directory-recycle-head">
+                        <div class="tenant-directory-recycle-copy">
+                            <h3>Deleted Tenant / Recycle Bin</h3>
+                            <p>Tenant yang terhapus secara soft-delete tidak hilang permanen. Riwayat dasar tetap terlihat di sini sampai direstore.</p>
+                        </div>
+                        <span class="tenant-directory-recycle-pill" th:text="${tenantDirectoryDeletedCount + ' tenant di recycle bin'}">0 tenant di recycle bin</span>
+                    </div>
+
+                    <div class="tenant-directory-table-wrap" th:if="${!#lists.isEmpty(tenantDirectoryDeleted)}">
+                        <table class="tenant-directory-table">
+                            <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Kontak</th>
+                                <th>Status Terakhir</th>
+                                <th>Lifecycle</th>
+                                <th>Deleted</th>
+                                <th>Aksi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="tenant-directory-row" th:each="tenant : ${tenantDirectoryDeleted}">
+                                <td>
+                                    <div class="tenant-directory-company">
+                                        <strong th:text="${tenant.companyName}">Tenant Name</strong>
+                                        <span class="tenant-directory-slug" th:text="${tenant.slug}">tenant-slug</span>
+                                        <span class="tenant-directory-muted" th:text="${tenant.createdAt != null ? 'Terdaftar ' + #temporals.format(tenant.createdAt, 'dd MMM yyyy HH:mm') : 'Tanggal daftar belum tersedia'}">Terdaftar 04 Apr 2026 09:00</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="tenant-directory-contact">
+                                        <strong th:text="${tenant.email}">tenant@email.com</strong>
+                                        <span class="tenant-directory-muted" th:text="${#strings.isEmpty(tenant.phone) ? 'Nomor telepon belum diisi' : tenant.phone}">0812xxxx</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="tenant-directory-status"
+                                          th:classappend="${' tenant-status-' + #strings.toLowerCase(tenant.status)}"
+                                          th:text="${tenant.status}">DELETED</span>
+                                </td>
+                                <td>
+                                    <div class="tenant-directory-meta">
+                                        <span class="tenant-directory-muted"
+                                              th:text="${tenant.approvedAt != null ? 'Pernah approved ' + #temporals.format(tenant.approvedAt, 'dd MMM yyyy HH:mm') : 'Belum pernah di-approve'}">Pernah approved 04 Apr 2026 10:15</span>
+                                        <span class="tenant-directory-muted"
+                                              th:text="${tenant.subscriptionEndsAt != null ? 'Subscription terakhir ' + #temporals.format(tenant.subscriptionEndsAt, 'dd MMM yyyy') : 'Belum ada metadata subscription'}">Subscription terakhir 30 Apr 2026</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="tenant-directory-meta">
+                                        <span class="tenant-directory-muted"
+                                              th:text="${tenant.deletedAt != null ? 'Dihapus ' + #temporals.format(tenant.deletedAt, 'dd MMM yyyy HH:mm') : 'Belum ada waktu delete'}">Dihapus 05 Apr 2026 15:00</span>
+                                        <span class="tenant-directory-muted">Restore akan mengembalikan tenant ke direktori aktif.</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="tenant-directory-actions">
+                                        <form th:action="@{/system/tenant-directory/{id}/restore(id=${tenant.id})}" method="post">
+                                            <button class="btn btn-primary" type="submit">Restore</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tenant-directory-recycle-note" th:if="${#lists.isEmpty(tenantDirectoryDeleted)}">
+                        Recycle bin masih kosong. Kalau tenant hilang dari directory utama karena soft-delete, datanya akan muncul di panel ini agar bisa ditelusuri dan dipulihkan.
+                    </div>
+                </div>
+
+                <div class="tenant-directory-toolbar">
+                    <div class="tenant-directory-toolbar-copy">
+                        <h3>Tenant Directory</h3>
+                        <p>Filter cepat di browser untuk mencari tenant berdasarkan nama, slug, email, plan, atau status.</p>
+                    </div>
+                    <div class="tenant-directory-toolbar-actions">
+                        <label class="tenant-directory-search" for="tenantDirectorySearch">
+                            <i class="fas fa-search"></i>
+                            <input id="tenantDirectorySearch" type="search" placeholder="Cari tenant, slug, email, plan, status...">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="tenant-directory-filter-group" aria-label="Filter tenant">
+                    <button class="tenant-directory-filter active" type="button" data-filter="all">Semua</button>
+                    <button class="tenant-directory-filter" type="button" data-filter="ACTIVE">Active</button>
+                    <button class="tenant-directory-filter" type="button" data-filter="PENDING">Pending</button>
+                    <button class="tenant-directory-filter" type="button" data-filter="SUSPENDED">Suspended</button>
+                    <button class="tenant-directory-filter" type="button" data-filter="REJECTED">Rejected</button>
+                </div>
+
+                <div class="tenant-directory-table-wrap" th:if="${!#lists.isEmpty(tenantDirectory)}">
+                    <table class="tenant-directory-table">
+                        <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Kontak</th>
+                            <th>Status</th>
+                            <th>Plan</th>
+                            <th>Lifecycle</th>
+                            <th>Aksi</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tenantDirectoryBody">
+                        <tr class="tenant-directory-row"
+                            th:each="tenant : ${tenantDirectory}"
+                            th:attr="data-status=${tenant.status},
+                                     data-search=${#strings.toLowerCase((tenant.companyName ?: '') + ' ' + (tenant.slug ?: '') + ' ' + (tenant.email ?: '') + ' ' + (tenant.phone ?: '') + ' ' + (tenant.subscriptionPlan ?: '') + ' ' + (tenant.status ?: ''))}">
+                            <td>
+                                <div class="tenant-directory-company">
+                                    <strong th:text="${tenant.companyName}">Tenant Name</strong>
+                                    <span class="tenant-directory-slug" th:text="${tenant.slug}">tenant-slug</span>
+                                    <span class="tenant-directory-muted" th:text="${tenant.createdAt != null ? 'Terdaftar ' + #temporals.format(tenant.createdAt, 'dd MMM yyyy HH:mm') : 'Tanggal daftar belum tersedia'}">Terdaftar 04 Apr 2026 09:00</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tenant-directory-contact">
+                                    <strong th:text="${tenant.email}">tenant@email.com</strong>
+                                    <span class="tenant-directory-muted" th:text="${#strings.isEmpty(tenant.phone) ? 'Nomor telepon belum diisi' : tenant.phone}">0812xxxx</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="tenant-directory-status"
+                                      th:classappend="${' tenant-status-' + #strings.toLowerCase(tenant.status)}"
+                                      th:text="${tenant.status}">ACTIVE</span>
+                            </td>
+                            <td>
+                                <div class="tenant-directory-meta">
+                                    <span class="tenant-directory-plan" th:text="${#strings.isEmpty(tenant.subscriptionPlan) ? 'NO PLAN' : tenant.subscriptionPlan}">TRIAL</span>
+                                    <span class="tenant-directory-muted"
+                                          th:text="${tenant.subscriptionEndsAt != null ? 'Berakhir ' + #temporals.format(tenant.subscriptionEndsAt, 'dd MMM yyyy') : 'Belum ada tanggal berakhir'}">Berakhir 30 Apr 2026</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tenant-directory-meta">
+                                    <span class="tenant-directory-muted"
+                                          th:text="${tenant.approvedAt != null ? 'Approved ' + #temporals.format(tenant.approvedAt, 'dd MMM yyyy HH:mm') : 'Belum pernah di-approve'}">Approved 04 Apr 2026 10:15</span>
+                                    <span class="tenant-directory-muted"
+                                          th:text="${tenant.subscriptionEndsAt != null and tenant.subscriptionEndsAt.isBefore(T(java.time.LocalDate).now()) ? 'Subscription sudah berakhir' : 'Subscription masih berjalan / belum diatur'}">Subscription masih berjalan</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tenant-directory-actions">
+                                    <a class="btn btn-secondary" th:href="@{/superadmin/tenants/{id}(id=${tenant.id})}" target="_blank" rel="noopener">API Detail</a>
+                                    <a class="btn btn-primary"
+                                       th:if="${tenant.status == 'PENDING'}"
+                                       href="/system/tenant-approval">Review</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tenant-directory-empty" id="tenantDirectoryEmptyState" th:hidden="${!#lists.isEmpty(tenantDirectory)}">
+                    <h3>Belum ada tenant terdaftar</h3>
+                    <p>Setelah ada tenant yang registrasi atau sudah diprovision, datanya akan muncul di halaman ini.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script th:inline="javascript">
+        (function () {
+            const searchInput = document.getElementById('tenantDirectorySearch');
+            const filterButtons = Array.from(document.querySelectorAll('.tenant-directory-filter'));
+            const rows = Array.from(document.querySelectorAll('#tenantDirectoryBody .tenant-directory-row'));
+            const emptyState = document.getElementById('tenantDirectoryEmptyState');
+            let activeFilter = 'all';
+
+            function updateVisibility() {
+                const query = (searchInput?.value || '').trim().toLowerCase();
+                let visibleCount = 0;
+
+                rows.forEach((row) => {
+                    const rowStatus = row.dataset.status || '';
+                    const haystack = row.dataset.search || '';
+                    const matchesFilter = activeFilter === 'all' || rowStatus === activeFilter;
+                    const matchesSearch = !query || haystack.includes(query);
+                    const visible = matchesFilter && matchesSearch;
+                    row.style.display = visible ? '' : 'none';
+                    if (visible) {
+                        visibleCount += 1;
+                    }
+                });
+
+                if (emptyState) {
+                    emptyState.hidden = visibleCount !== 0;
+                }
+            }
+
+            filterButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    activeFilter = button.dataset.filter || 'all';
+                    filterButtons.forEach((item) => item.classList.toggle('active', item === button));
+                    updateVisibility();
+                });
+            });
+
+            searchInput?.addEventListener('input', updateVisibility);
+            updateVisibility();
+        })();
+    </script>
+</div>

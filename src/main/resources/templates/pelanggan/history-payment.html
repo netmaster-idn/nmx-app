@@ -1,0 +1,1197 @@
+<div th:fragment="content">
+    <style>
+            /* Page Header */
+/* Search Box */
+            .search-container {
+                position: relative;
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .search-container input {
+                width: 100%;
+                padding: 10px 16px 10px 40px;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                color: var(--text-primary);
+                font-size: 13px;
+                transition: all var(--transition-fast);
+            }
+            
+            .search-container input:focus {
+                outline: none;
+                border-color: var(--nmx-orange);
+                box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+            }
+            
+            .search-container i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-dim);
+                font-size: 14px;
+            }
+            
+            /* Table Container */
+            .table-container {
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+            }
+            
+            .table-scroll {
+                max-height: calc(100vh - 320px);
+                overflow-y: auto;
+            }
+            
+            .table-scroll::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            
+            .table-scroll::-webkit-scrollbar-track {
+                background: var(--bg-deep);
+            }
+            
+            .table-scroll::-webkit-scrollbar-thumb {
+                background: #333;
+                border-radius: var(--radius-full);
+            }
+            
+            /* Customer Table */
+            .customer-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .customer-table thead {
+                background: #161616;
+                position: sticky;
+                top: 0;
+                z-index: 5;
+            }
+            
+            .customer-table th {
+                padding: 14px 16px;
+                text-align: left;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-muted);
+                border-bottom: 1px solid var(--border);
+                white-space: nowrap;
+            }
+            
+            .customer-table td {
+                padding: 14px 16px;
+                border-bottom: 1px solid #1a1a1a;
+                color: var(--text-secondary);
+                font-size: 13px;
+                vertical-align: middle;
+            }
+
+            .customer-table th:last-child,
+            .customer-table td:last-child {
+                white-space: nowrap;
+                width: 1%;
+            }
+            
+            .customer-table tbody tr {
+                transition: background var(--transition-fast);
+            }
+            
+            .customer-table tbody tr:hover {
+                background: rgba(255, 255, 255, 0.02);
+            }
+            
+            /* Customer Code */
+            .customer-code {
+                font-family: var(--font-mono);
+                font-size: 12px;
+                color: var(--nmx-orange);
+                font-weight: 500;
+            }
+            
+            /* Status Badge */
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+            
+            .status-badge.active {
+                background: rgba(34, 197, 94, 0.1);
+                color: var(--status-success);
+            }
+            
+            .status-badge.suspended {
+                background: rgba(245, 158, 11, 0.1);
+                color: var(--status-warning);
+            }
+            
+            .status-badge.pending {
+                background: rgba(59, 130, 246, 0.1);
+                color: var(--status-info);
+            }
+            
+            .status-badge.inactive {
+                background: rgba(239, 68, 68, 0.1);
+                color: var(--status-danger);
+            }
+            
+            .status-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: currentColor;
+            }
+            
+            /* Payment Badge */
+            .payment-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 3px 8px;
+                border-radius: 999px;
+                font-size: 10px;
+                font-weight: 600;
+            }
+            
+            .payment-badge.paid,
+            .payment-badge.lunas {
+                background: rgba(34, 197, 94, 0.12);
+                color: var(--status-success);
+            }
+            
+            .payment-badge.unpaid,
+            .payment-badge.pending {
+                background: rgba(59, 130, 246, 0.12);
+                color: var(--status-info);
+            }
+            
+            .payment-badge.partial {
+                background: rgba(245, 158, 11, 0.12);
+                color: #f59e0b;
+            }
+            
+            .payment-badge.overdue {
+                background: rgba(239, 68, 68, 0.12);
+                color: var(--status-danger);
+                animation: pulse 2s infinite;
+            }
+
+            .payment-badge.cancelled {
+                background: rgba(107, 114, 128, 0.12);
+                color: #9ca3af;
+            }
+
+            .payment-badge.no-payment {
+                background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(120, 53, 15, 0.18));
+                color: #fcd34d;
+                border: 1px dashed rgba(251, 191, 36, 0.36);
+                box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.08);
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
+
+            .payment-badge.no-payment::before {
+                content: "!";
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: rgba(251, 191, 36, 0.18);
+                color: #fde68a;
+                font-size: 8px;
+                font-weight: 800;
+                line-height: 1;
+            }
+            
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.7; }
+            }
+            
+            /* Action Button */
+            .action-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                flex-wrap: nowrap;
+                width: max-content;
+                min-width: max-content;
+            }
+
+            .action-btn button {
+                flex: 0 0 32px;
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                background: transparent;
+                border: 1px solid var(--border);
+                color: var(--text-muted);
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 13px;
+                transition: all var(--transition-fast);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .action-btn button:hover {
+                border-color: var(--nmx-orange);
+                color: var(--nmx-orange);
+                background: rgba(249, 115, 22, 0.08);
+            }
+
+            .action-btn button.warning:hover {
+                border-color: var(--status-warning);
+                color: var(--status-warning);
+                background: rgba(245, 158, 11, 0.08);
+            }
+
+            .action-btn button.success:hover {
+                border-color: var(--status-success);
+                color: var(--status-success);
+                background: rgba(34, 197, 94, 0.08);
+            }
+
+            .action-btn button.danger:hover {
+                border-color: var(--status-danger);
+                color: var(--status-danger);
+                background: rgba(239, 68, 68, 0.08);
+            }
+            
+            /* Stats Row */
+            .stats-row {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .stat-card {
+                flex: 1;
+                min-width: 150px;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: var(--radius-md);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+            
+            .stat-icon.blue {
+                background: rgba(59, 130, 246, 0.1);
+                color: var(--status-info);
+            }
+            
+            .stat-icon.green {
+                background: rgba(34, 197, 94, 0.1);
+                color: var(--status-success);
+            }
+            
+            .stat-icon.yellow {
+                background: rgba(245, 158, 11, 0.1);
+                color: var(--status-warning);
+            }
+            
+            .stat-icon.red {
+                background: rgba(239, 68, 68, 0.1);
+                color: var(--status-danger);
+            }
+            
+            .stat-icon.orange {
+                background: rgba(249, 115, 22, 0.1);
+                color: var(--nmx-orange);
+            }
+            
+            .stat-info h4 {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin: 0;
+                line-height: 1;
+            }
+            
+            .stat-info p {
+                font-size: 12px;
+                color: var(--text-muted);
+                margin: 4px 0 0 0;
+            }
+            
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 60px 20px;
+                color: var(--text-muted);
+            }
+            
+            .empty-state i {
+                font-size: 48px;
+                margin-bottom: 16px;
+                opacity: 0.3;
+            }
+            
+            .empty-state h3 {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 8px;
+            }
+            
+            .empty-state p {
+                font-size: 13px;
+            }
+            
+            /* Print Styles */
+            @media print {
+                .sidebar, .main-header, .page-header-custom, .header-actions, 
+                .action-btn, .dropdown-menu, .btn, .search-container,
+                .modal, .footer, .wa-float, .stats-row {
+                    display: none !important;
+                }
+                
+                .main-content {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                
+                .table-scroll {
+                    max-height: none !important;
+                    overflow: visible !important;
+                }
+                
+                body {
+                    background: white !important;
+                    color: black !important;
+                }
+                
+                .customer-table {
+                    font-size: 10px;
+                }
+                
+                .customer-table th, .customer-table td {
+                    border: 1px solid #ddd !important;
+                    color: black !important;
+                }
+                
+                .print-header {
+                    display: block !important;
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+            }
+            
+            .print-header {
+                display: none;
+            }
+            
+            /* Selection Checkbox */
+            .checkbox-cell {
+                width: 40px;
+                text-align: center;
+            }
+            
+            .checkbox-cell input {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+                accent-color: var(--nmx-orange);
+            }
+            
+            /* Quick Action Bar */
+            .quick-action-bar {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 16px;
+                flex-wrap: wrap;
+                padding: 6px 8px;
+                border-radius: 999px;
+                border: 1px solid rgba(255,255,255,0.08);
+                background: rgba(255,255,255,0.03);
+                transition: all 0.25s ease;
+            }
+            
+            .quick-action-bar .btn {
+                padding: 8px 14px;
+                font-size: 12px;
+                border-radius: 999px;
+            }
+            
+            .selected-count {
+                font-size: 12px;
+                color: var(--text-muted);
+                padding: 6px 12px;
+                background: rgba(249, 115, 22, 0.1);
+                border-radius: var(--radius-sm);
+                color: var(--nmx-orange);
+            }
+            
+            /* Filter Dropdown */
+            .filter-dropdown {
+                position: relative;
+                display: inline-block;
+            }
+            
+            .filter-dropdown select {
+                padding: 8px 12px;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-sm);
+                color: var(--text-primary);
+                font-size: 12px;
+                cursor: pointer;
+            }
+            
+            .filter-dropdown select:focus {
+                outline: none;
+                border-color: var(--nmx-orange);
+            }
+
+            .history-header {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .history-header .stats-row {
+                flex: 1 1 720px;
+                margin-bottom: 0;
+            }
+
+            .history-toolbar {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                max-width: 420px;
+                margin-left: auto;
+                align-self: flex-start;
+            }
+
+            .history-toolbar .toolbar-search-group {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                order: 2;
+            }
+
+            .history-toolbar .toolbar-search-group .search-container {
+                flex: 1 1 auto;
+                max-width: none;
+            }
+
+            .history-toolbar .quick-action-bar {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                width: 100%;
+                order: 1;
+                margin: 0;
+                padding: 0;
+                border: none;
+                background: transparent;
+                border-radius: 0;
+            }
+
+            .history-toolbar .quick-action-bar .filter-dropdown {
+                min-width: 0;
+            }
+
+            .history-toolbar .quick-action-bar .filter-dropdown select {
+                width: 100%;
+                min-width: 0;
+                padding: 10px 12px;
+                border-radius: var(--radius-md);
+            }
+
+            .history-toolbar .selected-count {
+                width: 100%;
+                order: 3;
+            }
+
+            @media (max-width: 768px) {
+                .history-header {
+                    align-items: stretch;
+                }
+
+                .history-header .stats-row,
+                .history-toolbar {
+                    width: 100%;
+                    max-width: none;
+                }
+
+                .history-toolbar .toolbar-search-group {
+                    flex-wrap: wrap;
+                }
+
+                .history-toolbar .toolbar-search-group .btn {
+                    width: 100%;
+                }
+
+                .history-toolbar .quick-action-bar {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .history-modal-filters {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 14px;
+                flex-wrap: wrap;
+            }
+
+            .history-modal-filters .filter-dropdown {
+                min-width: 180px;
+            }
+
+            #historyModal {
+                box-sizing: border-box;
+                padding: 24px;
+            }
+
+            #historyModal.open {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #historyModal .modal-content {
+                width: 100%;
+                max-width: 1180px;
+                margin: 0;
+            }
+
+            #historyModal .modal-body {
+                padding-right: 20px;
+                padding-left: 20px;
+            }
+
+            .history-modal-wrap {
+                max-height: 48vh;
+                overflow: visible;
+            }
+
+            #historyModal .customer-table th,
+            #historyModal .customer-table td {
+                padding: 12px 14px;
+                font-size: 12px;
+            }
+
+            #historyModal .customer-table th {
+                font-size: 10px;
+            }
+
+            #historyModal .customer-table td:nth-child(2) {
+                min-width: 160px;
+            }
+
+            #historyModal .customer-table td:nth-child(3),
+            #historyModal .customer-table td:nth-child(4),
+            #historyModal .customer-table td:nth-child(5),
+            #historyModal .customer-table td:nth-child(6),
+            #historyModal .customer-table td:nth-child(7),
+            #historyModal .customer-table td:nth-child(8),
+            #historyModal .customer-table th:nth-child(3),
+            #historyModal .customer-table th:nth-child(4),
+            #historyModal .customer-table th:nth-child(5),
+            #historyModal .customer-table th:nth-child(6),
+            #historyModal .customer-table th:nth-child(7),
+            #historyModal .customer-table th:nth-child(8) {
+                white-space: nowrap;
+            }
+
+            @media (max-width: 1400px) {
+                #historyModal .modal-content {
+                    max-width: 1080px;
+                }
+
+                .history-modal-wrap {
+                    overflow-x: auto;
+                }
+            }
+
+            @media (max-width: 1100px) {
+                #historyModal {
+                    padding: 20px;
+                }
+
+                #historyModal .modal-content {
+                    max-width: min(96vw, 980px);
+                }
+            }
+
+            .history-summary-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .history-summary-card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                padding: 14px;
+                text-align: center;
+            }
+
+            .history-summary-card .label {
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-dim);
+                margin-bottom: 6px;
+            }
+
+            .history-summary-card .value {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text-primary);
+                line-height: 1.4;
+                text-align: center;
+            }
+
+            .history-summary-note {
+                margin: 0 0 16px;
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+
+            .table-empty {
+                text-align: center;
+                color: var(--text-muted);
+                padding: 16px;
+            }
+
+            .invoice-summary {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                padding: 12px;
+                margin-bottom: 14px;
+            }
+
+            .invoice-summary p {
+                margin: 6px 0;
+                font-size: 13px;
+                color: var(--text-secondary);
+            }
+
+            .invoice-summary strong {
+                color: var(--text-primary);
+            }
+
+            .print-filter-group {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-bottom: 14px;
+            }
+
+            .print-filter-group label {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 13px;
+                color: var(--text-secondary);
+            }
+        </style>
+    <div class="history-payment-page">
+        <div id="historyCanDeleteCustomerFlag" sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')" hidden></div><div class="document-branding" data-company-branding>
+                        <div class="document-branding-logo" data-company-logo>NM</div>
+                        <div class="document-branding-copy">
+                            <strong data-company-name>NetMaster</strong>
+                            <p data-company-tagline>Branding dokumen otomatis dari company setting</p>
+                            <p data-company-address>Alamat company belum diatur</p>
+                            <p data-company-contact>Data kontak company belum diatur</p>
+                        </div>
+                    </div>
+        
+                    <!-- Alert Container -->
+                    <div id="alertContainer"></div>
+        
+                    <div class="history-header">
+                        <!-- Stats Row -->
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-icon blue">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4 id="totalCustomers" th:text="${historyTotalCustomers}">0</h4>
+                                    <p>Total Pelanggan</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4 id="totalPaid" th:text="${historyTotalPaid}">0</h4>
+                                    <p>Lunas</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon yellow">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4 id="totalPending" th:text="${historyTotalPending}">0</h4>
+                                    <p>Pending</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon red">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4 id="totalOverdue" th:text="${historyTotalOverdue}">0</h4>
+                                    <p>Jatuh Tempo</p>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="history-toolbar">
+                            <div class="toolbar-search-group">
+                                <div class="search-container">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="searchInput" placeholder="Cari berdasarkan nama, ID pelanggan, atau nomor telepon...">
+                                </div>
+                                <button class="btn btn-primary" onclick="printSelectedHistory()" id="printSelectedBtn" style="display: none;">
+                                    <i class="fas fa-print"></i>
+                                    Cetak Terpilih
+                                </button>
+                            </div>
+
+                            <div class="quick-action-bar">
+                                <div class="filter-dropdown">
+                                    <select id="yearFilter">
+                                        <option value="">Semua Tahun</option>
+                                    </select>
+                                </div>
+                                <div class="filter-dropdown">
+                                    <select id="monthFilter" disabled>
+                                        <option value="">Semua Bulan</option>
+                                    </select>
+                                </div>
+                                <div class="filter-dropdown">
+                                    <select id="paymentStatusFilter">
+                                        <option value="all">Semua Status</option>
+                                        <option value="unpaid">Belum Bayar (Belum Lunas)</option>
+                                        <option value="overdue">Jatuh Tempo</option>
+                                        <option value="paid">Sudah Bayar (Lunas)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <span class="selected-count" id="selectedCount" style="display: none;">
+                                <i class="fas fa-check-square"></i> <span id="countNum">0</span> dipilih
+                            </span>
+                        </div>
+                    </div>
+        
+                    <!-- Table Container -->
+                    <div class="table-container">
+                        <div class="table-scroll" id="tableScroll">
+                            <table class="customer-table" id="customerTable">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-cell">
+                                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                        </th>
+                                        <th>ID Pelanggan</th>
+                                        <th>Nama Pelanggan</th>
+                                        <th>No. Telepon</th>
+                                        <th>Paket</th>
+                                        <th>Status Layanan</th>
+                                        <th>Total Tagihan</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customerTableBody">
+                                    <tr th:each="customer : ${historyRows}">
+                                        <td class="checkbox-cell">
+                                            <input type="checkbox" th:value="${customer.id}" onchange="toggleSelectCustomer(Number(this.value))">
+                                        </td>
+                                        <td><span class="customer-code" th:text="${customer.customerCode ?: '-'}">-</span></td>
+                                        <td th:text="${customer.fullName ?: '-'}">-</td>
+                                        <td th:text="${customer.phone ?: '-'}">-</td>
+                                        <td th:text="${customer.packageName ?: '-'}">-</td>
+                                        <td>
+                                            <span class="status-badge"
+                                                  th:classappend="${customer.status == 'active'} ? ' active' : (${customer.status == 'suspended'} ? ' suspended' : (${customer.status == 'pending'} ? ' pending' : ' inactive'))">
+                                                <span class="status-dot"></span>
+                                                <span th:text="${customer.status == 'active'} ? 'Active' : (${customer.status == 'suspended'} ? 'Suspend' : (${customer.status == 'pending'} ? 'Pending' : 'Nonaktif'))">Nonaktif</span>
+                                            </span>
+                                        </td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(customer.totalTagihan, 0, 'POINT', 0, 'COMMA')}">Rp. 0</td>
+                                        <td>
+                                            <span class="payment-badge"
+                                                  th:classappend="${customer.paymentStatus == 'paid'} ? ' paid' : (${customer.paymentStatus == 'overdue'} ? ' overdue' : ' unpaid')"
+                                                  th:text="${customer.paymentStatus == 'paid'} ? 'Lunas' : (${customer.paymentStatus == 'overdue'} ? 'Jatuh Tempo' : 'Belum Lunas')">Belum Lunas</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-btn">
+                                                <button type="button"
+                                                        title="Lihat History Pembayaran"
+                                                        data-action="view-history"
+                                                        th:attr="data-customer-id=${customer.id}"
+                                                        th:onclick="|event.stopPropagation(); window.dispatchHistoryQuickAction('view-history', ${customer.id}); return false;|">
+                                                    <i class="fas fa-history"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="warning"
+                                                        title="Suspend Layanan"
+                                                        th:if="${customer.status == 'active'}"
+                                                        data-action="suspend-service"
+                                                        th:attr="data-customer-id=${customer.id},data-service-id=${customer.serviceId != null ? customer.serviceId : 0}"
+                                                        th:onclick="|event.stopPropagation(); window.dispatchHistoryQuickAction('suspend-service', ${customer.id}, ${customer.serviceId != null ? customer.serviceId : 0}); return false;|">
+                                                    <i class="fas fa-pause"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="success"
+                                                        title="Aktifkan Layanan"
+                                                        th:unless="${customer.status == 'active'}"
+                                                        data-action="activate-service"
+                                                        th:attr="data-customer-id=${customer.id},data-service-id=${customer.serviceId != null ? customer.serviceId : 0}"
+                                                        th:onclick="|event.stopPropagation(); window.dispatchHistoryQuickAction('activate-service', ${customer.id}, ${customer.serviceId != null ? customer.serviceId : 0}); return false;|">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="danger"
+                                                        title="Hapus Pelanggan"
+                                                        sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')"
+                                                        data-action="delete-customer"
+                                                        th:attr="data-customer-id=${customer.id}"
+                                                        th:onclick="|event.stopPropagation(); window.dispatchHistoryQuickAction('delete-customer', ${customer.id}); return false;|">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <!-- Empty State -->
+                            <div class="empty-state" id="emptyState" th:style="${#lists.isEmpty(historyRows)} ? 'display: block;' : 'display: none;'">
+                                <i class="fas fa-receipt"></i>
+                                <h3>Tidak Ada Data</h3>
+                                <p>Belum ada data pelanggan atau riwayat pembayaran.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Modal -->
+                    <div class="modal" id="historyModal">
+                        <div class="modal-backdrop" onclick="closeModal('historyModal')"></div>
+                        <div class="modal-content modal-content-xl">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Riwayat Pembayaran</h3>
+                                    <p class="modal-subtitle" id="historyCustomerName">-</p>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('historyModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="history-summary-grid">
+                                    <div class="history-summary-card">
+                                        <span class="label">Awal Riwayat</span>
+                                        <div class="value" id="historyCoverageStart">-</div>
+                                    </div>
+                                    <div class="history-summary-card">
+                                        <span class="label">Pembayaran Terakhir</span>
+                                        <div class="value" id="historyCoverageEnd">-</div>
+                                    </div>
+                                    <div class="history-summary-card">
+                                        <span class="label">Total Catatan</span>
+                                        <div class="value" id="historyInvoiceCount">0</div>
+                                    </div>
+                                    <div class="history-summary-card">
+                                        <span class="label">Total Terbayar</span>
+                                        <div class="value" id="historyPaidTotal">Rp. 0</div>
+                                    </div>
+                                </div>
+                                <p class="history-summary-note">
+                                    Riwayat ini menampilkan seluruh catatan tagihan dan pembayaran pelanggan sejak awal aktivasi/registrasi hingga transaksi terakhir.
+                                </p>
+                                <div class="history-modal-filters">
+                                    <div class="filter-dropdown">
+                                        <select id="historyYearFilter" onchange="loadFilteredHistory()">
+                                            <option value="">Semua Tahun</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-dropdown">
+                                        <select id="historyMonthFilter" onchange="loadFilteredHistory()" disabled>
+                                            <option value="">Semua Bulan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="history-modal-wrap">
+                                    <table class="customer-table">
+                                        <thead>
+                                            <tr>
+                                                <th>No Invoice</th>
+                                                <th>Jenis Pembayaran</th>
+                                                <th>Jatuh Tempo</th>
+                                                <th>Total</th>
+                                                <th>Terbayar</th>
+                                                <th>Tanggal Bayar</th>
+                                                <th>Metode</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historyTableBody">
+                                            <tr>
+                                                <td colspan="9" class="table-empty">Pilih pelanggan untuk melihat riwayat pembayaran.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('historyModal')">Tutup</button>
+                                <button type="button" class="btn btn-primary" onclick="printCurrentHistory()">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Modal -->
+                    <div class="modal" id="invoiceModal">
+                        <div class="modal-backdrop" onclick="closeModal('invoiceModal')"></div>
+                        <div class="modal-content modal-content-lg">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Buat Invoice</h3>
+                                    <p class="modal-subtitle">Pelanggan: <span id="invoiceCustomerName">-</span></p>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('invoiceModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="invoiceCustomerId">
+                                <div class="form-group">
+                                    <label>Periode Tagihan</label>
+                                    <input type="month" id="invoiceBillingMonth" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Jatuh Tempo</label>
+                                    <input type="date" id="invoiceDueDate" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Biaya Bulanan</label>
+                                    <input type="number" id="invoiceMonthlyFee" class="form-input" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Biaya Instalasi</label>
+                                    <input type="number" id="invoiceInstallationFee" class="form-input" min="0" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Catatan</label>
+                                    <textarea id="invoiceNotes" class="form-textarea" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceModal')">Batal</button>
+                                <button type="button" class="btn btn-primary" onclick="saveInvoice()">
+                                    <i class="fas fa-save"></i> Simpan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pay Modal -->
+                    <div class="modal" id="payModal">
+                        <div class="modal-backdrop" onclick="closeModal('payModal')"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Pembayaran Invoice</h3>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('payModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="payInvoiceId">
+                                <div class="invoice-summary">
+                                    <p>No Invoice: <strong id="payInvoiceNumber">-</strong></p>
+                                    <p>Total Tagihan: <strong id="payTotalAmount">Rp. 0</strong></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Jumlah Bayar</label>
+                                    <input type="number" id="payAmount" class="form-input" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Metode Pembayaran</label>
+                                    <select id="payMethod" class="form-select">
+                                        <option value="cash">Cash</option>
+                                        <option value="transfer">Transfer</option>
+                                        <option value="qris">QRIS</option>
+                                        <option value="ewallet">E-Wallet</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Catatan</label>
+                                    <textarea id="payNotes" class="form-textarea" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('payModal')">Batal</button>
+                                <button type="button" class="btn btn-success" onclick="processPayment()">
+                                    <i class="fas fa-check"></i> Proses Pembayaran
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Detail Modal -->
+                    <div class="modal" id="invoiceDetailModal">
+                        <div class="modal-backdrop" onclick="closeModal('invoiceDetailModal')"></div>
+                        <div class="modal-content modal-content-lg">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Detail Invoice</h3>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('invoiceDetailModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-grid modal-grid-2">
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">No Invoice</div>
+                                        <div class="modal-info-value" id="detailInvoiceNumber">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Status</div>
+                                        <div class="modal-info-value" id="detailInvoiceStatus">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Periode</div>
+                                        <div class="modal-info-value" id="detailBillingMonth">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Jatuh Tempo</div>
+                                        <div class="modal-info-value" id="detailDueDate">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Total Tagihan</div>
+                                        <div class="modal-info-value" id="detailTotalAmount">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Terbayar</div>
+                                        <div class="modal-info-value" id="detailAmountPaid">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Tanggal Bayar</div>
+                                        <div class="modal-info-value" id="detailPaymentDate">-</div>
+                                    </div>
+                                    <div class="modal-info">
+                                        <div class="modal-info-label">Metode Bayar</div>
+                                        <div class="modal-info-value" id="detailPaymentMethod">-</div>
+                                    </div>
+                                </div>
+                                <div class="modal-info">
+                                    <div class="modal-info-label">Catatan</div>
+                                    <div class="modal-info-value" id="detailInvoiceNotes">-</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceDetailModal')">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Print Modal -->
+                    <div class="modal" id="printModal">
+                        <div class="modal-backdrop" onclick="closeModal('printModal')"></div>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div>
+                                    <h3 class="modal-title">Cetak History Pembayaran</h3>
+                                    <p class="modal-subtitle" id="printCustomerName">-</p>
+                                </div>
+                                <button class="modal-close" type="button" onclick="closeModal('printModal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="print-filter-group">
+                                    <label><input type="radio" name="printFilter" value="all" checked onchange="updatePrintOptions()"> Semua</label>
+                                    <label><input type="radio" name="printFilter" value="year" onchange="updatePrintOptions()"> Per Tahun</label>
+                                    <label><input type="radio" name="printFilter" value="month" onchange="updatePrintOptions()"> Per Bulan</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tahun</label>
+                                    <select id="printYear" class="form-select" onchange="updatePrintMonthOptions()" disabled>
+                                        <option value="">Pilih Tahun</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Bulan</label>
+                                    <select id="printMonth" class="form-select" disabled>
+                                        <option value="">Pilih Bulan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('printModal')">Batal</button>
+                                <button type="button" class="btn btn-primary" onclick="executePrint()">
+                                    <i class="fas fa-print"></i> Cetak
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Modal -->
+                    <div class="modal" id="confirmModal">
+                        <div class="modal-backdrop" onclick="closeModal('confirmModal')"></div>
+                        <div class="modal-content modal-content-sm">
+                            <div class="modal-body confirm-modal">
+                                <div class="confirm-icon warning" id="confirmIcon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h3 class="confirm-title" id="confirmTitle">Konfirmasi</h3>
+                                <p class="confirm-message" id="confirmMessage">Apakah Anda yakin?</p>
+                            </div>
+                            <div class="modal-footer" style="justify-content:center;">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal('confirmModal')">Batal</button>
+                                <button type="button" class="btn btn-primary" id="confirmBtn" onclick="executeConfirm()">Ya, Lanjutkan</button>
+                            </div>
+                        </div>
+                    </div>
+        
+                </div>
+        
+                <!-- Footer -->
+    </div>
+</div>
+

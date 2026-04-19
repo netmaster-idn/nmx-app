@@ -1,0 +1,1177 @@
+<!-- This page uses Thymeleaf fragment to be included in base.html -->
+<!-- Page content starts here - wrapped in content fragment -->
+<div th:fragment="content">
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+
+    <!-- Registration Form -->
+    <form id="registrationForm">
+        <div class="registration-grid">
+            <!-- Column 1 -->
+            <div class="registration-col">
+                <div class="section-card compact-card">
+                    <div class="form-section-title">
+                        <i class="fas fa-user"></i>
+                        Data Pribadi Pelanggan
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Nama Lengkap <span class="required-mark">*</span>
+                            </label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" class="form-input" id="fullName" name="fullName"
+                                       placeholder="Nama lengkap sesuai KTP" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Nomor Telepon <span class="required-mark">*</span>
+                            </label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" class="form-input" id="phone" name="phone"
+                                       placeholder="08xxxxxxxxxx" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" class="form-input" id="email" name="email"
+                                       placeholder="email@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Nomor KTP</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" class="form-input" id="ktpNumber" name="ktpNumber"
+                                       placeholder="Nomor KTP (16 digit)" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Alamat Sesuai KTP</label>
+                        <textarea class="form-input" id="ktpAddress" name="ktpAddress"
+                                  placeholder="Alamat sesuai kartu identitas" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Alamat Instalasi <span class="required-mark">*</span>
+                        </label>
+                        <textarea class="form-input" id="installationAddress" name="installationAddress"
+                                  placeholder="Alamat lengkap untuk instalasi layanan" required rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="section-card compact-card">
+                    <div class="form-section-title">
+                        <i class="fas fa-bolt"></i>
+                        Pilih Paket Layanan
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Tipe Layanan <span class="required-mark">*</span>
+                            </label>
+                            <select class="form-input" id="serviceTypeId" name="serviceTypeId" required>
+                                <option value="">-- Loading... --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Paket Internet <span class="required-mark">*</span>
+                            </label>
+                            <select class="form-input" id="packageId" name="packageId" required>
+                                <option value="">-- Loading... --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2 -->
+            <div class="registration-col">
+                <div class="section-card compact-card">
+                    <div class="form-section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Data Wilayah & Lokasi
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">Wilayah</label>
+                            <select class="form-input" id="companyProfileId" name="companyProfileId">
+                                <option value="">-- Loading... --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Server</label>
+                            <select class="form-input" id="serverId" name="serverId">
+                                <option value="">-- Loading... --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ODC</label>
+                            <select class="form-input" id="odcId" name="odcId">
+                                <option value="">-- Pilih Server terlebih dahulu --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ODP</label>
+                            <select class="form-input" id="odpId" name="odpId">
+                                <option value="">-- Loading... --</option>
+                            </select>
+                            <small class="text-muted-custom" id="odpInfo"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Port ODP</label>
+                            <input type="number" class="form-input" id="odpPort" name="odpPort"
+                                   placeholder="1-8" min="1" max="8">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Koordinat</label>
+                            <input type="text" class="form-input" id="coordinates"
+                                   placeholder="-0.48649594690223724, 117.1219023709373">
+                            <small class="form-hint">Format: latitude, longitude (contoh: -6.1754, 106.8272)</small>
+                            <input type="hidden" id="latitude" name="latitude">
+                            <input type="hidden" id="longitude" name="longitude">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3 -->
+            <div class="registration-col registration-col-payment">
+                <div class="section-card compact-card">
+                    <div class="form-section-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Data Pembayaran
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Biaya Bulanan <span class="required-mark">*</span>
+                            </label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-tag"></i>
+                                <input type="number" class="form-input" id="monthlyFee" name="monthlyFee"
+                                       placeholder="0" required min="0" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Biaya Instalasi</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-tools"></i>
+                                <input type="number" class="form-input" id="installationFee" name="installationFee"
+                                       placeholder="0" min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tanggal Instalasi</label>
+                            <input type="date" class="form-input" id="installationDate" name="installationDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Teknisi Pelaksana</label>
+                            <select class="form-input" id="technicianId" name="technicianId">
+                                <option value="">-- Loading... --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Catatan</label>
+                        <textarea class="form-input" id="notes" name="notes"
+                                  placeholder="Catatan tambahan untuk pelanggan ini..." rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="section-card compact-card compact-technical" id="technicalSection">
+                    <div class="technical-summary">
+                        <span class="form-section-title">
+                            <i class="fas fa-cog"></i>
+                            Data Teknis (Opsional)
+                        </span>
+                    </div>
+
+                    <div class="technical-body technical-body-open">
+                        <div class="form-row form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Serial Number ONT</label>
+                                <input type="text" class="form-input" id="ontSerial" name="ontSerial"
+                                       placeholder="Serial number perangkat ONT">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Merek/Tipe ONT</label>
+                                <input type="text" class="form-input" id="ontBrand" name="ontBrand"
+                                       placeholder="Contoh: Huawei HG8245">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Username PPPoE</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-user-circle"></i>
+                                    <input type="text" class="form-input" id="pppoeUsername" name="pppoeUsername"
+                                           placeholder="Username internet">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Password PPPoE</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" class="form-input" id="pppoePassword" name="pppoePassword"
+                                           placeholder="Password internet">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions-custom">
+            <button type="button" class="btn btn-secondary btn-cancel" id="cancelBtn">
+                <i class="fas fa-arrow-left"></i>
+                Batal
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                <i class="fas fa-redo"></i>
+                Reset
+            </button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-save"></i>
+                Simpan Pelanggan
+            </button>
+        </div>
+    </form>
+
+<!-- Page-specific styles -->
+<style>
+    /* Compact topbar and shell for registration page */
+    body.page-registrasi-compact .content-scroll {
+        padding: 12px 14px 10px;
+    }
+
+    body.page-registrasi-compact .page-wallboard-shell {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(14, 18, 25, 0.95) 0%, rgba(10, 13, 19, 0.97) 100%);
+    }
+
+    /* Form layout */
+    #registrationForm {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .registration-grid {
+        display: grid;
+        grid-template-columns: 1.08fr 0.96fr 0.96fr;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .registration-col {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .compact-card {
+        margin-bottom: 0;
+        padding: 11px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        background: linear-gradient(180deg, rgba(22, 27, 36, 0.94) 0%, rgba(14, 18, 25, 0.95) 100%);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .form-section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #ff9f66;
+        margin-bottom: 9px;
+        padding-bottom: 7px;
+        border-bottom: 0;
+    }
+
+    .form-section-title i {
+        font-size: 13px;
+    }
+
+    .required-mark {
+        color: var(--status-danger);
+    }
+
+    #registrationForm .form-row,
+    #registrationForm .form-row-2 {
+        gap: 8px;
+    }
+
+    #registrationForm .form-group {
+        margin-bottom: 7px;
+    }
+
+    #registrationForm .form-label {
+        margin-bottom: 4px;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+    }
+
+    #registrationForm .form-input,
+    #registrationForm select,
+    #registrationForm input[type="text"],
+    #registrationForm input[type="password"],
+    #registrationForm input[type="email"],
+    #registrationForm input[type="number"],
+    #registrationForm input[type="date"],
+    #registrationForm textarea {
+        min-height: 38px;
+        padding: 8px 11px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+
+    #registrationForm textarea.form-input {
+        min-height: 62px;
+        resize: vertical;
+    }
+
+    #registrationForm .input-icon-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: static;
+    }
+
+    #registrationForm .input-icon-wrapper i {
+        position: static;
+        transform: none;
+        width: 14px;
+        flex: 0 0 14px;
+        font-size: 12px;
+        color: #ff9f66;
+    }
+
+    #registrationForm .input-icon-wrapper .form-input {
+        padding-left: 10px;
+        flex: 1;
+    }
+
+    .text-muted-custom,
+    .form-hint {
+        display: block;
+        margin-top: 3px;
+        font-size: 10px;
+        line-height: 1.3;
+        color: var(--text-muted);
+    }
+
+    .odp-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .odp-status-badge.available {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--status-success);
+    }
+
+    .odp-status-badge.limited {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--status-warning);
+    }
+
+    .odp-status-badge.full {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--status-danger);
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    /* Optional technical section */
+    .technical-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .technical-summary .form-section-title {
+        margin-bottom: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 7px;
+        width: 100%;
+    }
+
+    .technical-hint {
+        font-size: 10px;
+        color: var(--text-muted);
+    }
+
+    .technical-body {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 0;
+    }
+
+    .technical-body-open {
+        margin-top: 6px;
+    }
+
+    /* Action bar */
+    .form-actions-custom {
+        position: sticky;
+        bottom: 0;
+        z-index: 22;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        margin-top: 2px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(18, 22, 30, 0.92) 0%, rgba(13, 16, 22, 0.96) 100%);
+        box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .form-actions-custom .btn {
+        min-height: 36px;
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    .form-actions-custom .btn-cancel {
+        opacity: 0.9;
+    }
+
+    .alert-message {
+        padding: 11px 13px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: slideIn 0.24s ease;
+        font-size: 12px;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .alert-message.success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: var(--status-success);
+    }
+
+    .alert-message.error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: var(--status-danger);
+    }
+
+    .alert-message.info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: var(--status-info);
+    }
+
+    .alert-message i {
+        font-size: 14px;
+    }
+
+    /* Desktop/tablet/mobile fallbacks */
+    @media (max-width: 1440px) {
+        .registration-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .registration-col-payment {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .registration-col-payment > * {
+            height: 100%;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        body.page-registrasi-compact .page-wallboard-shell {
+            padding: 12px;
+        }
+
+        .registration-grid,
+        .registration-col-payment {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-actions-custom {
+            position: static;
+            flex-wrap: wrap;
+            justify-content: stretch;
+        }
+
+        .form-actions-custom .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Page-specific scripts -->
+<script>
+// Global data storage
+const REGISTRATION_SERVICE_TYPE_NAMES = ['Dedicated BW', 'Up To BW', 'Broadcast', 'Metro'];
+let companiesData = [];
+let serversData = [];
+let odcsData = [];
+let odpsData = [];
+let packagesData = [];
+let techniciansData = [];
+
+function buildRequestHeaders(includeJson = false) {
+    const headers = {};
+    if (includeJson) {
+        headers['Content-Type'] = 'application/json';
+    }
+
+    const csrfToken = window.csrfToken || '';
+    const csrfHeader = window.csrfHeader || 'X-CSRF-TOKEN';
+    if (csrfToken) {
+        headers[csrfHeader] = csrfToken;
+    }
+
+    return headers;
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    initCompactRegistrationLayout();
+    applyDefaultInstallationDate();
+    loadInitialData();
+    setupFormSubmission();
+    setupDependentDropdowns();
+});
+
+// Load initial data from API
+async function loadInitialData() {
+    try {
+        const emptyDatasets = [];
+
+        const companiesRes = await fetch('/pelanggan/api/regions');
+        const companiesPayload = await companiesRes.json();
+        if (companiesPayload.success) {
+            companiesData = companiesPayload.data || [];
+            populateSelect('companyProfileId', companiesData, 'name', 'Pilih Company', false);
+            if (!companiesData.length) {
+                emptyDatasets.push('Data company profile masih kosong. Isi tabel company_profiles terlebih dahulu.');
+            }
+        }
+
+        const serversRes = await fetch('/pelanggan/api/servers');
+        const serversPayload = await serversRes.json();
+        if (serversPayload.success) {
+            serversData = serversPayload.data || [];
+            populateSelect('serverId', serversData, 'name', 'Pilih POP', false);
+            if (!serversData.length) {
+                emptyDatasets.push('Data POP masih kosong. Isi tabel servers terlebih dahulu.');
+            }
+        }
+
+        const odcsRes = await fetch('/pelanggan/api/odcs');
+        const odcsPayload = await odcsRes.json();
+        if (odcsPayload.success) {
+            odcsData = odcsPayload.data || [];
+            if (!odcsData.length) {
+                emptyDatasets.push('Data ODC masih kosong. Isi tabel odcs terlebih dahulu.');
+            }
+        }
+
+        const odpsRes = await fetch('/pelanggan/api/odps');
+        const odpsPayload = await odpsRes.json();
+        if (odpsPayload.success) {
+            odpsData = odpsPayload.data || [];
+            if (!odpsData.length) {
+                emptyDatasets.push('Data ODP masih kosong. Isi tabel odps terlebih dahulu.');
+            }
+        }
+
+        const packagesRes = await fetch('/pelanggan/api/packages');
+        const packagesPayload = await packagesRes.json();
+        if (packagesPayload.success) {
+            packagesData = packagesPayload.data || [];
+            populatePackageSelect(packagesData);
+            if (!packagesData.length) {
+                emptyDatasets.push('Data paket internet masih kosong.');
+            }
+        }
+
+        const serviceTypesRes = await fetch('/pelanggan/api/service-types');
+        const serviceTypesPayload = await serviceTypesRes.json();
+        if (serviceTypesPayload.success) {
+            const registrationServiceTypes = (serviceTypesPayload.data || []).filter(item =>
+                REGISTRATION_SERVICE_TYPE_NAMES.includes(item.name)
+            ).sort((left, right) =>
+                REGISTRATION_SERVICE_TYPE_NAMES.indexOf(left.name) - REGISTRATION_SERVICE_TYPE_NAMES.indexOf(right.name)
+            );
+            populateSelect('serviceTypeId', registrationServiceTypes, 'name', 'Pilih Tipe Layanan');
+            if (!registrationServiceTypes.length) {
+                emptyDatasets.push('Tipe layanan Dedicated BW, Up To BW, Broadcast, dan Metro belum tersedia.');
+            }
+        }
+
+        const techniciansRes = await fetch('/pelanggan/api/technicians');
+        const techniciansPayload = await techniciansRes.json();
+        if (techniciansPayload.success) {
+            techniciansData = techniciansPayload.data || [];
+            populateSelect('technicianId', techniciansData, 'name', 'Pilih Teknisi');
+            if (!techniciansData.length) {
+                emptyDatasets.push('Data teknisi pelaksana masih kosong.');
+            }
+        }
+
+        refreshNetworkDropdowns();
+        notifyEmptyDatasets(emptyDatasets);
+    } catch (error) {
+        console.error('Error loading data:', error);
+        showAlert('error', 'Gagal memuat data. Silakan refresh halaman.');
+    }
+}
+
+function applyDefaultInstallationDate() {
+    const installationDateInput = document.getElementById('installationDate');
+    if (!installationDateInput) return;
+    installationDateInput.value = getCurrentLocalDateValue();
+}
+
+function getCurrentLocalDateValue() {
+    const now = new Date();
+    const timezoneOffsetMs = now.getTimezoneOffset() * 60000;
+    return new Date(now.getTime() - timezoneOffsetMs).toISOString().slice(0, 10);
+}
+
+function initCompactRegistrationLayout() {
+    document.body.classList.add('page-registrasi-compact');
+
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+            window.location.href = '/pelanggan/data';
+        });
+    }
+}
+
+// Populate select dropdown
+function populateSelect(selectId, data, labelField, defaultText = '-- Pilih --', autoSelectSingle = true) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    select.innerHTML = `<option value="">${defaultText}</option>`;
+
+    if (data && Array.isArray(data)) {
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = typeof labelField === 'function' ? labelField(item) : item[labelField];
+            select.appendChild(option);
+        });
+    }
+
+    if (autoSelectSingle && data && data.length === 1) {
+        select.value = String(data[0].id);
+    }
+}
+
+function getSelectedCompanyId() {
+    return document.getElementById('companyProfileId')?.value || '';
+}
+
+function getSelectedServerId() {
+    return document.getElementById('serverId')?.value || '';
+}
+
+function getSelectedOdcId() {
+    return document.getElementById('odcId')?.value || '';
+}
+
+function filterOdcsByServer(serverId) {
+    let filtered = [...odcsData];
+
+    if (!serverId) {
+        return filtered;
+    }
+
+    return filtered.filter(odc =>
+        String(odc.serverId || odc.server?.id || '') === String(serverId)
+    );
+}
+
+function filterOdpsBySelection() {
+    const companyId = getSelectedCompanyId();
+    const odcId = getSelectedOdcId();
+    let filtered = [...odpsData];
+
+    if (companyId) {
+        filtered = filtered.filter(odp =>
+            !String(odp.companyProfileId || odp.companyProfile?.id || '') ||
+            String(odp.companyProfileId || odp.companyProfile?.id || '') === String(companyId)
+        );
+    }
+
+    if (odcId) {
+        filtered = filtered.filter(odp =>
+            String(odp.odcId || odp.odc?.id || '') === String(odcId)
+        );
+    } else {
+        const serverId = getSelectedServerId();
+        if (serverId) {
+            const serverOdcIds = filterOdcsByServer(serverId).map(odc => String(odc.id));
+            filtered = filtered.filter(odp =>
+                serverOdcIds.includes(String(odp.odcId || odp.odc?.id || ''))
+            );
+        }
+    }
+
+    return filtered;
+}
+
+function refreshNetworkDropdowns() {
+    const serverId = getSelectedServerId();
+    const odcSelect = document.getElementById('odcId');
+    const filteredOdcs = filterOdcsByServer(serverId);
+
+    if (odcSelect) {
+        const previousOdcId = odcSelect.value;
+        populateSelect('odcId', filteredOdcs, 'name', 'Pilih ODC', false);
+        if (previousOdcId && filteredOdcs.some(odc => String(odc.id) === String(previousOdcId))) {
+            odcSelect.value = previousOdcId;
+        }
+    }
+
+    refreshOdpDropdown();
+}
+
+function refreshOdpDropdown() {
+    const odpSelect = document.getElementById('odpId');
+    const filteredOdps = filterOdpsBySelection();
+
+    populateODPSelect(filteredOdps);
+
+    if (odpSelect && filteredOdps.length === 1 && odpSelect.value) {
+        odpSelect.value = String(filteredOdps[0].id);
+        odpSelect.dispatchEvent(new Event('change'));
+    }
+}
+
+// Populate ODP select with availability status
+function populateODPSelect(odps) {
+    const select = document.getElementById('odpId');
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Pilih ODP --</option>';
+
+    if (odps && Array.isArray(odps)) {
+        odps.forEach(odp => {
+            const available = (odp.capacity || 0) - (odp.usedPort || 0);
+            const option = document.createElement('option');
+            option.value = odp.id;
+            option.dataset.available = available;
+            option.dataset.capacity = odp.capacity || 0;
+            option.dataset.used = odp.usedPort || 0;
+            option.dataset.companyId = odp.companyProfileId || odp.companyProfile?.id || '';
+            option.dataset.odcId = odp.odcId || odp.odc?.id || '';
+            option.textContent = `${odp.name}`;
+            select.appendChild(option);
+        });
+    }
+}
+
+// Populate package select dropdown
+function populatePackageSelect(packages) {
+    const packageSelect = document.getElementById('packageId');
+    if (!packageSelect) return;
+    packageSelect.innerHTML = '<option value="">-- Pilih Paket --</option>';
+    
+    if (!packages || packages.length === 0) {
+        packageSelect.innerHTML = '<option value="">-- Tidak ada paket --</option>';
+        return;
+    }
+    
+    packages.forEach(pkg => {
+        const option = document.createElement('option');
+        option.value = pkg.id;
+        option.dataset.price = pkg.price;
+        option.textContent = `${pkg.name}`;
+        packageSelect.appendChild(option);
+    });
+
+    if (packages.length === 1) {
+        packageSelect.value = String(packages[0].id);
+        document.getElementById('monthlyFee').value = packages[0].price || '';
+    }
+}
+
+// Format rupiah
+function formatRupiah(amount) {
+    return `Rp. ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount || 0)}`;
+}
+
+// Setup dependent dropdowns
+function setupDependentDropdowns() {
+    const companySelect = document.getElementById('companyProfileId');
+    const serverSelect = document.getElementById('serverId');
+
+    if (companySelect) {
+        companySelect.addEventListener('change', function() {
+            refreshNetworkDropdowns();
+        });
+    }
+
+    if (serverSelect) {
+        serverSelect.addEventListener('change', function() {
+            refreshNetworkDropdowns();
+        });
+    }
+
+    const odcSelect = document.getElementById('odcId');
+    if (odcSelect) {
+        odcSelect.addEventListener('change', function() {
+            refreshOdpDropdown();
+        });
+    }
+
+    const odpSelect = document.getElementById('odpId');
+    if (odpSelect) {
+        odpSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const odpInfo = document.getElementById('odpInfo');
+
+            if (selectedOption && selectedOption.value) {
+                const available = parseInt(selectedOption.dataset.available);
+                const capacity = parseInt(selectedOption.dataset.capacity);
+
+                let statusHtml = '';
+                if (available > 0) {
+                    statusHtml = `<span class="odp-status-badge available"><span class="status-dot"></span> ${available}/${capacity} port tersedia</span>`;
+                } else {
+                    statusHtml = `<span class="odp-status-badge full"><span class="status-dot"></span> Penuh - tidak dapat menambahkan pelanggan</span>`;
+                }
+                
+                if (odpInfo) odpInfo.innerHTML = statusHtml;
+            } else if (odpInfo) {
+                odpInfo.innerHTML = '';
+            }
+        });
+    }
+
+    const packageSelect = document.getElementById('packageId');
+    if (packageSelect) {
+        packageSelect.addEventListener('change', function() {
+            syncMonthlyFeeWithPackage();
+        });
+    }
+
+    const serviceTypeSelect = document.getElementById('serviceTypeId');
+    if (serviceTypeSelect && serviceTypeSelect.options.length === 2) {
+        serviceTypeSelect.selectedIndex = 1;
+    }
+}
+
+// Helper: Parse coordinates
+function parseCoordinates(coordStr) {
+    if (!coordStr || coordStr.trim() === '') {
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+        return true;
+    }
+    const parts = coordStr.trim().split(',');
+    if (parts.length !== 2) return false;
+    const lat = parts[0].trim();
+    const lng = parts[1].trim();
+    if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) return false;
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lng;
+    return true;
+}
+
+// Setup form submission
+function setupFormSubmission() {
+    const form = document.getElementById('registrationForm');
+    if (!form) return;
+    
+    // Coordinates parsing on change/blur
+    const coordInput = document.getElementById('coordinates');
+    if (coordInput) {
+        coordInput.addEventListener('blur', function() {
+            parseCoordinates(this.value);
+        });
+        coordInput.addEventListener('change', function() {
+            parseCoordinates(this.value);
+        });
+    }
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Parse coordinates before submit
+        if (!parseCoordinates(document.getElementById('coordinates').value)) {
+            showAlert('error', 'Format koordinat tidak valid. Gunakan: latitude, longitude');
+            return;
+        }
+        
+        // Validate package selection
+        const packageId = document.getElementById('packageId').value;
+        if (!packageId) {
+            showAlert('error', 'Silakan pilih paket internet terlebih dahulu!');
+            return;
+        }
+        
+        // Validate ODP availability
+        const odpSelect = document.getElementById('odpId');
+        if (odpSelect) {
+            const selectedOption = odpSelect.options[odpSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                const available = parseInt(selectedOption.dataset.available);
+                if (available <= 0) {
+                    showAlert('error', 'ODP yang dipilih sudah penuh. Silakan pilih ODP lain.');
+                    return;
+                }
+            }
+        }
+        
+        // Show loading
+        const submitBtn = document.getElementById('submitBtn');
+        const originalBtnContent = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        
+        // Prepare form data
+        const formData = {
+            fullName: document.getElementById('fullName').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            ktpNumber: document.getElementById('ktpNumber').value,
+            ktpAddress: document.getElementById('ktpAddress').value,
+            installationAddress: document.getElementById('installationAddress').value,
+            companyProfileId: document.getElementById('companyProfileId').value,
+            serverId: document.getElementById('serverId').value,
+            odcId: document.getElementById('odcId').value,
+            odpId: document.getElementById('odpId').value,
+            odpPort: document.getElementById('odpPort').value,
+            latitude: document.getElementById('latitude').value,
+            longitude: document.getElementById('longitude').value,
+            packageId: packageId,
+            serviceTypeId: document.getElementById('serviceTypeId').value,
+            ontSerial: document.getElementById('ontSerial').value,
+            ontBrand: document.getElementById('ontBrand').value,
+            pppoeUsername: document.getElementById('pppoeUsername').value,
+            pppoePassword: document.getElementById('pppoePassword').value,
+            ipAddress: document.getElementById('ipAddress')?.value || null,
+            macAddress: document.getElementById('macAddress')?.value || null,
+            monthlyFee: document.getElementById('monthlyFee').value,
+            installationFee: document.getElementById('installationFee').value,
+            installationDate: document.getElementById('installationDate').value,
+            technicianId: document.getElementById('technicianId').value,
+            notes: document.getElementById('notes').value
+        };
+
+        const optionalFields = [
+            'ktpNumber',
+            'companyProfileId',
+            'serverId',
+            'odcId',
+            'odpId',
+            'odpPort',
+            'latitude',
+            'longitude'
+        ];
+        optionalFields.forEach(key => {
+            if (formData[key] == null) {
+                return;
+            }
+            if (String(formData[key]).trim() === '') {
+                formData[key] = null;
+            }
+        });
+        
+        try {
+            const response = await fetch('/pelanggan/api/register', {
+                method: 'POST',
+                headers: buildRequestHeaders(true),
+                credentials: 'same-origin',
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showAlert('success', 'Pelanggan berhasil didaftarkan! Kode: ' + result.data.customerCode);
+                setTimeout(() => {
+                    window.location.href = '/pelanggan/data';
+                }, 2000);
+            } else {
+                showAlert('error', result.message || 'Gagal mendaftarkan pelanggan.');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            showAlert('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+        }
+    });
+}
+
+// Show alert message
+function showAlert(type, message) {
+    if (window.nmxNotify) {
+        window.nmxNotify({
+            type: type,
+            message: message
+        });
+        return;
+    }
+
+    const alertContainer = document.getElementById('alertContainer');
+    if (!alertContainer) return;
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert-message ${type}`;
+    
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+    
+    alertDiv.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span>${message}</span>
+    `;
+    
+    alertContainer.appendChild(alertDiv);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+
+function notifyEmptyDatasets(messages) {
+    if (!messages || !messages.length) {
+        return;
+    }
+
+    const suppressedKeywords = [
+        'Data POP masih kosong',
+        'Data ODC masih kosong',
+        'Data ODP masih kosong',
+        'tabel servers',
+        'tabel odcs',
+        'tabel odps'
+    ];
+
+    const visibleMessages = messages.filter(message =>
+        !suppressedKeywords.some(keyword => String(message || '').includes(keyword))
+    );
+
+    if (!visibleMessages.length) {
+        return;
+    }
+
+    visibleMessages.forEach(message => showAlert('error', message));
+    window.setTimeout(() => {
+        window.nmxAlert(visibleMessages.join('\n'), { title: 'Perhatian' });
+    }, 100);
+}
+
+function syncMonthlyFeeWithPackage() {
+    const packageSelect = document.getElementById('packageId');
+    const monthlyFeeInput = document.getElementById('monthlyFee');
+    if (!packageSelect || !monthlyFeeInput) return;
+
+    const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+    monthlyFeeInput.value = selectedOption && selectedOption.dataset.price
+        ? selectedOption.dataset.price
+        : '';
+}
+
+// Reset form
+async function resetForm() {
+    const confirmed = await window.nmxConfirm('Apakah Anda yakin ingin mereset semua data?', {
+        title: 'Konfirmasi Reset',
+        confirmText: 'Reset',
+        confirmClass: 'btn btn-danger'
+    });
+    if (!confirmed) {
+        return;
+    }
+    document.getElementById('registrationForm').reset();
+    applyDefaultInstallationDate();
+    document.getElementById('latitude').value = '';
+    document.getElementById('longitude').value = '';
+    document.getElementById('monthlyFee').value = '';
+    document.getElementById('odpInfo').innerHTML = '';
+    populateSelect('companyProfileId', companiesData, 'name', 'Pilih Company', false);
+    populateSelect('serverId', serversData, 'name', 'Pilih POP', false);
+    populateSelect('technicianId', techniciansData, 'name', 'Pilih Teknisi');
+    populatePackageSelect(packagesData);
+    refreshNetworkDropdowns();
+    syncMonthlyFeeWithPackage();
+    showAlert('info', 'Form telah direset.');
+}
+</script>
+</div>
+<!-- End of content fragment -->
+

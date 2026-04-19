@@ -1,0 +1,55 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# Local debug artifacts
+temp/
+/temp-*
+/login_page*.html
+/loginpage.html
+/login-response.html
+/login-headers.txt
+/login_post.html
+/login_submit_live.html
+/live_history_response.html
+/served_history*.html
+/cookies*.txt
+/customs.json
+/invoices.json
+/summary.json
+
+# WhatsApp gateway runtime data
+whatsapp-gateway/storage/
+whatsapp-gateway/.wwebjs_cache/
+whatsapp-gateway/bootstrap-start.log
+whatsapp-gateway/node_modules/

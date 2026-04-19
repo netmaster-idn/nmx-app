@@ -1,0 +1,469 @@
+<div th:fragment="content">
+    <style>
+        .user-setting-shell { position: relative; }
+        .user-topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+        .user-topbar .page-header-custom { margin: 0; }
+        .setting-access-bar { display: flex; justify-content: flex-end; align-items: center; gap: 16px; flex-wrap: wrap; margin-left: auto; }
+        .setting-access-note { color: var(--text-muted); font-size: 13px; margin: 0; }
+        .access-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .access-badge.full { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+        .access-badge.read { background: rgba(59, 130, 246, 0.12); color: #1d4ed8; }
+        .user-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .user-feedback { margin-bottom: 18px; padding: 12px 16px; border-radius: 12px; border: 1px solid transparent; font-size: 13px; display: none; }
+        .user-feedback.show { display: block; }
+        .user-feedback.success { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.25); color: #22c55e; }
+        .user-feedback.error { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.25); color: #f87171; }
+        .data-table th:last-child,
+        .data-table td.action-cell { width: 168px; min-width: 168px; }
+        .data-table th:last-child { text-align: center; }
+        .data-table td.action-cell { text-align: right; }
+        .data-table td.action-cell .quick-actions {
+            width: 144px;
+            min-width: 144px;
+            margin-left: auto;
+            justify-content: flex-end;
+            box-sizing: border-box;
+        }
+        .quick-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            transition: all var(--transition-fast);
+        }
+        .quick-actions:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.14);
+        }
+        .quick-action-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+        .quick-action-btn:hover {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+        .quick-action-btn.view:hover {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+        }
+        .quick-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+        }
+        .locked-text { color: var(--text-muted); font-size: 12px; font-weight: 600; }
+        .role-badge { display: inline-flex; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .role-badge.super { background: rgba(249, 115, 22, 0.12); color: #c2410c; }
+        .role-badge.admin { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .role-badge.user { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .status-badge { display: inline-flex; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .status-badge.active { background: rgba(34, 197, 94, 0.12); color: #16a34a; }
+        .status-badge.inactive { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .user-modal { z-index: var(--z-modal); }
+        .user-modal-panel { width: 100%; max-width: 1080px; max-height: min(76vh, 760px); display: flex; flex-direction: column; margin: 0; border-radius: 20px; overflow: hidden; }
+        .user-modal-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+        .user-modal-title h3 { margin: 0; font-size: 16px; color: var(--text-primary); }
+        .user-modal-title p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
+        .modal-close-btn { width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast); }
+        .modal-close-btn:hover { background: var(--nmx-gradient-light); color: var(--nmx-primary-light); border-color: rgba(103, 232, 249, 0.2); }
+        .user-modal-body { flex: 1 1 auto; min-height: 0; padding: 20px 24px; overflow-y: auto; }
+        .user-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .user-form-section { margin-bottom: 24px; }
+        .user-form-section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .user-modal-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 24px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+        .footer-note { font-size: 12px; color: var(--text-muted); }
+        .footer-actions { display: flex; gap: 12px; }
+        .hidden { display: none !important; }
+        @media (max-width: 1100px) {
+            .user-modal-panel { max-width: min(96vw, 980px); max-height: min(82vh, 760px); }
+        }
+        @media (max-width: 768px) {
+            .user-toolbar, .user-topbar, .setting-access-bar { align-items: stretch; }
+            .user-form-grid { grid-template-columns: 1fr; }
+            .user-modal-panel { max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); }
+            .user-modal-footer { flex-direction: column; align-items: stretch; }
+            .footer-actions { width: 100%; }
+            .footer-actions .btn { flex: 1; justify-content: center; }
+            .setting-access-bar { width: 100%; justify-content: flex-start; margin-left: 0; }
+            .data-table td.action-cell .quick-actions {
+                width: fit-content;
+                min-width: 0;
+            }
+        }
+    </style>
+
+    <div class="user-setting-shell">
+        <div class="user-topbar">
+            <div class="page-header-custom"><button th:if="${permissionLevel == 'FULL'}" class="btn btn-primary" type="button" onclick="openUserModal('create')">
+                    <i class="fas fa-user-plus"></i> Tambah User
+                </button>
+            </div>
+
+            <div class="setting-access-bar">
+                <span class="access-badge" th:classappend="${permissionLevel == 'FULL'} ? ' full' : ' read'">
+                    <i th:class="${permissionLevel == 'FULL'} ? 'fas fa-lock-open' : 'fas fa-eye'"></i>
+                    <span th:text="${permissionLevel == 'FULL'} ? 'Full Access' : 'Read Only'">Read Only</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="user-feedback" id="userFeedback"></div>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-users"></i></div><div class="stat-info"><h4 th:text="${userCount}">0</h4><p>Total User</p></div></div>
+            <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-user-shield"></i></div><div class="stat-info"><h4 th:text="${superAdminCount}">0</h4><p>Tenant Super Admin</p></div></div>
+            <div class="stat-card"><div class="stat-icon red"><i class="fas fa-user-gear"></i></div><div class="stat-info"><h4 th:text="${adminCount}">0</h4><p>Admin / Staff</p></div></div>
+            <div class="stat-card"><div class="stat-icon green"><i class="fas fa-user-check"></i></div><div class="stat-info"><h4 th:text="${activeUserCount}">0</h4><p>User Aktif</p></div></div>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="6" class="empty-state">Belum ada data user di database.</td>
+                    </tr>
+                    <tr th:each="user : ${users}" th:with="roleList=${#lists.toList(user.roles)}">
+                        <td th:text="${user.username}">username</td>
+                        <td th:text="${user.fullName}">full name</td>
+                        <td th:text="${user.email}">email</td>
+                        <td>
+                            <span class="role-badge"
+                                  th:classappend="${!#lists.isEmpty(roleList) and (roleList[0].name == 'ROLE_SUPER_ADMIN' or roleList[0].name == 'ROLE_TENANT_SUPER_ADMIN' or roleList[0].name == 'ROLE_TENANT_ADMIN')} ? ' super' : (${!#lists.isEmpty(roleList) and (roleList[0].name == 'ROLE_ADMIN' or roleList[0].name == 'ROLE_STAFF')} ? ' admin' : ' user')"
+                                  th:text="${#lists.isEmpty(roleList) ? 'Tanpa Role' : (roleList[0].name == 'ROLE_TENANT_SUPER_ADMIN' ? 'TENANT SUPER ADMIN' : (roleList[0].name == 'ROLE_TENANT_ADMIN' ? 'TENANT SUPER ADMIN' : #strings.replace(#strings.replace(roleList[0].name, 'ROLE_', ''), '_', ' ')))}">
+                                ROLE
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge" th:classappend="${user.active} ? ' active' : ' inactive'" th:text="${user.active} ? 'Aktif' : 'Nonaktif'">Aktif</span>
+                        </td>
+                        <td class="action-cell">
+                            <div class="quick-actions"
+                                 th:if="${permissionLevel == 'FULL'}"
+                                 th:attr="data-id=${user.id},
+                                          data-employee-id=${user.employeeId},
+                                          data-full-name=${user.fullName},
+                                          data-username=${user.username},
+                                          data-email=${user.email},
+                                          data-phone=${user.phone},
+                                          data-active=${user.active},
+                                          data-role-id=${#lists.isEmpty(roleList) ? '' : roleList[0].id}">
+                                <button class="quick-action-btn view" type="button" title="Lihat Detail" onclick="openUserModal('view', event, this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="quick-action-btn" type="button" title="Edit User" onclick="openUserModal('edit', event, this)">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="quick-action-btn delete" type="button" title="Hapus User" onclick="deleteUser(this, event)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <span th:unless="${permissionLevel == 'FULL'}" class="locked-text">View only</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal user-modal" id="userFormModal" aria-hidden="true">
+            <div class="modal-backdrop" onclick="closeUserModal()"></div>
+            <div class="modal-content modal-content-xl user-modal-panel" role="dialog" aria-modal="true" aria-labelledby="userModalHeading">
+                <div class="modal-header user-modal-header">
+                    <div class="user-modal-title">
+                        <h3 id="userModalHeading">Tambah User</h3>
+                        <p id="userModalSubtitle">Data yang disimpan akan langsung masuk ke database.</p>
+                    </div>
+                    <button class="modal-close-btn" type="button" onclick="closeUserModal()"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div class="modal-body user-modal-body">
+                    <form id="userForm">
+                        <input id="userId" type="hidden">
+
+                        <div class="user-form-section">
+                            <div class="user-form-section-title"><i class="fas fa-id-card"></i> Identitas User</div>
+                            <div class="user-form-grid">
+                                <div class="form-group"><label class="form-label" for="userEmployeeId">Employee ID</label><input class="form-input" id="userEmployeeId" name="employeeId" type="text" placeholder="Contoh: NMX-001"></div>
+                                <div class="form-group"><label class="form-label" for="userFullName">Full Name</label><input class="form-input" id="userFullName" name="fullName" type="text" placeholder="Nama lengkap user" required></div>
+                                <div class="form-group"><label class="form-label" for="userUsername">Username</label><input class="form-input" id="userUsername" name="username" type="text" placeholder="contoh: noc-admin" required></div>
+                                <div class="form-group"><label class="form-label" for="userEmail">Email</label><input class="form-input" id="userEmail" name="email" type="email" placeholder="nama@domain.com" required></div>
+                                <div class="form-group"><label class="form-label" for="userPhone">No. HP</label><input class="form-input" id="userPhone" name="phone" type="tel" placeholder="+62 812 xxxx xxxx"></div>
+                                <div class="form-group"><label class="form-label" for="userRoleId">Role</label><select class="form-select" id="userRoleId" name="roleId" required><option value="">Pilih role</option><option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}">ROLE_ADMIN</option></select></div>
+                                <div class="form-group"><label class="form-label" for="userActive">Status</label><select class="form-select" id="userActive" name="active"><option value="true">Aktif</option><option value="false">Nonaktif</option></select></div>
+                            </div>
+                        </div>
+
+                        <div class="user-form-section" id="credentialSection">
+                            <div class="user-form-section-title"><i class="fas fa-key"></i> Password</div>
+                            <div class="user-form-grid">
+                                <div class="form-group"><label class="form-label" for="userPassword">Password</label><input class="form-input" id="userPassword" name="password" type="password" placeholder="Minimal 8 karakter"></div>
+                                <div class="form-group"><label class="form-label" for="userConfirmPassword">Konfirmasi Password</label><input class="form-input" id="userConfirmPassword" name="confirmPassword" type="password" placeholder="Ulangi password"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer user-modal-footer">
+                    <div class="footer-note" id="modalFooterNote">Mode create dan edit akan memanggil endpoint backend `/user/api/...`.</div>
+                    <div class="footer-actions">
+                        <button class="btn btn-secondary" type="button" onclick="closeUserModal()">Batal</button>
+                        <button class="btn btn-primary" id="userModalSubmit" type="button">Simpan User</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        (function () {
+            const permissionLevel = /*[[${permissionLevel}]]*/ 'NONE';
+            const modal = document.getElementById('userFormModal');
+            if (!modal) return;
+
+            const form = document.getElementById('userForm');
+            const feedback = document.getElementById('userFeedback');
+            const heading = document.getElementById('userModalHeading');
+            const subtitle = document.getElementById('userModalSubtitle');
+            const submitButton = document.getElementById('userModalSubmit');
+            const footerNote = document.getElementById('modalFooterNote');
+            const passwordInput = document.getElementById('userPassword');
+            const confirmPasswordInput = document.getElementById('userConfirmPassword');
+            const credentialSection = document.getElementById('credentialSection');
+            const userIdInput = document.getElementById('userId');
+            const managedFields = Array.from(form.querySelectorAll('input, select'));
+            let currentMode = 'create';
+
+            function getCsrfHeaders() {
+                const token = window.csrfToken || '';
+                const dynamicHeader = window.csrfHeader || '';
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) {
+                    headers['X-CSRF-TOKEN'] = token;
+                    headers['X-XSRF-TOKEN'] = token;
+                    if (dynamicHeader) headers[dynamicHeader] = token;
+                }
+                return headers;
+            }
+
+            function showFeedback(type, message) {
+                feedback.className = 'user-feedback show ' + type;
+                feedback.textContent = message;
+            }
+
+            function clearFeedback() {
+                feedback.className = 'user-feedback';
+                feedback.textContent = '';
+            }
+
+            function setReadOnlyState(isReadOnly) {
+                managedFields.forEach(function (field) {
+                    if (field.id === 'userId') return;
+                    field.disabled = isReadOnly;
+                });
+            }
+
+            function resetForm() {
+                form.reset();
+                userIdInput.value = '';
+                setReadOnlyState(false);
+                passwordInput.required = false;
+                confirmPasswordInput.required = false;
+            }
+
+            function readUserFromAction(triggerSource) {
+                const actionGroup = triggerSource.closest('.quick-actions');
+                if (!actionGroup) {
+                    return {
+                        id: '',
+                        employeeId: '',
+                        fullName: '',
+                        username: '',
+                        email: '',
+                        phone: '',
+                        active: false,
+                        roleId: ''
+                    };
+                }
+                const data = actionGroup.dataset;
+                return {
+                    id: data.id || '',
+                    employeeId: data.employeeId || '',
+                    fullName: data.fullName || '',
+                    username: data.username || '',
+                    email: data.email || '',
+                    phone: data.phone || '',
+                    active: String(data.active) === 'true',
+                    roleId: data.roleId || ''
+                };
+            }
+
+            function fillForm(data) {
+                userIdInput.value = data.id || '';
+                document.getElementById('userEmployeeId').value = data.employeeId || '';
+                document.getElementById('userFullName').value = data.fullName || '';
+                document.getElementById('userUsername').value = data.username || '';
+                document.getElementById('userEmail').value = data.email || '';
+                document.getElementById('userPhone').value = data.phone || '';
+                document.getElementById('userRoleId').value = data.roleId || '';
+                document.getElementById('userActive').value = String(Boolean(data.active));
+            }
+
+            function validateForm() {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    showFeedback('error', 'Konfirmasi password tidak sama.');
+                    return false;
+                }
+                if (currentMode === 'create' && !passwordInput.value) {
+                    showFeedback('error', 'Password wajib diisi untuk user baru.');
+                    return false;
+                }
+                return true;
+            }
+
+            function buildPayload() {
+                return {
+                    employeeId: document.getElementById('userEmployeeId').value.trim(),
+                    fullName: document.getElementById('userFullName').value.trim(),
+                    username: document.getElementById('userUsername').value.trim(),
+                    email: document.getElementById('userEmail').value.trim(),
+                    phone: document.getElementById('userPhone').value.trim(),
+                    password: passwordInput.value,
+                    active: document.getElementById('userActive').value === 'true',
+                    roleIds: document.getElementById('userRoleId').value ? [Number(document.getElementById('userRoleId').value)] : []
+                };
+            }
+
+            async function submitUser() {
+                clearFeedback();
+                if (!validateForm()) return;
+
+                const payload = buildPayload();
+                const isCreate = currentMode === 'create';
+                const url = isCreate ? '/user/api/create' : '/user/api/' + userIdInput.value;
+                const method = isCreate ? 'POST' : 'PUT';
+
+                submitButton.disabled = true;
+                try {
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: getCsrfHeaders(),
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Gagal menyimpan user');
+                    }
+                    closeUserModal();
+                    showFeedback('success', result.message || 'Perubahan user berhasil disimpan.');
+                    window.setTimeout(function () { window.location.reload(); }, 700);
+                } catch (error) {
+                    showFeedback('error', error.message || 'Terjadi kesalahan saat menyimpan user.');
+                } finally {
+                    submitButton.disabled = false;
+                }
+            }
+
+            window.openUserModal = function (mode, event, source) {
+                if (event) event.stopPropagation();
+                if (permissionLevel !== 'FULL' && mode !== 'view') return;
+
+                currentMode = mode;
+                clearFeedback();
+                resetForm();
+                submitButton.classList.remove('hidden');
+                credentialSection.classList.remove('hidden');
+
+                if (mode === 'create') {
+                    heading.textContent = 'Tambah User';
+                    subtitle.textContent = 'Data user baru akan disimpan ke database.';
+                    footerNote.textContent = 'Create akan memanggil endpoint POST /user/api/create.';
+                    submitButton.textContent = 'Simpan User';
+                    passwordInput.required = true;
+                    confirmPasswordInput.required = true;
+                } else {
+                    const data = readUserFromAction(source);
+                    fillForm(data);
+
+                    if (mode === 'edit') {
+                        heading.textContent = 'Edit User';
+                        subtitle.textContent = 'Perubahan akan langsung memperbarui record di database.';
+                        footerNote.textContent = 'Edit akan memanggil endpoint PUT /user/api/{id}.';
+                        submitButton.textContent = 'Update User';
+                    } else if (mode === 'view') {
+                        heading.textContent = 'Detail User';
+                        subtitle.textContent = 'Mode baca untuk melihat data yang tersimpan di database.';
+                        footerNote.textContent = 'Tidak ada perubahan yang akan dikirim ke backend.';
+                        submitButton.classList.add('hidden');
+                        credentialSection.classList.add('hidden');
+                        setReadOnlyState(true);
+                    }
+                }
+
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeUserModal = function () {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            };
+
+            window.deleteUser = async function (button, event) {
+                if (event) event.stopPropagation();
+                if (permissionLevel !== 'FULL') return;
+
+                const user = readUserFromAction(button);
+                clearFeedback();
+                if (!user.id) {
+                    showFeedback('error', 'ID user tidak ditemukan.');
+                    return;
+                }
+                const confirmed = await window.nmxConfirm('Hapus user "' + user.username + '" dari database?', {
+                    title: 'Konfirmasi Hapus',
+                    confirmText: 'Hapus',
+                    confirmClass: 'btn btn-danger'
+                });
+                if (!confirmed) return;
+
+                try {
+                    const response = await fetch('/user/api/delete/' + user.id, {
+                        method: 'DELETE',
+                        headers: getCsrfHeaders()
+                    });
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Gagal menghapus user');
+                    }
+                    showFeedback('success', result.message || 'User berhasil dihapus.');
+                    window.setTimeout(function () { window.location.reload(); }, 700);
+                } catch (error) {
+                    showFeedback('error', error.message || 'Terjadi kesalahan saat menghapus user.');
+                }
+            };
+
+            submitButton.addEventListener('click', submitUser);
+            modal.addEventListener('click', function (event) { if (event.target === modal) closeUserModal(); });
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeUserModal();
+                }
+            });
+        })();
+    </script>
+</div>
+

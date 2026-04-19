@@ -1,0 +1,248 @@
+<div th:fragment="sidebar" class="sidebar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     th:with="isControlPlanePage=${page == 'superadmin-dashboard' or page == 'tenant-approval' or page == 'tenant-directory'}">
+    <style>
+        .nav-badge {
+            margin-left: auto;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: var(--status-info-bg);
+            color: var(--status-info-text);
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #bfdbfe;
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <img src="/img/logo-nmx.png" alt="NMX Logo" class="sidebar-logo-icon">
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" th:if="${isControlPlanePage}">
+        <a href="/superadmin/dashboard" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-building-shield"></i>
+            <span>Control Plane</span>
+        </a>
+        <a href="/system/tenant-approval" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-user-check"></i>
+            <span>Approval Queue</span>
+            <span class="nav-badge" th:if="${superadminPendingTenantCount > 0}" th:text="${superadminPendingTenantCount}">0</span>
+        </a>
+        <a href="/system/tenant-directory" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-database"></i>
+            <span>Tenant Directory</span>
+        </a>
+        <a href="/system/log-proses" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-list-check"></i>
+            <span>Activity Log</span>
+        </a>
+        <a href="/system/log-error" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-triangle-exclamation"></i>
+            <span>Error Log</span>
+        </a>
+    </nav>
+
+    <nav class="sidebar-nav" th:unless="${isControlPlanePage}">
+        <a href="/dashboard" class="nav-item">
+            <i class="fas fa-gauge-high"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/superadmin/dashboard" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-building-shield"></i>
+            <span>Master Control</span>
+        </a>
+
+        <div class="nav-dropdown" onclick="window.toggleMenu && window.toggleMenu('menu-monitoring', event)">
+            <div class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Monitoring</span>
+                <i class="fas fa-chevron-down nav-dropdown-arrow"></i>
+            </div>
+            <div class="submenu" id="menu-monitoring">
+                <a href="/monitoring/trafik" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-chart-column"></i><span>Trafik</span>
+                </a>
+                <a href="/monitoring/alert" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-bell"></i><span>WA Schedule</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-dropdown" onclick="window.toggleMenu && window.toggleMenu('menu-pelanggan', event)">
+            <div class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Pelanggan</span>
+                <i class="fas fa-chevron-down nav-dropdown-arrow"></i>
+            </div>
+            <div class="submenu" id="menu-pelanggan">
+                <a href="/pelanggan/registrasi" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-user-plus"></i><span>Registrasi</span>
+                </a>
+                <a href="/pelanggan/data" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-database"></i><span>Data Pelanggan</span>
+                </a>
+                <a href="/pelanggan/paket" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-box-open"></i><span>Paket</span>
+                </a>
+                <a href="/pelanggan/history" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-clock-rotate-left"></i><span>History Payment</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-dropdown" onclick="window.toggleMenu && window.toggleMenu('menu-finance', event)">
+            <div class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Finance</span>
+                <i class="fas fa-chevron-down nav-dropdown-arrow"></i>
+            </div>
+            <div class="submenu" id="menu-finance">
+                <a href="/finance/invoice" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-file-invoice"></i><span>Invoice</span>
+                </a>
+                <a href="/finance/pembayaran" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-credit-card"></i><span>Pembayaran</span>
+                </a>
+                <a href="/finance/piutang" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-money-bill-wave"></i><span>Piutang</span>
+                </a>
+                <a href="/finance/cashflow" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-arrow-right-arrow-left"></i><span>Cashflow</span>
+                </a>
+                <a href="/finance/laporan" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-book-open"></i><span>Laporan Keuangan</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-dropdown" onclick="window.toggleMenu && window.toggleMenu('menu-network', event)">
+            <div class="nav-item">
+                <i class="fas fa-network-wired"></i>
+                <span>Network</span>
+                <i class="fas fa-chevron-down nav-dropdown-arrow"></i>
+            </div>
+            <div class="submenu" id="menu-network">
+                <a href="/network/mikrotik" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-network-wired"></i><span>Mikrotik</span>
+                </a>
+                <a href="/network/server" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-server"></i><span>Server</span>
+                </a>
+                <a href="/network/acs" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-sliders"></i><span>ACS</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <a href="/ticketing/teknisi" class="nav-item">
+            <i class="fas fa-user-gear"></i>
+            <span>Teknisi</span>
+        </a>
+
+        <a href="/reports" class="nav-item">
+            <i class="fas fa-chart-bar"></i><span>Reports</span>
+        </a>
+        <a href="/automation" class="nav-item" style="display:none;">
+            <i class="fas fa-bolt"></i><span>Automation</span>
+        </a>
+        <a href="/system" class="nav-item" style="display:none;">
+            <i class="fas fa-gears"></i><span>System</span>
+        </a>
+        <a href="/system/log-proses" class="nav-item" style="display:none;">
+            <i class="fas fa-list-check"></i><span>Log Proses</span>
+        </a>
+        <a href="/system/log-error" class="nav-item">
+            <i class="fas fa-triangle-exclamation"></i><span>Log Error</span>
+        </a>
+        <a href="/system/tenant-approval" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-user-check"></i>
+            <span>Tenant Approval</span>
+            <span class="nav-badge" th:if="${superadminPendingTenantCount > 0}" th:text="${superadminPendingTenantCount}">0</span>
+        </a>
+        <a href="/system/tenant-directory" class="nav-item"
+           sec:authorize="hasAuthority('ROLE_SUPER_ADMIN')">
+            <i class="fas fa-building-shield"></i>
+            <span>Tenant Directory</span>
+        </a>
+        <a href="/crm" class="nav-item" style="display:none;">
+            <i class="fas fa-comments"></i><span>CRM</span>
+        </a>
+        <a href="/mapping" class="nav-item">
+            <i class="fas fa-map-location-dot"></i><span>Mapping</span>
+        </a>
+        <div class="nav-dropdown" onclick="window.toggleMenu && window.toggleMenu('menu-setting', event)">
+            <div class="nav-item">
+                <i class="fas fa-sliders"></i>
+                <span>Setting</span>
+                <i class="fas fa-chevron-down nav-dropdown-arrow"></i>
+            </div>
+            <div class="submenu" id="menu-setting">
+                <a href="/setting/user" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-user-shield"></i><span>User</span>
+                </a>
+                <a href="/setting/server" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-server"></i><span>Server</span>
+                </a>
+                <a href="/setting/company" class="submenu-item" onclick="window.handleSubmenuClick && window.handleSubmenuClick(event)">
+                    <i class="fas fa-building"></i><span>Company</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-promo" th:if="${isControlPlanePage}">
+        <div class="sidebar-promo-title">Superadmin Scope</div>
+        <div class="sidebar-promo-text">Sidebar ini dibatasi hanya untuk tenant control dan monitoring global.</div>
+        <button class="sidebar-promo-btn" type="button" onclick="window.location.href='/superadmin/dashboard'">Open Control</button>
+    </div>
+
+    <div class="sidebar-promo" th:unless="${isControlPlanePage}">
+        <div class="sidebar-promo-title">Upgrade to Pro</div>
+        <div class="sidebar-promo-text">Get more features and priority support</div>
+        <button class="sidebar-promo-btn" type="button">Upgrade Now</button>
+    </div>
+</div>
+<script>
+    if (typeof window.toggleMenu !== 'function') {
+        window.toggleMenu = function(menuId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const allMenus = document.querySelectorAll('.nav-dropdown');
+            allMenus.forEach(function(dropdown) {
+                const submenu = dropdown.querySelector('.submenu');
+                if (submenu && submenu.id !== menuId) {
+                    dropdown.classList.remove('open');
+                }
+            });
+            const menu = document.getElementById(menuId);
+            if (menu && menu.parentElement) {
+                menu.parentElement.classList.toggle('open');
+            }
+        };
+    }
+
+    if (typeof window.handleSubmenuClick !== 'function') {
+        window.handleSubmenuClick = function(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+        };
+    }
+</script>

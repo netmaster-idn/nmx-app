@@ -1,0 +1,1607 @@
+<div th:fragment="content">
+    <style>
+        .page-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .customer-overview {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+.stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 0;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--status-info); }
+        .stat-icon.green { background: rgba(34, 197, 94, 0.1); color: var(--status-success); }
+        .stat-icon.yellow { background: rgba(245, 158, 11, 0.1); color: var(--status-warning); }
+        .stat-icon.red { background: rgba(239, 68, 68, 0.1); color: var(--status-danger); }
+
+        .stat-info h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .stat-info p {
+            margin: 2px 0 0;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 0;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 12px;
+        }
+
+        .search-container input {
+            width: 100%;
+            height: 38px;
+            padding: 8px 10px 8px 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+
+        .customer-toolbar {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            gap: 10px;
+            flex: 0 0 280px;
+            width: 280px;
+            margin-bottom: 0;
+        }
+
+        .customer-toolbar .search-container {
+            flex: 1 1 auto;
+            max-width: none;
+        }
+
+        .customer-toolbar .header-actions {
+            display: flex;
+            align-items: stretch;
+            margin-left: 0;
+            margin-top: auto;
+        }
+
+        .customer-toolbar .header-actions .btn {
+            min-height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            overflow: auto;
+            max-height: calc(100vh - 340px);
+        }
+
+        .customer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .customer-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: #161616;
+        }
+
+        .customer-table th,
+        .customer-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 12px;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .customer-table th {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .customer-table th.action-column,
+        .customer-table td.action-cell {
+            width: 178px;
+            min-width: 178px;
+        }
+
+        .customer-table th.action-column {
+            text-align: center;
+        }
+
+        .customer-table td.action-cell .quick-actions {
+            width: 160px;
+            min-width: 160px;
+            height: auto;
+            justify-content: flex-end;
+            margin-left: auto;
+            box-sizing: border-box;
+            padding: 4px 6px;
+            border-radius: 999px;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .customer-table td.action-cell .quick-actions:hover {
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .quick-action-btn.verify:hover {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+        }
+
+        .quick-action-btn.verify:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .customer-code {
+            font-family: var(--font-mono);
+            color: var(--nmx-orange);
+            font-weight: 600;
+        }
+
+        .status-badge,
+        .payment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .status-badge.active { background: rgba(34, 197, 94, 0.12); color: var(--status-success); }
+        .status-badge.suspended { background: rgba(245, 158, 11, 0.12); color: var(--status-warning); }
+        .status-badge.pending { background: rgba(59, 130, 246, 0.12); color: var(--status-info); }
+        .status-badge.inactive { background: rgba(239, 68, 68, 0.12); color: var(--status-danger); }
+
+        .payment-badge.paid { background: rgba(34, 197, 94, 0.12); color: var(--status-success); }
+        .payment-badge.pending { background: rgba(59, 130, 246, 0.12); color: var(--status-info); }
+        .payment-badge.partial { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .payment-badge.overdue { background: rgba(239, 68, 68, 0.12); color: var(--status-danger); }
+        .payment-badge.cancelled { background: rgba(107, 114, 128, 0.12); color: #9ca3af; }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .odp-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .odp-status-badge.available {
+            background: rgba(34, 197, 94, 0.12);
+            color: var(--status-success);
+        }
+
+        .odp-status-badge.full {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--status-danger);
+        }
+
+        .quick-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+        }
+
+        .empty-state {
+            display: none;
+            padding: 56px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state.show {
+            display: block;
+        }
+
+        .customer-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: clamp(16px, 3vh, 28px);
+            z-index: var(--z-modal);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .customer-modal.open {
+            display: flex;
+        }
+
+        .customer-modal .modal-backdrop-modern {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            display: block;
+            background: var(--popup-form-backdrop) !important;
+            backdrop-filter: blur(var(--blur-sm));
+            -webkit-backdrop-filter: blur(var(--blur-sm));
+        }
+
+        .customer-modal-card {
+            position: relative;
+            z-index: 1;
+            width: min(860px, 100%);
+            max-height: min(calc(100vh - 32px), 920px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Match desktop edit modal footprint to the marked guide area */
+        #editCustomerModal {
+            align-items: center;
+            padding: 80px 24px 56px;
+        }
+
+        #editCustomerModal .customer-modal-card {
+            width: min(620px, 100%);
+            max-height: min(520px, calc(100vh - 136px));
+        }
+
+        /* Payment history modal: align position + dark palette */
+        #paymentHistoryModal {
+            align-items: center;
+            padding: 84px 24px 56px;
+        }
+
+        #paymentHistoryModal .customer-modal-card {
+            width: min(980px, 100%);
+            max-height: min(680px, calc(100vh - 96px));
+        }
+
+        #paymentHistoryModal .customer-modal-body {
+            padding: 14px 16px 16px;
+        }
+
+        #paymentHistoryModal .table-container {
+            background: linear-gradient(180deg, #303641 0%, #252b35 100%) !important;
+            border: 1px solid #49505c !important;
+            border-radius: 14px;
+            box-shadow: none !important;
+        }
+
+        #paymentHistoryModal .table-scroll {
+            max-height: 500px !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        #paymentHistoryModal .customer-history-table thead {
+            background: linear-gradient(180deg, #3a414d 0%, #2d333e 100%) !important;
+        }
+
+        #paymentHistoryModal .customer-history-table th {
+            color: #bfb3a4 !important;
+            border-bottom: 1px solid #545b68 !important;
+        }
+
+        #paymentHistoryModal .customer-history-table td {
+            color: #e7ddd0 !important;
+            border-bottom: 1px solid rgba(83, 91, 104, 0.72) !important;
+            background: rgba(34, 40, 50, 0.72) !important;
+        }
+
+        #paymentHistoryModal .customer-history-table tbody tr:nth-child(even) td {
+            background: rgba(39, 46, 56, 0.82) !important;
+        }
+
+        #paymentHistoryModal .customer-history-table tbody tr:hover td {
+            background: rgba(209, 128, 69, 0.1) !important;
+        }
+
+        #paymentHistoryModal .payment-badge.paid {
+            background: linear-gradient(180deg, #1f9b60 0%, #157247 100%) !important;
+            color: #eafff2 !important;
+            border: 1px solid rgba(134, 240, 184, 0.5) !important;
+            box-shadow: 0 4px 10px rgba(21, 114, 71, 0.35) !important;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .customer-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 20px 20px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .customer-modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .customer-modal-subtitle {
+            margin: 6px 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .customer-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .customer-modal-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .customer-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 20px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .customer-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .customer-form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .customer-form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .customer-form-field label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .customer-history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .customer-history-table th,
+        .customer-history-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .customer-history-table th {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .form-actions-custom {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .page-header-custom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .customer-overview {
+                flex-direction: column;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .customer-toolbar {
+                align-items: stretch;
+                width: 100%;
+                flex: 1 1 auto;
+            }
+
+            .customer-toolbar .search-container,
+            .customer-toolbar .header-actions,
+            .customer-toolbar .header-actions .btn {
+                width: 100%;
+            }
+
+            .customer-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .customer-modal {
+                padding: 12px;
+            }
+
+            #editCustomerModal {
+                align-items: flex-start;
+                padding: 12px;
+            }
+
+            #editCustomerModal .customer-modal-card {
+                width: 100%;
+                max-height: calc(100vh - 24px);
+            }
+
+            #paymentHistoryModal {
+                align-items: flex-start;
+                padding: 12px;
+            }
+
+            #paymentHistoryModal .customer-modal-card {
+                width: 100%;
+                max-height: calc(100vh - 24px);
+            }
+
+            .customer-modal-card {
+                max-height: calc(100vh - 24px);
+                border-radius: 14px;
+            }
+
+            .customer-modal-header,
+            .customer-modal-body,
+            .customer-modal-footer {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .customer-table th:nth-child(5),
+            .customer-table td:nth-child(5),
+            .customer-table th:nth-child(8),
+            .customer-table td:nth-child(8) {
+                display: none;
+            }
+        }
+    </style>
+
+    <div>
+        <div id="alertContainer"></div>
+
+        <div class="customer-overview">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h4 id="totalCustomers">0</h4>
+                        <p>Total Pelanggan</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <h4 id="activeCustomers">0</h4>
+                        <p>Aktif</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon yellow"><i class="fas fa-pause-circle"></i></div>
+                    <div class="stat-info">
+                        <h4 id="suspendedCustomers">0</h4>
+                        <p>Suspend</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <div class="stat-info">
+                        <h4 id="unpaidCount">0</h4>
+                        <p>Belum Lunas</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="customer-toolbar">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari nama pelanggan, kode pelanggan, telepon, atau username PPPoE">
+                </div>
+                <div class="header-actions">
+                    <a href="/pelanggan/registrasi" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Tambah Pelanggan
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-scroll">
+                <table class="customer-table" id="customerTable">
+                    <thead>
+                        <tr>
+                            <th>ID Pelanggan</th>
+                            <th>Nama Pelanggan</th>
+                            <th>Username PPPoE</th>
+                            <th>Paket Internet</th>
+                            <th>IP Address</th>
+                            <th>Status</th>
+                            <th>Tagihan</th>
+                            <th>Pembayaran</th>
+                            <th class="action-column">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody"></tbody>
+                </table>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-user-slash"></i>
+                    <h3>Tidak Ada Data Pelanggan</h3>
+                    <p>Belum ada data pelanggan atau hasil pencarian tidak ditemukan.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="customer-modal" id="editCustomerModal">
+        <div class="modal-backdrop-modern" onclick="closeModal('editCustomerModal')"></div>
+        <div class="customer-modal-card">
+            <div class="customer-modal-header">
+                <div>
+                    <h3 class="customer-modal-title">Edit / Update Pelanggan</h3>
+                    <p class="customer-modal-subtitle">Perbarui data dasar pelanggan langsung dari halaman data.</p>
+                </div>
+                <button class="customer-modal-close" type="button" onclick="closeModal('editCustomerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="editCustomerId">
+
+            <div class="customer-modal-body">
+                <div class="customer-form-grid">
+                    <div class="customer-form-field">
+                        <label for="editCustomerCode">ID Pelanggan</label>
+                        <input type="text" class="form-input" id="editCustomerCode" readonly>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editPhone">Nomor Telepon</label>
+                        <input type="text" class="form-input" id="editPhone">
+                    </div>
+                    <div class="customer-form-field full-width">
+                        <label for="editFullName">Nama Pelanggan</label>
+                        <input type="text" class="form-input" id="editFullName">
+                    </div>
+                    <div class="customer-form-field full-width">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-input" id="editEmail">
+                    </div>
+                    <div class="customer-form-field full-width">
+                        <label for="editKtpNumber">Nomor KTP</label>
+                        <input type="text" class="form-input" id="editKtpNumber" placeholder="Nomor KTP (opsional)">
+                    </div>
+                    <div class="customer-form-field full-width">
+                        <label for="editAddress">Alamat Instalasi</label>
+                        <textarea class="form-input" id="editAddress" rows="3"></textarea>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editCompanyProfileId">Wilayah</label>
+                        <select class="form-input" id="editCompanyProfileId">
+                            <option value="">-- Loading... --</option>
+                        </select>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editServerId">Server</label>
+                        <select class="form-input" id="editServerId">
+                            <option value="">-- Loading... --</option>
+                        </select>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editOdcId">ODC</label>
+                        <select class="form-input" id="editOdcId">
+                            <option value="">-- Pilih Server terlebih dahulu --</option>
+                        </select>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editOdpId">ODP</label>
+                        <select class="form-input" id="editOdpId">
+                            <option value="">-- Loading... --</option>
+                        </select>
+                        <small class="text-muted-custom" id="editOdpInfo"></small>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editPackageId">Paket Internet</label>
+                        <select class="form-input" id="editPackageId">
+                            <option value="">-- Loading paket... --</option>
+                        </select>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editMonthlyFeePreview">Tagihan Paket</label>
+                        <input type="text" class="form-input" id="editMonthlyFeePreview" readonly placeholder="Rp 0">
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="editOdpPort">Port ODP</label>
+                        <input type="number" class="form-input" id="editOdpPort" placeholder="1-8" min="1" max="8">
+                    </div>
+                    <div class="customer-form-field full-width">
+                        <label for="editCoordinates">Koordinat</label>
+                        <input type="text" class="form-input" id="editCoordinates" placeholder="-6.1754, 106.8272">
+                        <small class="form-hint">Format: latitude, longitude (opsional)</small>
+                        <input type="hidden" id="editLatitude">
+                        <input type="hidden" id="editLongitude">
+                    </div>
+                </div>
+            </div>
+
+            <div class="customer-modal-footer form-actions-custom">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('editCustomerModal')">Batal</button>
+                <button class="btn btn-primary" type="button" onclick="saveEdit()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="customer-modal" id="paymentHistoryModal">
+        <div class="modal-backdrop-modern" onclick="closeModal('paymentHistoryModal')"></div>
+        <div class="customer-modal-card">
+            <div class="customer-modal-header">
+                <div>
+                    <h3 class="customer-modal-title">History Payment</h3>
+                    <p class="customer-modal-subtitle" id="paymentHistorySubtitle">Riwayat pembayaran pelanggan dari awal sampai terbaru.</p>
+                </div>
+                <button class="customer-modal-close" type="button" onclick="closeModal('paymentHistoryModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="customer-modal-body">
+                <div class="table-container">
+                <div class="table-scroll" style="max-height: 60vh;">
+                    <table class="customer-history-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal Bayar</th>
+                                <th>Invoice</th>
+                                <th>Jenis Pembayaran</th>
+                                <th>Total</th>
+                                <th>Dibayar</th>
+                                <th>Metode</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentHistoryBody">
+                            <tr>
+                                <td colspan="7">Belum ada riwayat pembayaran.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="customer-modal" id="activationCustomerModal">
+        <div class="modal-backdrop-modern" onclick="closeModal('activationCustomerModal')"></div>
+        <div class="customer-modal-card">
+            <div class="customer-modal-header">
+                <div>
+                    <h3 class="customer-modal-title">Aktivasi Pelanggan</h3>
+                    <p class="customer-modal-subtitle" id="activationCustomerSubtitle">Lengkapi detail aktivasi pelanggan sebelum verifikasi.</p>
+                </div>
+                <button class="customer-modal-close" type="button" onclick="closeModal('activationCustomerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="activationCustomerId">
+
+            <div class="customer-modal-body">
+                <div class="customer-form-grid">
+                    <div class="customer-form-field full-width">
+                        <label for="activationCustomerName">Nama Pelanggan</label>
+                        <input type="text" class="form-input" id="activationCustomerName" readonly>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="activationInstallationFee">Biaya Pemasangan</label>
+                        <input type="number" class="form-input" id="activationInstallationFee" min="0" step="0.01" placeholder="0">
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="activationPaymentMethod">Metode Pembayaran</label>
+                        <select class="form-input" id="activationPaymentMethod">
+                            <option value="Transfer">Transfer</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="activationDate">Tanggal Aktivasi</label>
+                        <input type="date" class="form-input" id="activationDate">
+                    </div>
+                    <div class="customer-form-field">
+                        <label for="activationNextInvoiceDate">Invoice Berikutnya</label>
+                        <input type="date" class="form-input" id="activationNextInvoiceDate" readonly>
+                        <small class="form-hint">Otomatis mengikuti tanggal aktivasi pada bulan berikutnya.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="customer-modal-footer form-actions-custom">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('activationCustomerModal')">Batal</button>
+                <button class="btn btn-primary" type="button" onclick="submitActivation()">Aktifkan Pelanggan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let customers = [];
+        let filteredCustomers = [];
+        let companiesData = [];
+        let serversData = [];
+        let odcsData = [];
+        let odpsData = [];
+        let packagesData = [];
+        let editDatasetsLoaded = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCustomers();
+            setupSearch();
+            bindModalDismiss();
+            setupEditDependentDropdowns();
+            setupActivationModal();
+            if (window.nmxBilling) {
+                window.nmxBilling.onRefresh(() => loadCustomers());
+            }
+        });
+
+        async function loadCustomers() {
+            try {
+                const response = await fetch('/pelanggan/api/customers/summary');
+                const result = await response.json();
+
+                if (!result.success) {
+                    showAlert('error', result.message || 'Gagal memuat data pelanggan');
+                    return;
+                }
+
+                customers = result.data || [];
+                filteredCustomers = [...customers];
+                renderTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                showAlert('error', 'Gagal memuat data pelanggan');
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('customerTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!filteredCustomers.length) {
+                tbody.innerHTML = '';
+                emptyState.classList.add('show');
+                return;
+            }
+
+            emptyState.classList.remove('show');
+            tbody.innerHTML = filteredCustomers.map(customer => `
+                <tr>
+                    <td><span class="customer-code">${escapeHtml(customer.customerCode || '-')}</span></td>
+                    <td>${escapeHtml(customer.fullName || '-')}</td>
+                    <td>${escapeHtml(customer.pppoeUsername || '-')}</td>
+                    <td>${escapeHtml(customer.packageName || '-')}</td>
+                    <td>${escapeHtml(customer.ipAddress || '-')}</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(customer.status)}">
+                            <span class="status-dot"></span>
+                            ${escapeHtml(getStatusText(customer.status))}
+                        </span>
+                    </td>
+                    <td>${formatRupiah(customer.monthlyFee || 0)}</td>
+                    <td>
+                        <span class="payment-badge ${window.nmxBilling ? window.nmxBilling.getStatusClass(customer.paymentStatus) : (customer.paymentStatus === 'paid' ? 'paid' : 'pending')}">
+                            ${window.nmxBilling ? window.nmxBilling.getStatusLabel(customer.paymentStatus) : (customer.paymentStatus === 'paid' ? 'Lunas' : 'Belum Lunas')}
+                        </span>
+                    </td>
+                    <td class="action-cell">
+                        <div class="quick-actions">
+                            <button
+                                class="quick-action-btn verify"
+                                type="button"
+                                title="${canVerifyCustomer(customer) ? 'Verifikasi / Aktifkan Pelanggan' : 'Verifikasi hanya tersedia untuk pelanggan yang belum diaktivasi'}"
+                                onclick="verifyCustomer(${customer.id})"
+                                ${canVerifyCustomer(customer) ? '' : 'disabled'}>
+                                <i class="fas fa-user-check"></i>
+                            </button>
+                            <button class="quick-action-btn" type="button" title="Edit / Update" onclick="viewEdit(${customer.id})">
+                                <i class="fas fa-pen-to-square"></i>
+                            </button>
+                            <button class="quick-action-btn" type="button" title="History Payment" onclick="viewPayment(${customer.id})">
+                                <i class="fas fa-clock-rotate-left"></i>
+                            </button>
+                            <button class="quick-action-btn delete" type="button" title="Delete" onclick="deleteCustomer(${customer.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalCustomers').textContent = customers.length;
+            document.getElementById('activeCustomers').textContent = customers.filter(item => item.status === 'active').length;
+            document.getElementById('suspendedCustomers').textContent = customers.filter(item => item.status === 'suspended').length;
+            document.getElementById('unpaidCount').textContent = customers.filter(item => item.paymentStatus !== 'paid').length;
+        }
+
+        function canVerifyCustomer(customer) {
+            return Boolean(customer && customer.serviceId && customer.status === 'pending');
+        }
+
+        function setupSearch() {
+            const input = document.getElementById('searchInput');
+            input.addEventListener('input', function(event) {
+                const keyword = event.target.value.trim().toLowerCase();
+                if (!keyword) {
+                    filteredCustomers = [...customers];
+                } else {
+                    filteredCustomers = customers.filter(customer =>
+                        (customer.fullName || '').toLowerCase().includes(keyword) ||
+                        (customer.customerCode || '').toLowerCase().includes(keyword) ||
+                        (customer.phone || '').toLowerCase().includes(keyword) ||
+                        (customer.pppoeUsername || '').toLowerCase().includes(keyword)
+                    );
+                }
+                renderTable();
+            });
+        }
+
+        async function ensureEditDatasetsLoaded() {
+            if (editDatasetsLoaded) {
+                return;
+            }
+
+            try {
+                const companiesRes = await fetch('/pelanggan/api/regions');
+                const companiesPayload = await companiesRes.json();
+                if (companiesPayload.success) {
+                    companiesData = companiesPayload.data || [];
+                }
+
+                const serversRes = await fetch('/pelanggan/api/servers');
+                const serversPayload = await serversRes.json();
+                if (serversPayload.success) {
+                    serversData = serversPayload.data || [];
+                }
+
+                const odcsRes = await fetch('/pelanggan/api/odcs');
+                const odcsPayload = await odcsRes.json();
+                if (odcsPayload.success) {
+                    odcsData = odcsPayload.data || [];
+                }
+
+                const odpsRes = await fetch('/pelanggan/api/odps');
+                const odpsPayload = await odpsRes.json();
+                if (odpsPayload.success) {
+                    odpsData = odpsPayload.data || [];
+                }
+
+                const packagesRes = await fetch('/pelanggan/api/packages?includeInactive=true');
+                const packagesPayload = await packagesRes.json();
+                if (packagesPayload.success) {
+                    packagesData = packagesPayload.data || [];
+                }
+
+                populateSelect('editCompanyProfileId', companiesData, 'name', 'Pilih Company');
+                populateSelect('editServerId', serversData, 'name', 'Pilih POP');
+                populateSelect('editPackageId', packagesData, item => `${item.name} - ${formatRupiah(item.price || 0)}`, 'Pilih Paket Internet');
+                refreshNetworkDropdowns();
+                editDatasetsLoaded = true;
+            } catch (error) {
+                console.error('Error loading edit datasets:', error);
+                showAlert('error', 'Gagal memuat data wilayah/server/ODP.');
+            }
+        }
+
+        function populateSelect(selectId, data, labelField, defaultText = '-- Pilih --') {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = `<option value="">${defaultText}</option>`;
+
+            if (data && Array.isArray(data)) {
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = typeof labelField === 'function' ? labelField(item) : item[labelField];
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function getSelectedEditCompanyId() {
+            return document.getElementById('editCompanyProfileId')?.value || '';
+        }
+
+        function getSelectedEditServerId() {
+            return document.getElementById('editServerId')?.value || '';
+        }
+
+        function getSelectedEditOdcId() {
+            return document.getElementById('editOdcId')?.value || '';
+        }
+
+        function filterOdcsByServer(serverId) {
+            let filtered = [...odcsData];
+            if (!serverId) {
+                return filtered;
+            }
+            return filtered.filter(odc =>
+                String(odc.serverId || odc.server?.id || '') === String(serverId)
+            );
+        }
+
+        function filterOdpsBySelection() {
+            const companyId = getSelectedEditCompanyId();
+            const odcId = getSelectedEditOdcId();
+            let filtered = [...odpsData];
+
+            if (companyId) {
+                filtered = filtered.filter(odp =>
+                    !String(odp.companyProfileId || odp.companyProfile?.id || '') ||
+                    String(odp.companyProfileId || odp.companyProfile?.id || '') === String(companyId)
+                );
+            }
+
+            if (odcId) {
+                filtered = filtered.filter(odp =>
+                    String(odp.odcId || odp.odc?.id || '') === String(odcId)
+                );
+            } else {
+                const serverId = getSelectedEditServerId();
+                if (serverId) {
+                    const serverOdcIds = filterOdcsByServer(serverId).map(odc => String(odc.id));
+                    filtered = filtered.filter(odp =>
+                        serverOdcIds.includes(String(odp.odcId || odp.odc?.id || ''))
+                    );
+                }
+            }
+
+            return filtered;
+        }
+
+        function refreshNetworkDropdowns() {
+            const serverId = getSelectedEditServerId();
+            const odcSelect = document.getElementById('editOdcId');
+            const filteredOdcs = filterOdcsByServer(serverId);
+
+            if (odcSelect) {
+                const previousOdcId = odcSelect.value;
+                populateSelect('editOdcId', filteredOdcs, 'name', 'Pilih ODC');
+                if (previousOdcId && filteredOdcs.some(odc => String(odc.id) === String(previousOdcId))) {
+                    odcSelect.value = previousOdcId;
+                }
+            }
+
+            refreshOdpDropdown();
+        }
+
+        function refreshOdpDropdown() {
+            const filteredOdps = filterOdpsBySelection();
+            populateODPSelect(filteredOdps);
+        }
+
+        function populateODPSelect(odps) {
+            const select = document.getElementById('editOdpId');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Pilih ODP --</option>';
+
+            if (odps && Array.isArray(odps)) {
+                odps.forEach(odp => {
+                    const available = (odp.capacity || 0) - (odp.usedPort || 0);
+                    const option = document.createElement('option');
+                    option.value = odp.id;
+                    option.dataset.available = available;
+                    option.dataset.capacity = odp.capacity || 0;
+                    option.dataset.used = odp.usedPort || 0;
+                    option.dataset.companyId = odp.companyProfileId || odp.companyProfile?.id || '';
+                    option.dataset.odcId = odp.odcId || odp.odc?.id || '';
+                    option.textContent = `${odp.name}`;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function setupEditDependentDropdowns() {
+            const companySelect = document.getElementById('editCompanyProfileId');
+            const serverSelect = document.getElementById('editServerId');
+            const odcSelect = document.getElementById('editOdcId');
+            const odpSelect = document.getElementById('editOdpId');
+            const packageSelect = document.getElementById('editPackageId');
+            const coordInput = document.getElementById('editCoordinates');
+
+            if (companySelect) {
+                companySelect.addEventListener('change', function() {
+                    refreshNetworkDropdowns();
+                });
+            }
+
+            if (serverSelect) {
+                serverSelect.addEventListener('change', function() {
+                    refreshNetworkDropdowns();
+                });
+            }
+
+            if (odcSelect) {
+                odcSelect.addEventListener('change', function() {
+                    refreshOdpDropdown();
+                });
+            }
+
+            if (odpSelect) {
+                odpSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const odpInfo = document.getElementById('editOdpInfo');
+
+                    if (selectedOption && selectedOption.value) {
+                        const available = parseInt(selectedOption.dataset.available);
+                        const capacity = parseInt(selectedOption.dataset.capacity);
+                        let statusHtml = '';
+                        if (available > 0) {
+                            statusHtml = `<span class="odp-status-badge available"><span class="status-dot"></span> ${available}/${capacity} port tersedia</span>`;
+                        } else {
+                            statusHtml = `<span class="odp-status-badge full"><span class="status-dot"></span> Penuh</span>`;
+                        }
+                        if (odpInfo) odpInfo.innerHTML = statusHtml;
+                    } else if (odpInfo) {
+                        odpInfo.innerHTML = '';
+                    }
+                });
+            }
+
+            if (packageSelect) {
+                packageSelect.addEventListener('change', function() {
+                    updatePackageFeePreview();
+                });
+            }
+
+            if (coordInput) {
+                coordInput.addEventListener('blur', function() {
+                    parseEditCoordinates(this.value);
+                });
+                coordInput.addEventListener('change', function() {
+                    parseEditCoordinates(this.value);
+                });
+            }
+        }
+
+        function parseEditCoordinates(coordStr) {
+            if (!coordStr || coordStr.trim() === '') {
+                document.getElementById('editLatitude').value = '';
+                document.getElementById('editLongitude').value = '';
+                return true;
+            }
+            const parts = coordStr.trim().split(',');
+            if (parts.length !== 2) return false;
+            const lat = parts[0].trim();
+            const lng = parts[1].trim();
+            if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) return false;
+            document.getElementById('editLatitude').value = lat;
+            document.getElementById('editLongitude').value = lng;
+            return true;
+        }
+
+        async function viewEdit(customerId) {
+            try {
+                await ensureEditDatasetsLoaded();
+                const response = await fetch(`/pelanggan/api/customers/${customerId}/detail`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    showAlert('error', result.message || 'Gagal memuat data pelanggan');
+                    return;
+                }
+
+                const customer = result.data;
+                document.getElementById('editCustomerId').value = customer.id;
+                document.getElementById('editCustomerCode').value = customer.customerCode || '';
+                document.getElementById('editFullName').value = customer.fullName || '';
+                document.getElementById('editPhone').value = customer.phone || '';
+                document.getElementById('editEmail').value = customer.email || '';
+                document.getElementById('editKtpNumber').value = customer.ktpNumber || '';
+                document.getElementById('editAddress').value = customer.installationAddress || '';
+                document.getElementById('editCompanyProfileId').value = customer.companyProfileId || '';
+                document.getElementById('editServerId').value = customer.serverId || '';
+                refreshNetworkDropdowns();
+
+                document.getElementById('editOdcId').value = customer.odcId || '';
+                refreshOdpDropdown();
+                document.getElementById('editOdpId').value = customer.odpId || '';
+                document.getElementById('editPackageId').value = customer.packageId || '';
+                document.getElementById('editMonthlyFeePreview').value = formatRupiah(customer.monthlyFee || 0);
+                document.getElementById('editOdpPort').value = customer.odpPort || '';
+
+                const coordinateText = customer.latitude && customer.longitude
+                    ? `${customer.latitude}, ${customer.longitude}`
+                    : '';
+                document.getElementById('editCoordinates').value = coordinateText;
+                document.getElementById('editLatitude').value = customer.latitude || '';
+                document.getElementById('editLongitude').value = customer.longitude || '';
+                const odpSelect = document.getElementById('editOdpId');
+                if (odpSelect) {
+                    odpSelect.dispatchEvent(new Event('change'));
+                }
+                updatePackageFeePreview();
+                openModal('editCustomerModal');
+            } catch (error) {
+                console.error('Error loading customer:', error);
+                showAlert('error', 'Gagal memuat data pelanggan');
+            }
+        }
+
+        function customerHeaders(includeJson = false) {
+            const headers = {};
+            if (includeJson) {
+                headers['Content-Type'] = 'application/json';
+            }
+            headers[window.csrfHeader || 'X-CSRF-TOKEN'] = window.csrfToken || '';
+            return headers;
+        }
+
+        async function saveEdit() {
+            const customerId = document.getElementById('editCustomerId').value;
+            if (!parseEditCoordinates(document.getElementById('editCoordinates').value)) {
+                showAlert('error', 'Format koordinat tidak valid. Gunakan: latitude, longitude');
+                return;
+            }
+            const payload = {
+                fullName: document.getElementById('editFullName').value,
+                phone: document.getElementById('editPhone').value,
+                email: document.getElementById('editEmail').value,
+                installationAddress: document.getElementById('editAddress').value,
+                ktpNumber: document.getElementById('editKtpNumber').value,
+                companyProfileId: document.getElementById('editCompanyProfileId').value,
+                serverId: document.getElementById('editServerId').value,
+                odcId: document.getElementById('editOdcId').value,
+                odpId: document.getElementById('editOdpId').value,
+                packageId: document.getElementById('editPackageId').value,
+                odpPort: document.getElementById('editOdpPort').value,
+                latitude: document.getElementById('editLatitude').value,
+                longitude: document.getElementById('editLongitude').value
+            };
+
+            const optionalFields = [
+                'ktpNumber',
+                'companyProfileId',
+                'serverId',
+                'odcId',
+                'odpId',
+                'packageId',
+                'odpPort',
+                'latitude',
+                'longitude'
+            ];
+            optionalFields.forEach(key => {
+                if (payload[key] == null) {
+                    return;
+                }
+                if (String(payload[key]).trim() === '') {
+                    payload[key] = null;
+                }
+            });
+
+            try {
+                const response = await fetch(`/pelanggan/api/customers/${customerId}/basic`, {
+                    method: 'PATCH',
+                    headers: customerHeaders(true),
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (!result.success) {
+                    showAlert('error', result.message || 'Gagal memperbarui pelanggan');
+                    return;
+                }
+
+                closeModal('editCustomerModal');
+                showAlert('success', 'Data pelanggan berhasil diperbarui.');
+                await loadCustomers();
+            } catch (error) {
+                console.error('Error updating customer:', error);
+                showAlert('error', 'Gagal memperbarui pelanggan');
+            }
+        }
+
+        async function deleteCustomer(customerId) {
+            const customer = customers.find(item => Number(item.id) === Number(customerId));
+            const confirmed = await window.nmxConfirm(`Hapus pelanggan ${customer?.fullName || ''}?`, {
+                title: 'Konfirmasi Hapus',
+                confirmText: 'Hapus',
+                confirmClass: 'btn btn-danger'
+            });
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/pelanggan/api/customers/${customerId}`, {
+                    method: 'DELETE',
+                    headers: customerHeaders(),
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+
+                if (!result.success) {
+                    showAlert('error', result.message || 'Gagal menghapus pelanggan');
+                    return;
+                }
+
+                showAlert('success', 'Pelanggan berhasil dihapus.');
+                await loadCustomers();
+            } catch (error) {
+                console.error('Error deleting customer:', error);
+                showAlert('error', 'Gagal menghapus pelanggan');
+            }
+        }
+
+        function verifyCustomer(customerId) {
+            const customer = customers.find(item => Number(item.id) === Number(customerId));
+            if (!canVerifyCustomer(customer)) {
+                showAlert('info', 'Verifikasi hanya tersedia untuk pelanggan yang belum diaktivasi.');
+                return;
+            }
+
+            openActivationModal(customer);
+        }
+
+        function openActivationModal(customer) {
+            if (!customer) {
+                return;
+            }
+
+            document.getElementById('activationCustomerId').value = customer.id || '';
+            document.getElementById('activationCustomerName').value = customer.fullName || '';
+            document.getElementById('activationCustomerSubtitle').textContent =
+                `Lengkapi aktivasi untuk ${customer.fullName || 'pelanggan'} dan simpan tanggal aktivasi sesuai pemasangan.`;
+            document.getElementById('activationInstallationFee').value = customer.installationFee || 0;
+            document.getElementById('activationPaymentMethod').value = 'Transfer';
+            document.getElementById('activationDate').value = todayDateInputValue();
+            syncActivationNextInvoiceDate();
+            openModal('activationCustomerModal');
+        }
+
+        async function submitActivation() {
+            const customerId = document.getElementById('activationCustomerId').value;
+            const activationDate = document.getElementById('activationDate').value;
+            const rawInstallationFee = document.getElementById('activationInstallationFee').value;
+            const paymentMethod = document.getElementById('activationPaymentMethod').value;
+
+            if (!customerId) {
+                showAlert('error', 'Pelanggan tidak ditemukan untuk aktivasi.');
+                return;
+            }
+
+            if (!activationDate) {
+                showAlert('error', 'Tanggal aktivasi wajib diisi.');
+                return;
+            }
+
+            const installationFee = rawInstallationFee === '' ? 0 : Number(rawInstallationFee);
+            if (Number.isNaN(installationFee) || installationFee < 0) {
+                showAlert('error', 'Biaya pemasangan harus berupa angka nol atau lebih.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/pelanggan/api/customers/${customerId}/verify`, {
+                    method: 'POST',
+                    headers: customerHeaders(true),
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        installationFee,
+                        paymentMethod,
+                        activationDate
+                    })
+                });
+                const result = await response.json();
+
+                if (!result.success) {
+                    showAlert('error', result.message || 'Gagal memverifikasi pelanggan');
+                    return;
+                }
+
+                closeModal('activationCustomerModal');
+                showAlert('success', result.message || 'Pelanggan berhasil diaktifkan.');
+                if (window.nmxBilling) {
+                    window.nmxBilling.emit('activation');
+                }
+                await loadCustomers();
+                await viewPayment(customerId);
+            } catch (error) {
+                console.error('Error verifying customer:', error);
+                showAlert('error', 'Gagal memverifikasi pelanggan');
+            }
+        }
+
+        function todayDateInputValue() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function setupActivationModal() {
+            const activationDateInput = document.getElementById('activationDate');
+            if (!activationDateInput) {
+                return;
+            }
+
+            activationDateInput.addEventListener('input', syncActivationNextInvoiceDate);
+            activationDateInput.addEventListener('change', syncActivationNextInvoiceDate);
+        }
+
+        function syncActivationNextInvoiceDate() {
+            const activationDateInput = document.getElementById('activationDate');
+            const nextInvoiceInput = document.getElementById('activationNextInvoiceDate');
+            if (!activationDateInput || !nextInvoiceInput) {
+                return;
+            }
+
+            nextInvoiceInput.value = calculateNextInvoiceDate(activationDateInput.value);
+        }
+
+        function calculateNextInvoiceDate(dateValue) {
+            if (!dateValue) {
+                return '';
+            }
+
+            const [yearText, monthText, dayText] = dateValue.split('-');
+            const year = Number(yearText);
+            const month = Number(monthText);
+            const day = Number(dayText);
+
+            if (!year || !month || !day) {
+                return '';
+            }
+
+            const nextMonth = month === 12 ? 1 : month + 1;
+            const nextYear = month === 12 ? year + 1 : year;
+            const maxDay = new Date(nextYear, nextMonth, 0).getDate();
+            const nextDay = Math.min(day, maxDay);
+
+            return `${String(nextYear).padStart(4, '0')}-${String(nextMonth).padStart(2, '0')}-${String(nextDay).padStart(2, '0')}`;
+        }
+
+        async function viewPayment(customerId) {
+            const customer = customers.find(item => Number(item.id) === Number(customerId));
+            document.getElementById('paymentHistorySubtitle').textContent =
+                `Catatan pembayaran ${customer?.fullName || 'pelanggan'} dari awal sampai terbaru.`;
+
+            try {
+                const response = await fetch(`/pelanggan/api/customers/${customerId}/invoices`);
+                const result = await response.json();
+                const tbody = document.getElementById('paymentHistoryBody');
+
+                if (!result.success || !result.data || !result.data.length) {
+                    tbody.innerHTML = '<tr><td colspan="7">Belum ada riwayat pembayaran.</td></tr>';
+                } else {
+                    const invoices = [...result.data].sort((a, b) => {
+                        const left = new Date(a.paymentDate || a.billingMonth || 0).getTime();
+                        const right = new Date(b.paymentDate || b.billingMonth || 0).getTime();
+                        return left - right;
+                    });
+
+                    tbody.innerHTML = invoices.map(invoice => `
+                        <tr>
+                            <td>${invoice.paymentDate ? new Date(invoice.paymentDate).toLocaleDateString('id-ID') : '-'}</td>
+                            <td><span class="customer-code">${escapeHtml(invoice.invoiceNumber || '-')}</span></td>
+                            <td>${escapeHtml(invoice.invoiceTypeLabel || 'Pembayaran Langganan Bulanan')}</td>
+                            <td>${formatRupiah(invoice.totalAmount || 0)}</td>
+                            <td>${formatRupiah(invoice.amountPaid || 0)}</td>
+                            <td>${escapeHtml(invoice.paymentMethod || '-')}</td>
+                            <td>
+                                <span class="payment-badge ${window.nmxBilling ? window.nmxBilling.getStatusClass(invoice.status) : (invoice.status === 'paid' ? 'paid' : 'pending')}">
+                                    ${window.nmxBilling ? window.nmxBilling.getStatusLabel(invoice.status) : (invoice.status === 'paid' ? 'Lunas' : 'Belum Lunas')}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                openModal('paymentHistoryModal');
+            } catch (error) {
+                console.error('Error loading payment history:', error);
+                showAlert('error', 'Gagal memuat history payment');
+            }
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function updatePackageFeePreview() {
+            const packageSelect = document.getElementById('editPackageId');
+            const preview = document.getElementById('editMonthlyFeePreview');
+            if (!packageSelect || !preview) {
+                return;
+            }
+
+            const selectedPackage = packagesData.find(item => String(item.id) === String(packageSelect.value));
+            preview.value = formatRupiah(selectedPackage?.price || 0);
+        }
+
+        function bindModalDismiss() {
+            document.querySelectorAll('.customer-modal').forEach(modal => {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 'active': return 'active';
+                case 'suspended': return 'suspended';
+                case 'pending': return 'pending';
+                default: return 'inactive';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'active': return 'Active';
+                case 'suspended': return 'Suspend';
+                case 'pending': return 'Belum Diaktivasi';
+                default: return 'Nonaktif';
+            }
+        }
+
+        function formatRupiah(amount) {
+            return `Rp. ${new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount || 0)}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showAlert(type, message) {
+            if (window.nmxNotify) {
+                window.nmxNotify({
+                    type: type,
+                    message: message
+                });
+                return;
+            }
+
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+            const el = document.createElement('div');
+            el.className = `alert-message ${type}`;
+            el.innerHTML = `<i class="fas fa-${icon}"></i><span>${escapeHtml(message)}</span>`;
+            alertContainer.appendChild(el);
+
+            setTimeout(() => el.remove(), 4000);
+        }
+    </script>
+</div>
+

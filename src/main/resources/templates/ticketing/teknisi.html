@@ -1,0 +1,951 @@
+<div th:fragment="content">
+    <style>
+        /* Page Header */
+        .page-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+.header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Search Box */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all var(--transition-fast);
+        }
+        
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--nmx-orange);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+        
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--status-info);
+        }
+        
+        .stat-icon.green {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--status-success);
+        }
+        
+        .stat-icon.orange {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+        
+        .stat-icon.purple {
+            background: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+        }
+        
+        .stat-info h4 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .stat-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+        
+        /* Table Container */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .table-scroll {
+            max-height: calc(100vh - 320px);
+            overflow-y: auto;
+        }
+        
+        .table-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .table-scroll::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+        
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: var(--radius-full);
+        }
+        
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table thead {
+            background: #161616;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            color: var(--text-secondary);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        
+        .data-table tbody tr {
+            transition: background var(--transition-fast);
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        /* Tech Avatar */
+        .tech-avatar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .tech-avatar .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--nmx-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        
+        .status-badge.busy {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .status-badge.inactive {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+        
+        /* Rating Stars */
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .rating i {
+            color: #fbbf24;
+            font-size: 12px;
+        }
+        
+        /* Action Button */
+        .action-btn {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .action-btn button {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .action-btn button:hover {
+            border-color: var(--nmx-orange);
+            color: var(--nmx-orange);
+        }
+        
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 160px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-fast);
+            margin-top: 4px;
+        }
+        
+        .action-btn:hover .dropdown-menu,
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        
+        .dropdown-item i {
+            width: 16px;
+            text-align: center;
+            color: var(--text-dim);
+        }
+        
+        .dropdown-item:hover i {
+            color: var(--nmx-orange);
+        }
+
+        .tech-quick-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .tech-quick-actions .quick-action-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+        }
+
+        .tech-quick-actions:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.14);
+        }
+
+        .tech-quick-actions .quick-action-btn:hover {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+
+        .tech-quick-actions .quick-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+        }
+
+        .tech-quick-actions .quick-action-label {
+            display: none;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+        
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--nmx-orange);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header-custom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+    <div><div class="page-header-custom"><div class="header-actions">
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i>
+                    Tambah Teknisi
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="totalTechnicians">0</h4>
+                    <p>Total Teknisi</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="activeTechnicians">0</h4>
+                    <p>Aktif</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="assignedTickets">0</h4>
+                    <p>Ticket Ditugaskan</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-info">
+                    <h4 id="avgRating">0</h4>
+                    <p>Avg Rating</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Cari teknisi berdasarkan nama atau area...">
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <div class="table-scroll">
+                <table class="data-table" id="technicianTable">
+                    <thead>
+                        <tr>
+                            <th>Teknisi</th>
+                            <th>Area</th>
+                            <th>No. HP</th>
+                            <th>Status</th>
+                            <th>Ticket Aktif</th>
+                            <th>Rating</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="technicianTableBody">
+                        <!-- Technician data will be loaded here -->
+                    </tbody>
+                </table>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-user-slash"></i>
+                    <h3>Tidak Ada Teknisi</h3>
+                    <p>Belum ada teknisi yang terdaftar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="technicianModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Tambah Teknisi</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="technicianForm">
+                    <input type="hidden" id="technicianId">
+                    <div class="form-group">
+                        <label class="form-label">Nama Teknisi</label>
+                        <input type="text" class="form-input" id="techName" placeholder="Masukkan nama teknisi" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Area Kerja</label>
+                        <input type="text" class="form-input" id="techArea" placeholder="Contoh: Jakarta Selatan" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nomor HP</label>
+                        <input type="text" class="form-input" id="techPhone" placeholder="08xxxxxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="techStatus" required>
+                            <option value="active">Aktif</option>
+                            <option value="busy">Sibuk</option>
+                            <option value="inactive">Nonaktif</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveTechnician()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons defensively because base layout loads it asynchronously.
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+        
+        // Global data
+        let technicians = [];
+        let filteredTechnicians = [];
+
+        function buildHeaders(includeJson = false) {
+            const headers = {};
+            if (includeJson) {
+                headers['Content-Type'] = 'application/json';
+            }
+
+            const csrfToken = window.csrfToken || '';
+            const csrfHeader = window.csrfHeader || 'X-CSRF-TOKEN';
+            if (csrfToken) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            return headers;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTechnicians();
+            setupSearch();
+        });
+        
+        // Load technicians from API
+        async function loadTechnicians() {
+            try {
+                const response = await fetch('/ticketing/api/technicians');
+                const result = await response.json();
+                
+                if (result.success) {
+                    technicians = Array.isArray(result.data) ? result.data : [];
+                    filteredTechnicians = technicians;
+                    renderTable();
+                    updateStats();
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading technicians:', error);
+                technicians = [];
+                filteredTechnicians = [];
+                renderTable();
+                updateStats();
+                showAlert('error', 'Gagal memuat data teknisi dari server.');
+            }
+        }
+        
+        // Render technician table
+        function renderTable() {
+            const tbody = document.getElementById('technicianTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredTechnicians.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            tbody.innerHTML = filteredTechnicians.map(tech => {
+                const statusClass = getStatusClass(tech.status);
+                const statusText = getStatusText(tech.status);
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="tech-avatar">
+                                <div class="avatar">${escapeHtml(tech.initials || '-')}</div>
+                                <span>${escapeHtml(tech.name || '-')}</span>
+                            </div>
+                        </td>
+                        <td>${escapeHtml(tech.area || '-')}</td>
+                        <td>${escapeHtml(tech.phone || '-')}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${Number(tech.activeTickets || 0)}</td>
+                        <td>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                ${Number(tech.rating || 0).toFixed(1)}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tech-quick-actions">
+                                <button class="quick-action-btn" type="button" onclick="editTechnician(${tech.id})" title="Edit teknisi">
+                                    <i class="fas fa-pen"></i>
+                                    <span class="quick-action-label">Edit</span>
+                                </button>
+                                <button class="quick-action-btn delete" type="button" onclick="deleteTechnician(${tech.id})" title="Hapus teknisi">
+                                    <i class="fas fa-trash"></i>
+                                    <span class="quick-action-label">Hapus</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalTechnicians').textContent = technicians.length;
+            document.getElementById('activeTechnicians').textContent = technicians.filter(t => t.status === 'active').length;
+            document.getElementById('assignedTickets').textContent = technicians.reduce((sum, t) => sum + Number(t.activeTickets || 0), 0);
+            
+            const avgRating = technicians.length > 0 
+                ? (technicians.reduce((sum, t) => sum + Number(t.rating || 0), 0) / technicians.length).toFixed(1) 
+                : 0;
+            document.getElementById('avgRating').textContent = avgRating;
+        }
+        
+        // Setup search
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function(e) {
+                const keyword = e.target.value.toLowerCase();
+                
+                if (keyword === '') {
+                    filteredTechnicians = technicians;
+                } else {
+                    filteredTechnicians = technicians.filter(tech => {
+                        return (tech.name && tech.name.toLowerCase().includes(keyword)) ||
+                               (tech.area && tech.area.toLowerCase().includes(keyword));
+                    });
+                }
+                
+                renderTable();
+            });
+        }
+        
+        // Get status class
+        function getStatusClass(status) {
+            switch(status) {
+                case 'active': return 'active';
+                case 'busy': return 'busy';
+                default: return 'inactive';
+            }
+        }
+        
+        // Get status text
+        function getStatusText(status) {
+            switch(status) {
+                case 'active': return 'Aktif';
+                case 'busy': return 'Sibuk';
+                default: return 'Nonaktif';
+            }
+        }
+        
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Tambah Teknisi';
+            document.getElementById('technicianId').value = '';
+            document.getElementById('technicianForm').reset();
+            document.getElementById('technicianModal').classList.add('open');
+        }
+        
+        // Edit technician
+        function editTechnician(techId) {
+            const tech = technicians.find(t => t.id === techId);
+            if (!tech) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit Teknisi';
+            document.getElementById('technicianId').value = tech.id;
+            document.getElementById('techName').value = tech.name;
+            document.getElementById('techArea').value = tech.area;
+            document.getElementById('techPhone').value = tech.phone;
+            document.getElementById('techStatus').value = tech.status;
+            
+            document.getElementById('technicianModal').classList.add('open');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('technicianModal').classList.remove('open');
+        }
+        
+        // Save technician
+        async function saveTechnician() {
+            const id = document.getElementById('technicianId').value;
+            const formData = {
+                name: document.getElementById('techName').value.trim(),
+                area: document.getElementById('techArea').value.trim(),
+                phone: document.getElementById('techPhone').value.trim(),
+                status: document.getElementById('techStatus').value
+            };
+            
+            if (!formData.name || !formData.area || !formData.phone) {
+                showAlert('error', 'Mohon lengkapi semua field!');
+                return;
+            }
+            
+            try {
+                const url = id ? `/ticketing/api/technicians/${id}` : '/ticketing/api/technicians';
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: buildHeaders(true),
+                    credentials: 'same-origin',
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', id ? 'Teknisi berhasil diperbarui!' : 'Teknisi berhasil ditambahkan!');
+                    closeModal();
+                    await loadTechnicians();
+                } else {
+                    showAlert('error', result.message);
+                }
+            } catch (error) {
+                console.error('Error saving technician:', error);
+                showAlert('error', 'Terjadi kesalahan saat menyimpan data teknisi.');
+            }
+        }
+
+        async function deleteTechnician(techId) {
+            const tech = technicians.find(t => t.id === techId);
+            if (!tech) return;
+
+            const confirmed = await window.nmxConfirm(`Hapus teknisi "${tech.name}"? Tindakan ini tidak dapat dibatalkan.`, {
+                title: 'Konfirmasi Hapus',
+                confirmText: 'Hapus',
+                confirmClass: 'btn btn-danger'
+            });
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`/ticketing/api/technicians/${techId}`, {
+                    method: 'DELETE',
+                    headers: buildHeaders(),
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('success', 'Teknisi berhasil dihapus!');
+                    await loadTechnicians();
+                    return;
+                }
+
+                showAlert('error', result.message || 'Gagal menghapus teknisi.');
+            } catch (error) {
+                console.error('Error deleting technician:', error);
+                showAlert('error', 'Terjadi kesalahan saat menghapus data teknisi.');
+            }
+        }
+        
+        // Show alert
+        function showAlert(type, message) {
+            if (window.nmxNotify) {
+                window.nmxNotify({
+                    type: type,
+                    message: message
+                });
+                return;
+            }
+
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-message ${type}`;
+            
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            
+            alertDiv.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        // Close modal on outside click
+        document.getElementById('technicianModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('technicianForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTechnician();
+        });
+    </script>
+</div>
+
+

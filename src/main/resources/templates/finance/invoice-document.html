@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${document.invoiceNumber + ' | Struk Pembayaran'}">Struk Pembayaran</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --paper-width: 80mm;
+            --receipt-max-width: 320px;
+            --receipt-padding: 12px;
+            --body-padding-top: 24px;
+            --font-scale: 1;
+        }
+
+        body[data-paper-size="58"] {
+            --paper-width: 58mm;
+            --receipt-max-width: 228px;
+            --receipt-padding: 10px;
+            --body-padding-top: 16px;
+            --font-scale: 0.92;
+        }
+
+        body[data-paper-size="80"] {
+            --paper-width: 80mm;
+            --receipt-max-width: 320px;
+            --receipt-padding: 12px;
+            --body-padding-top: 24px;
+            --font-scale: 1;
+        }
+
+        body {
+            margin: 0;
+            padding: var(--body-padding-top) 12px 40px;
+            background: #f4f4f4;
+            color: #000;
+            font-family: "Courier New", Courier, monospace;
+            font-size: calc(12px * var(--font-scale));
+        }
+
+        .print-toolbar {
+            width: min(var(--receipt-max-width), calc(100vw - 24px));
+            margin: 0 auto 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .print-toolbar button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 12px;
+            border: 1px solid #0f172a;
+            border-radius: 5px;
+            background: #000;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .print-toolbar .size-group {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .print-toolbar .size-btn {
+            flex: 1;
+            background: #fff;
+            color: #111827;
+            border-color: #cbd5e1;
+        }
+
+        .print-toolbar .size-btn.active {
+            background: #111827;
+            color: #fff;
+            border-color: #111827;
+        }
+
+        .print-toolbar .print-btn {
+            width: 100%;
+        }
+
+        .print-toolbar .pdf-btn {
+            width: 100%;
+            background: #fff;
+            color: #111827;
+            border-color: #111827;
+        }
+
+        .receipt {
+            width: min(var(--receipt-max-width), calc(100vw - 24px));
+            margin: 0 auto;
+            background: #fff;
+            padding: var(--receipt-padding);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paid-stamp {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            color: rgba(185, 28, 28, 0.12);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: calc(42px * var(--font-scale));
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            transform: rotate(-24deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .paid-stamp span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: calc(190px * var(--font-scale));
+            min-height: calc(72px * var(--font-scale));
+            padding: 8px 18px;
+            border: 3px double rgba(185, 28, 28, 0.18);
+            border-radius: 18px;
+            box-shadow: inset 0 0 0 1px rgba(185, 28, 28, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .receipt > *:not(.paid-stamp) {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: calc(22px * var(--font-scale));
+            text-transform: uppercase;
+            line-height: 1.15;
+        }
+
+        .header p {
+            margin: 2px 0;
+            font-size: calc(12px * var(--font-scale));
+        }
+
+        .status-box {
+            border: 1px solid #000;
+            padding: 6px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: calc(15px * var(--font-scale));
+            letter-spacing: 1px;
+        }
+
+        .info {
+            font-size: calc(12px * var(--font-scale));
+            margin-bottom: 10px;
+        }
+
+        .info table,
+        .items {
+            width: 100%;
+        }
+
+        .info td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .items {
+            border-collapse: collapse;
+            border-bottom: 1px dashed #000;
+            margin-bottom: 5px;
+            font-size: calc(12px * var(--font-scale));
+            table-layout: fixed;
+        }
+
+        .items th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+            padding: 5px 0;
+        }
+
+        .items th:first-child,
+        .items td:first-child {
+            width: 67%;
+            word-break: break-word;
+        }
+
+        .items th:last-child,
+        .items td:last-child {
+            width: 33%;
+        }
+
+        .items td {
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .items th:last-child,
+        .items td:last-child {
+            text-align: right;
+        }
+
+        .item-note {
+            display: block;
+            font-size: calc(11px * var(--font-scale));
+            margin-top: 2px;
+        }
+
+        .summary-table {
+            width: 100%;
+            font-size: calc(12px * var(--font-scale));
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+
+        .summary-table td {
+            padding: 2px 0;
+        }
+
+        .summary-table td:last-child {
+            text-align: right;
+        }
+
+        .total-section {
+            text-align: right;
+            font-size: calc(15px * var(--font-scale));
+            font-weight: 700;
+            margin-top: 6px;
+            border-top: 1px solid #000;
+            padding-top: 6px;
+        }
+
+        .service-active-card {
+            margin-top: 10px;
+            margin-bottom: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            text-align: center;
+        }
+
+        .service-active-label {
+            margin: 0;
+            font-size: calc(11px * var(--font-scale));
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .service-active-date {
+            margin: 6px 0 0;
+            font-size: calc(22px * var(--font-scale));
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            line-height: 1.15;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 8px;
+            font-size: calc(11px * var(--font-scale));
+            border-top: 1px dashed #000;
+            padding-top: 6px;
+            white-space: pre-line;
+        }
+
+        .footer p {
+            margin: 3px 0;
+            line-height: 1.15;
+        }
+
+        .qr-wrap {
+            margin: 12px auto 0;
+            width: calc(92px * var(--font-scale));
+            height: calc(92px * var(--font-scale));
+        }
+
+        .qr-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        @media print {
+            html,
+            body {
+                background: #fff;
+                padding: 0;
+                margin: 0;
+                font-size: 11px;
+            }
+
+            .print-toolbar {
+                display: none;
+            }
+
+            .receipt {
+                width: 100%;
+                max-width: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            body[data-paper-size="58"] .receipt {
+                font-size: 10px;
+            }
+
+            body[data-paper-size="58"] .header h1 {
+                font-size: 18px;
+            }
+
+            body[data-paper-size="58"] .status-box,
+            body[data-paper-size="58"] .total-section {
+                font-size: 13px;
+            }
+
+            body[data-paper-size="58"] .service-active-card {
+                padding: 8px 10px;
+                border-radius: 6px;
+            }
+
+            body[data-paper-size="58"] .service-active-label {
+                font-size: 10px;
+            }
+
+            body[data-paper-size="58"] .service-active-date {
+                font-size: 18px;
+            }
+
+            body[data-paper-size="58"] .paid-stamp {
+                font-size: 28px;
+                letter-spacing: 4px;
+            }
+
+            body[data-paper-size="58"] .paid-stamp span {
+                min-width: 128px;
+                min-height: 54px;
+                border-width: 2px;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body data-paper-size="80" th:attr="data-invoice-id=${document.invoiceId}">
+<div class="print-toolbar">
+    <div class="size-group">
+        <button type="button" class="size-btn" data-size="58" onclick="setPaperSize('58')">58mm</button>
+        <button type="button" class="size-btn" data-size="80" onclick="setPaperSize('80')">80mm</button>
+    </div>
+    <button type="button" class="print-btn" onclick="printReceipt()">CETAK BUKTI BAYAR</button>
+    <button type="button" class="pdf-btn" onclick="exportThermalPdf()">EXPORT PDF THERMAL</button>
+</div>
+
+<div class="receipt" id="receiptContent">
+    <div class="paid-stamp" th:if="${document.paymentStatusLabel != null and #strings.containsIgnoreCase(document.paymentStatusLabel, 'LUNAS')}">
+        <span>LUNAS</span>
+    </div>
+    <div class="header">
+        <h1 th:text="${document.companyName}">NET MASTER</h1>
+        <p th:if="${document.companyTagline != null && !document.companyTagline.isBlank()}" th:text="${document.companyTagline}">Solusi Internet Terpercaya</p>
+        <p th:text="${document.companyEmail}">support@example.com</p>
+        <p th:text="${'WA: ' + document.companyPhone}">WA: 0812-3456-7890</p>
+    </div>
+
+    <div class="status-box" th:text="${document.paymentStatusLabel}">LUNAS / PAID</div>
+
+    <div class="info">
+        <table>
+            <tr>
+                <td width="40%">No. Bukti</td>
+                <td th:text="${': ' + document.invoiceNumber}">: INV-001</td>
+            </tr>
+            <tr>
+                <td>Tgl Bayar</td>
+                <td th:text="${': ' + document.paymentDateLabel}">: 24 Okt 2023</td>
+            </tr>
+            <tr>
+                <td>Pelanggan</td>
+                <td th:text="${': ' + document.customerName}">: Nama Pelanggan</td>
+            </tr>
+            <tr>
+                <td>ID Pel</td>
+                <td th:text="${': ' + document.customerCode}">: CSM-001</td>
+            </tr>
+            <tr>
+                <td>Metode</td>
+                <td th:text="${': ' + document.paymentMethodName}">: Cash</td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="items">
+        <thead>
+        <tr>
+            <th>Deskripsi Layanan</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${document.items}">
+            <td>
+                <span th:text="${item.description}">Paket Home Ultra</span>
+                <span class="item-note"
+                      th:text="${'Qty: ' + item.quantity.stripTrailingZeros().toPlainString() + ' ' + item.unitName}">Qty: 1 Bulan</span>
+            </td>
+            <td th:text="${item.subtotalLabel}">Rp 350.000</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="summary-table">
+        <tr>
+            <td>Subtotal</td>
+            <td th:text="${document.subtotalLabel}">Rp 350.000</td>
+        </tr>
+        <tr th:if="${document.taxAmount != null && document.taxAmount.signum() > 0}">
+            <td th:text="${'Pajak (' + document.taxRate.stripTrailingZeros().toPlainString() + '%)'}">Pajak</td>
+            <td th:text="${document.taxLabel}">Rp 5.000</td>
+        </tr>
+    </table>
+
+    <div class="total-section" th:text="${'TOTAL BAYAR: ' + document.totalLabel}">TOTAL BAYAR: Rp 355.000</div>
+
+    <div class="service-active-card" th:if="${document.serviceActiveUntilLabel != null && !document.serviceActiveUntilLabel.isBlank()}">
+        <p class="service-active-label">Layanan Anda Aktif S/D:</p>
+        <p class="service-active-date" th:text="${document.serviceActiveUntilLabel}">29 April 2026</p>
+    </div>
+
+    <div class="footer">
+        <p th:if="${document.footerNote != null && !document.footerNote.isBlank()}" th:text="${document.footerNote}">Catatan invoice</p>
+        <p>LAYANAN PELANGGAN 24 JAM</p>
+    </div>
+</div>
+<script>
+    (function() {
+        const storageKey = 'nmx.invoice.paperSize';
+        const printStyleId = 'dynamic-thermal-page-style';
+
+        function updatePrintPaperStyle(size) {
+            const normalized = size === '58' ? '58' : '80';
+            const paperWidth = normalized === '58' ? '58mm' : '80mm';
+            const printMargin = normalized === '58' ? '2mm' : '3mm';
+            const receiptWidth = normalized === '58' ? '54mm' : '74mm';
+            const styleContent = `
+                @page { size: ${paperWidth} auto; margin: ${printMargin}; }
+                @media print {
+                    html, body {
+                        width: ${paperWidth};
+                        min-width: ${paperWidth};
+                        max-width: ${paperWidth};
+                    }
+                    .receipt {
+                        width: ${receiptWidth} !important;
+                    }
+                }
+            `;
+
+            let styleTag = document.getElementById(printStyleId);
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = printStyleId;
+                styleTag.media = 'print';
+                document.head.appendChild(styleTag);
+            }
+            styleTag.textContent = styleContent;
+        }
+
+        function applyPaperSize(size) {
+            const normalized = size === '58' ? '58' : '80';
+            document.body.setAttribute('data-paper-size', normalized);
+            updatePrintPaperStyle(normalized);
+            document.querySelectorAll('.size-btn').forEach((button) => {
+                button.classList.toggle('active', button.dataset.size === normalized);
+            });
+        }
+
+        window.setPaperSize = function(size) {
+            applyPaperSize(size);
+            try {
+                window.localStorage.setItem(storageKey, size);
+            } catch (error) {
+                console.warn('Unable to persist paper size preference', error);
+            }
+        };
+
+        window.printReceipt = function() {
+            const currentSize = document.body.getAttribute('data-paper-size') || '80';
+            const receipt = document.getElementById('receiptContent');
+            if (!receipt) {
+                window.print();
+                return;
+            }
+
+            const printWindow = window.open('', '_blank', currentSize === '58' ? 'width=320,height=900' : 'width=420,height=960');
+            if (!printWindow) {
+                updatePrintPaperStyle(currentSize);
+                window.print();
+                return;
+            }
+
+            const sourceStyle = Array.from(document.querySelectorAll('style'))
+                .map((style) => style.textContent || '')
+                .join('\n');
+            const paperWidth = currentSize === '58' ? '58mm' : '80mm';
+            const receiptWidth = currentSize === '58' ? '54mm' : '74mm';
+            const printMargin = currentSize === '58' ? '2mm' : '3mm';
+            const title = document.title || 'Struk Pembayaran';
+
+            printWindow.document.open();
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="id">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${title}</title>
+                    <style>${sourceStyle}</style>
+                    <style>
+                        @page { size: ${paperWidth} auto; margin: ${printMargin}; }
+                        html, body {
+                            width: ${paperWidth} !important;
+                            min-width: ${paperWidth} !important;
+                            max-width: ${paperWidth} !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            background: #fff !important;
+                            overflow: visible !important;
+                        }
+                        .print-toolbar {
+                            display: none !important;
+                        }
+                        .receipt {
+                            width: ${receiptWidth} !important;
+                            min-width: ${receiptWidth} !important;
+                            max-width: ${receiptWidth} !important;
+                            margin: 0 auto !important;
+                            padding: 0 !important;
+                            box-shadow: none !important;
+                            background: #fff !important;
+                        }
+                    </style>
+                </head>
+                <body data-paper-size="${currentSize}">
+                    ${receipt.outerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+            }, 300);
+        };
+
+        window.exportThermalPdf = function() {
+            const currentSize = document.body.getAttribute('data-paper-size') || '80';
+            const invoiceId = document.body.getAttribute('data-invoice-id');
+            if (!invoiceId) {
+                return;
+            }
+            window.location.href = '/finance/invoice/' + invoiceId + '/document/pdf?paperSize=' + currentSize;
+        };
+
+        let initialSize = '80';
+        try {
+            const saved = window.localStorage.getItem(storageKey);
+            if (saved === '58' || saved === '80') {
+                initialSize = saved;
+            }
+        } catch (error) {
+            console.warn('Unable to read paper size preference', error);
+        }
+
+        applyPaperSize(initialSize);
+    })();
+</script>
+</body>
+</html>
