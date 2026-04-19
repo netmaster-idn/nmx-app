@@ -1,25 +1,34 @@
 package com.netmaster.nmx.service;
 
 import com.netmaster.nmx.dto.superadmin.TenantDirectoryResponse;
+import com.netmaster.nmx.dto.superadmin.TenantInspectResponse;
+import com.netmaster.nmx.dto.superadmin.TenantInspectUpdateRequest;
+import com.netmaster.nmx.dto.superadmin.TenantOwnerPasswordResetResponse;
 import com.netmaster.nmx.dto.superadmin.TenantSummaryResponse;
 import com.netmaster.nmx.dto.superadmin.TenantUpdateRequest;
+import com.netmaster.nmx.master.model.IspRegistration;
 import com.netmaster.nmx.master.model.Tenant;
 import com.netmaster.nmx.master.model.TenantStatus;
+import com.netmaster.nmx.master.repository.IspRegistrationRepository;
 import com.netmaster.nmx.master.repository.SubscriptionPlanRepository;
 import com.netmaster.nmx.master.repository.TenantRepository;
+import com.netmaster.nmx.model.User;
 import com.netmaster.nmx.repository.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.netmaster.nmx.security.SessionAttributeKeys.SUPPORT_READ_ONLY;
 import static com.netmaster.nmx.security.SessionAttributeKeys.SUPPORT_TENANT_ID;
@@ -29,8 +38,11 @@ import static com.netmaster.nmx.security.SessionAttributeKeys.SUPPORT_TENANT_ID;
 public class SuperAdminTenantAccessService {
 
     private final TenantRepository tenantRepository;
+    private final IspRegistrationRepository ispRegistrationRepository;
     private final SubscriptionPlanRepository subscriptionPlanRepository;
     private final TenantConnectionManager tenantConnectionManager;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final InvoiceRepository invoiceRepository;
     private final TicketRepository ticketRepository;
@@ -39,6 +51,8 @@ public class SuperAdminTenantAccessService {
     private final MasterAuditLogService auditLogService;
     @Qualifier("masterJdbcTemplate")
     private final JdbcTemplate masterJdbcTemplate;
+    private static final String TEMP_PASSWORD_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @Transactional("masterTransactionManager")
     public List<TenantDirectoryResponse> findAllTenants() {
@@ -105,10 +119,137 @@ public class SuperAdminTenantAccessService {
             tenant.setStatus(TenantStatus.valueOf(request.getStatus().trim().toUpperCase()));
         }
         if (request.getSubscriptionPlanCode() != null && !request.getSubscriptionPlanCode().isBlank()) {
-            tenant.setSubscriptionPlan(subscriptionPlanRepository.findByCode(request.getSubscriptionPlanCode().trim())
-                    .orElseThrow(() -> new IllegalArgumentException("Subscription plan tidak ditemukan.")));
+            applySubscriptionPlan(tenant, request.getSubscriptionPlanCode());
         }
         return tenantRepository.save(tenant);
+    }
+
+    @Transactional("masterTransactionManager")
+    public TenantInspectResponse getTenantInspectDetail(Long tenantId) {
+        Tenant tenant = getTenant(tenantId);
+        Optional<IspRegistration> registration = resolveRegistration(tenant);
+        return toInspectResponse(tenant, registration.orElse(null));
+    }
+
+    @Transactional("masterTransactionManager")
+    public TenantInspectResponse updateTenantInspectDetail(Long tenantId, TenantInspectUpdateRequest request) {
+        Tenant tenant = getTenant(tenantId);
+        IspRegistration registration = resolveRegistration(tenant).orElse(null);
+
+        if (request.getCompanyName() != null && !request.getCompanyName().isBlank()) {
+            String companyName = request.getCompanyName().trim();
+            tenant.setCompanyName(companyName);
+            if (registration != null) {
+                registration.setCompanyName(companyName);
+            }
+        }
+
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            String email = request.getEmail().trim();
+            tenant.setEmail(email);
+            if (registration != null) {
+                registration.setEmail(email);
+            }
+        }
+
+        if (request.getPhone() != null) {
+            String phone = request.getPhone().trim();
+            tenant.setPhone(phone);
+            if (registration != null) {
+                registration.setPhone(phone);
+            }
+        }
+
+        if (request.getAddress() != null) {
+            tenant.setAddress(request.getAddress());
+            if (registration != null) {
+                registration.setAddress(request.getAddress());
+            }
+        }
+
+        if (request.getStatus() != null && !request.getStatus().isBlank()) {
+            TenantStatus status = TenantStatus.valueOf(request.getStatus().trim().toUpperCase());
+            tenant.setStatus(status);
+            if (registration != null) {
+                registration.setStatus(status);
+            }
+        }
+
+        if (request.getSubscriptionPlanCode() != null && !request.getSubscriptionPlanCode().isBlank()) {
+            applySubscriptionPlan(tenant, request.getSubscriptionPlanCode());
+        }
+
+        if (registration != null) {
+            if (request.getOwnerName() != null && !request.getOwnerName().isBlank()) {
+                registration.setOwnerName(request.getOwnerName().trim());
+            }
+
+            if (request.getOwnerEmail() != null && !request.getOwnerEmail().isBlank()) {
+                String ownerEmail = request.getOwnerEmail().trim().toLowerCase();
+                ensureOwnerEmailUnique(ownerEmail, registration.getId());
+                registration.setOwnerEmail(ownerEmail);
+            }
+
+            if (request.getOwnerUsername() != null && !request.getOwnerUsername().isBlank()) {
+                String ownerUsername = request.getOwnerUsername().trim();
+                ensureOwnerUsernameUnique(ownerUsername, registration.getId());
+                registration.setOwnerUsername(ownerUsername);
+            }
+
+            if (request.getRequestedPlanCode() != null && !request.getRequestedPlanCode().isBlank()) {
+                registration.setRequestedPlanCode(request.getRequestedPlanCode().trim().toUpperCase());
+            }
+
+            registration = ispRegistrationRepository.save(registration);
+        }
+
+        tenant = tenantRepository.save(tenant);
+        return toInspectResponse(tenant, registration);
+    }
+
+    @Transactional("masterTransactionManager")
+    public TenantOwnerPasswordResetResponse resetTenantOwnerPassword(Long tenantId, Long superAdminId, String requestIp) {
+        Tenant tenant = getTenant(tenantId);
+        IspRegistration registration = resolveRegistration(tenant)
+                .orElseThrow(() -> new IllegalStateException("Data registrasi owner tenant tidak ditemukan."));
+
+        String ownerUsername = registration.getOwnerUsername();
+        if (ownerUsername == null || ownerUsername.isBlank()) {
+            throw new IllegalStateException("Owner username belum tersedia pada data registrasi.");
+        }
+
+        String temporaryPassword = generateTemporaryPassword(12);
+        String passwordHash = passwordEncoder.encode(temporaryPassword);
+
+        registration.setOwnerPasswordHash(passwordHash);
+        ispRegistrationRepository.save(registration);
+
+        tenantConnectionManager.runInTenantContext(tenant, () -> {
+            User owner = userRepository.findByUsername(ownerUsername)
+                    .orElseThrow(() -> new IllegalStateException("Akun owner tenant tidak ditemukan di database tenant."));
+            owner.setPassword(passwordHash);
+            userRepository.save(owner);
+        });
+
+        auditLogService.record(
+                "SUPERADMIN",
+                superAdminId,
+                "TENANT_OWNER_PASSWORD_RESET",
+                tenant.getId(),
+                "TENANT",
+                tenant.getId().toString(),
+                Map.of(
+                        "tenantSlug", tenant.getSlug(),
+                        "ownerUsername", ownerUsername
+                ),
+                requestIp
+        );
+
+        return TenantOwnerPasswordResetResponse.builder()
+                .tenantId(tenant.getId())
+                .ownerUsername(ownerUsername)
+                .temporaryPassword(temporaryPassword)
+                .build();
     }
 
     @Transactional("masterTransactionManager")
@@ -198,6 +339,44 @@ public class SuperAdminTenantAccessService {
                 .orElseThrow(() -> new IllegalArgumentException("Tenant tidak ditemukan."));
     }
 
+    private Optional<IspRegistration> resolveRegistration(Tenant tenant) {
+        Long registrationId = tenant.getRegistrationId();
+        if (registrationId == null) {
+            return Optional.empty();
+        }
+        return ispRegistrationRepository.findById(registrationId);
+    }
+
+    private void applySubscriptionPlan(Tenant tenant, String planCode) {
+        tenant.setSubscriptionPlan(subscriptionPlanRepository.findByCode(planCode.trim())
+                .orElseThrow(() -> new IllegalArgumentException("Subscription plan tidak ditemukan.")));
+    }
+
+    private void ensureOwnerUsernameUnique(String ownerUsername, Long currentRegistrationId) {
+        ispRegistrationRepository.findByOwnerUsernameIgnoreCase(ownerUsername).ifPresent(existing -> {
+            if (!existing.getId().equals(currentRegistrationId)) {
+                throw new IllegalArgumentException("Owner username sudah digunakan.");
+            }
+        });
+    }
+
+    private void ensureOwnerEmailUnique(String ownerEmail, Long currentRegistrationId) {
+        ispRegistrationRepository.findByOwnerEmailIgnoreCase(ownerEmail).ifPresent(existing -> {
+            if (!existing.getId().equals(currentRegistrationId)) {
+                throw new IllegalArgumentException("Owner email sudah digunakan.");
+            }
+        });
+    }
+
+    private String generateTemporaryPassword(int length) {
+        StringBuilder password = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = SECURE_RANDOM.nextInt(TEMP_PASSWORD_CHARS.length());
+            password.append(TEMP_PASSWORD_CHARS.charAt(index));
+        }
+        return password.toString();
+    }
+
     private TenantDirectoryResponse toDirectoryResponse(Tenant tenant) {
         return TenantDirectoryResponse.builder()
                 .id(tenant.getId())
@@ -211,6 +390,27 @@ public class SuperAdminTenantAccessService {
                 .approvedAt(tenant.getApprovedAt())
                 .createdAt(tenant.getCreatedAt())
                 .deletedAt(tenant.getDeletedAt())
+                .build();
+    }
+
+    private TenantInspectResponse toInspectResponse(Tenant tenant, IspRegistration registration) {
+        return TenantInspectResponse.builder()
+                .tenantId(tenant.getId())
+                .registrationId(tenant.getRegistrationId())
+                .companyName(tenant.getCompanyName())
+                .slug(tenant.getSlug())
+                .email(tenant.getEmail())
+                .phone(tenant.getPhone())
+                .address(tenant.getAddress())
+                .status(tenant.getStatus() != null ? tenant.getStatus().name() : null)
+                .subscriptionPlanCode(tenant.getSubscriptionPlan() != null ? tenant.getSubscriptionPlan().getCode() : null)
+                .createdAt(tenant.getCreatedAt())
+                .approvedAt(tenant.getApprovedAt())
+                .ownerName(registration != null ? registration.getOwnerName() : null)
+                .ownerEmail(registration != null ? registration.getOwnerEmail() : null)
+                .ownerUsername(registration != null ? registration.getOwnerUsername() : null)
+                .requestedPlanCode(registration != null ? registration.getRequestedPlanCode() : null)
+                .registrationStatus(registration != null && registration.getStatus() != null ? registration.getStatus().name() : null)
                 .build();
     }
 

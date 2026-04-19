@@ -2,29 +2,40 @@
     <style>
         .control-plane {
             display: grid;
-            gap: 20px;
+            gap: 22px;
         }
 
         .control-plane-hero,
         .control-plane-card {
+            position: relative;
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: linear-gradient(145deg, rgba(8, 15, 32, 0.96), rgba(17, 30, 57, 0.92));
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-gradient-soft);
             box-shadow: var(--shadow-card);
+            backdrop-filter: blur(var(--blur-md));
+            -webkit-backdrop-filter: blur(var(--blur-md));
             overflow: hidden;
         }
 
-        .control-plane-hero {
-            position: relative;
+        .control-plane-hero::before,
+        .control-plane-card::before {
+            content: "";
+            position: absolute;
+            inset: 1px 1px auto 1px;
+            height: 32%;
+            border-radius: inherit;
+            background: var(--glass-top-highlight);
+            opacity: 0.72;
+            pointer-events: none;
         }
 
-        .control-plane-hero::before {
+        .control-plane-hero::after {
             content: "";
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(circle at top right, rgba(56, 189, 248, 0.2), transparent 36%),
-                radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.16), transparent 34%);
+                radial-gradient(circle at top left, rgba(203, 109, 47, 0.14), transparent 34%),
+                radial-gradient(circle at top right, rgba(52, 211, 153, 0.08), transparent 28%);
             pointer-events: none;
         }
 
@@ -39,31 +50,31 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 14px;
+            padding: 7px 12px;
             border-radius: 999px;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.24);
-            color: #7dd3fc;
-            font-size: 11px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
         }
 
         .control-plane-title {
             margin: 14px 0 8px;
-            color: #f8fafc;
-            font-size: clamp(28px, 3vw, 40px);
-            line-height: 1.05;
-            letter-spacing: -0.04em;
+            color: var(--text-primary);
+            font-size: clamp(24px, 2.8vw, 42px);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
         }
 
         .control-plane-copy {
             margin: 0;
             max-width: 820px;
-            color: rgba(226, 232, 240, 0.78);
+            color: var(--text-muted);
             line-height: 1.7;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .control-plane-banner {
@@ -74,9 +85,9 @@
         }
 
         .control-plane-banner.success {
-            background: rgba(34, 197, 94, 0.12);
-            color: #bbf7d0;
-            border: 1px solid rgba(34, 197, 94, 0.22);
+            background: linear-gradient(180deg, rgba(69, 110, 82, 0.42), rgba(50, 79, 60, 0.42));
+            color: #d2eddc;
+            border: 1px solid rgba(90, 152, 113, 0.58);
         }
 
         .control-plane-grid-4,
@@ -103,12 +114,13 @@
             padding: 20px;
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
         }
 
         .metric-label,
         .section-label {
-            color: rgba(148, 163, 184, 0.9);
+            color: var(--text-muted);
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
@@ -117,7 +129,7 @@
 
         .metric-value {
             margin-top: 10px;
-            color: #f8fafc;
+            color: var(--text-primary);
             font-size: 34px;
             font-weight: 700;
             letter-spacing: -0.04em;
@@ -128,7 +140,7 @@
         .alert-copy,
         .empty-state {
             margin-top: 8px;
-            color: rgba(226, 232, 240, 0.7);
+            color: var(--text-muted);
             font-size: 13px;
             line-height: 1.6;
         }
@@ -166,14 +178,14 @@
 
         .section-title {
             margin: 6px 0 0;
-            color: #f8fafc;
+            color: var(--text-primary);
             font-size: 20px;
             letter-spacing: -0.03em;
         }
 
         .section-copy {
             margin: 6px 0 0;
-            color: rgba(226, 232, 240, 0.7);
+            color: var(--text-muted);
             font-size: 13px;
         }
 
@@ -191,7 +203,7 @@
         }
 
         .status-pill.active {
-            background: rgba(34, 197, 94, 0.14);
+            background: rgba(34, 197, 94, 0.16);
             color: #86efac;
         }
 
@@ -220,19 +232,19 @@
         .control-table td {
             padding: 14px 12px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid var(--border-subtle);
             vertical-align: middle;
         }
 
         .control-table th {
-            color: rgba(148, 163, 184, 0.95);
+            color: var(--text-muted);
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
         }
 
         .control-table td {
-            color: #e2e8f0;
+            color: var(--text-secondary);
             font-size: 13px;
         }
 
@@ -242,12 +254,12 @@
 
         .tenant-name {
             font-weight: 600;
-            color: #f8fafc;
+            color: var(--text-primary);
         }
 
         .tenant-meta {
             margin-top: 4px;
-            color: rgba(148, 163, 184, 0.88);
+            color: var(--text-muted);
             font-size: 12px;
         }
 
@@ -263,25 +275,179 @@
         }
 
         .activity-item {
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .activity-item:last-child {
-            border-bottom: 0;
-            padding-bottom: 0;
+            padding: 14px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .activity-title {
-            color: #f8fafc;
+            color: var(--text-primary);
             font-size: 13px;
             font-weight: 600;
         }
 
         .activity-meta {
             margin-top: 4px;
-            color: rgba(148, 163, 184, 0.88);
+            color: var(--text-muted);
             font-size: 12px;
+        }
+
+        .tenant-inspect-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(2, 6, 23, 0.6);
+            backdrop-filter: blur(2px);
+        }
+
+        .tenant-inspect-overlay.open {
+            display: flex;
+        }
+
+        .tenant-inspect-modal {
+            width: min(880px, 100%);
+            max-height: min(90vh, 840px);
+            overflow: auto;
+            border-radius: 22px;
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-gradient-soft);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .tenant-inspect-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .tenant-inspect-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .tenant-inspect-subtitle {
+            margin: 6px 0 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tenant-inspect-close {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .tenant-inspect-close:hover {
+            color: var(--text-primary);
+            border-color: rgba(203, 109, 47, 0.35);
+        }
+
+        .tenant-inspect-body {
+            padding: 16px 20px 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .tenant-inspect-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .tenant-inspect-field {
+            display: grid;
+            gap: 6px;
+        }
+
+        .tenant-inspect-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .tenant-inspect-field label {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 700;
+        }
+
+        .tenant-inspect-field input,
+        .tenant-inspect-field select,
+        .tenant-inspect-field textarea {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px 11px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .tenant-inspect-field textarea {
+            min-height: 88px;
+            resize: vertical;
+        }
+
+        .tenant-inspect-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tenant-inspect-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-family: var(--font-mono);
+        }
+
+        .tenant-inspect-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 20px 18px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .tenant-inspect-status {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .tenant-inspect-password-box {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(203, 109, 47, 0.35);
+            background: linear-gradient(180deg, rgba(97, 66, 41, 0.45), rgba(77, 52, 33, 0.45));
+            color: #ffd7b5;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            word-break: break-all;
         }
 
         @media (max-width: 1120px) {
@@ -320,6 +486,15 @@
             .control-table td {
                 padding: 6px 0;
                 border: 0;
+            }
+
+            .tenant-inspect-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tenant-inspect-footer {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
     </style>
@@ -467,7 +642,11 @@
                             <td th:text="${tenant.createdAt != null ? #temporals.format(tenant.createdAt, 'dd MMM yyyy HH:mm') : '-'}">04 Apr 2026 10:00</td>
                             <td>
                                 <div class="action-row">
-                                    <a class="btn btn-secondary" th:href="@{/superadmin/tenants/{id}(id=${tenant.id})}" target="_blank" rel="noopener">Inspect</a>
+                                    <button type="button"
+                                            class="btn btn-secondary inspect-tenant-btn"
+                                            th:attr="data-tenant-id=${tenant.id}">
+                                        Inspect
+                                    </button>
                                     <form th:if="${tenant.canSuspend}" th:action="@{/superadmin/dashboard/tenants/{id}/suspend(id=${tenant.id})}" method="post">
                                         <button class="btn btn-danger" type="submit">Suspend</button>
                                     </form>
@@ -498,7 +677,7 @@
 
                     <div class="activity-list" th:if="${!#lists.isEmpty(superadminDashboard.recentActivity)}">
                         <div class="activity-item" th:each="item : ${superadminDashboard.recentActivity}">
-                            <div class="activity-title" th:text="${item.activity}">TENANT_APPROVED • isp-maju</div>
+                            <div class="activity-title" th:text="${item.activity}">TENANT_APPROVED - isp-maju</div>
                             <div class="activity-meta" th:text="${item.createdAt != null ? #temporals.format(item.createdAt, 'dd MMM yyyy HH:mm') : '-'}">04 Apr 2026 10:00</div>
                         </div>
                     </div>
@@ -510,4 +689,380 @@
             </article>
         </section>
     </section>
+
+    <div id="tenantInspectOverlay" class="tenant-inspect-overlay" aria-hidden="true">
+        <div class="tenant-inspect-modal" role="dialog" aria-modal="true" aria-labelledby="tenantInspectTitle">
+            <div class="tenant-inspect-head">
+                <div>
+                    <h3 id="tenantInspectTitle" class="tenant-inspect-title">Inspect Tenant</h3>
+                    <p class="tenant-inspect-subtitle">Lihat dan ubah data tenant serta data owner saat registrasi.</p>
+                </div>
+                <button id="tenantInspectClose" class="tenant-inspect-close" type="button" aria-label="Tutup">&times;</button>
+            </div>
+
+            <form id="tenantInspectForm">
+                <div class="tenant-inspect-body">
+                    <div class="tenant-inspect-meta">
+                        <span class="tenant-inspect-chip">Tenant ID: <strong id="tenantInspectMetaId">-</strong></span>
+                        <span class="tenant-inspect-chip">Slug: <strong id="tenantInspectMetaSlug">-</strong></span>
+                        <span class="tenant-inspect-chip">Registration ID: <strong id="tenantInspectMetaRegId">-</strong></span>
+                    </div>
+
+                    <div class="tenant-inspect-grid">
+                        <div class="tenant-inspect-field">
+                            <label for="inspectCompanyName">Nama Perusahaan</label>
+                            <input id="inspectCompanyName" name="companyName" type="text" required>
+                        </div>
+                        <div class="tenant-inspect-field">
+                            <label for="inspectEmail">Email Perusahaan</label>
+                            <input id="inspectEmail" name="email" type="email" required>
+                        </div>
+                        <div class="tenant-inspect-field">
+                            <label for="inspectPhone">No HP</label>
+                            <input id="inspectPhone" name="phone" type="text">
+                        </div>
+                        <div class="tenant-inspect-field">
+                            <label for="inspectStatus">Status Tenant</label>
+                            <select id="inspectStatus" name="status">
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="PENDING">PENDING</option>
+                                <option value="SUSPENDED">SUSPENDED</option>
+                                <option value="REJECTED">REJECTED</option>
+                            </select>
+                        </div>
+                        <div class="tenant-inspect-field">
+                            <label for="inspectSubscriptionPlanCode">Subscription Plan</label>
+                            <input id="inspectSubscriptionPlanCode" name="subscriptionPlanCode" type="text" placeholder="TRIAL">
+                        </div>
+                        <div class="tenant-inspect-field">
+                            <label for="inspectRequestedPlanCode">Requested Plan (Registrasi)</label>
+                            <input id="inspectRequestedPlanCode" name="requestedPlanCode" type="text" placeholder="TRIAL">
+                        </div>
+                        <div class="tenant-inspect-field full">
+                            <label for="inspectAddress">Alamat</label>
+                            <textarea id="inspectAddress" name="address"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="tenant-inspect-grid">
+                        <div class="tenant-inspect-field">
+                            <label for="inspectOwnerName">Nama Owner</label>
+                            <input id="inspectOwnerName" name="ownerName" type="text">
+                        </div>
+                        <div class="tenant-inspect-field">
+                            <label for="inspectOwnerEmail">Email Owner</label>
+                            <input id="inspectOwnerEmail" name="ownerEmail" type="email">
+                        </div>
+                        <div class="tenant-inspect-field full">
+                            <label for="inspectOwnerUsername">Username Owner</label>
+                            <input id="inspectOwnerUsername" name="ownerUsername" type="text">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tenant-inspect-footer">
+                    <div>
+                        <div id="tenantInspectStatus" class="tenant-inspect-status">Pilih tenant lalu simpan perubahan bila perlu.</div>
+                        <div id="tenantInspectPasswordBox" class="tenant-inspect-password-box"></div>
+                    </div>
+                    <div class="action-row">
+                        <button id="tenantInspectResetPassword" class="btn btn-danger" type="button">Reset Password Owner</button>
+                        <button id="tenantInspectCancel" class="btn btn-secondary" type="button">Batal</button>
+                        <button id="tenantInspectSave" class="btn btn-primary" type="submit">Simpan Perubahan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const overlay = document.getElementById('tenantInspectOverlay');
+            const closeButton = document.getElementById('tenantInspectClose');
+            const cancelButton = document.getElementById('tenantInspectCancel');
+            const resetPasswordButton = document.getElementById('tenantInspectResetPassword');
+            const saveButton = document.getElementById('tenantInspectSave');
+            const form = document.getElementById('tenantInspectForm');
+            const statusText = document.getElementById('tenantInspectStatus');
+            const passwordBox = document.getElementById('tenantInspectPasswordBox');
+            const metaId = document.getElementById('tenantInspectMetaId');
+            const metaSlug = document.getElementById('tenantInspectMetaSlug');
+            const metaRegId = document.getElementById('tenantInspectMetaRegId');
+
+            let activeTenantId = null;
+
+            function closeModal() {
+                if (!overlay) {
+                    return;
+                }
+                overlay.classList.remove('open');
+                overlay.setAttribute('aria-hidden', 'true');
+                activeTenantId = null;
+                if (passwordBox) {
+                    passwordBox.style.display = 'none';
+                    passwordBox.textContent = '';
+                }
+            }
+
+            function openModal() {
+                if (!overlay) {
+                    return;
+                }
+                overlay.classList.add('open');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+
+            function setStatus(message) {
+                if (statusText) {
+                    statusText.textContent = message;
+                }
+            }
+
+            function setLoading(isLoading) {
+                if (saveButton) {
+                    saveButton.disabled = isLoading;
+                    saveButton.textContent = isLoading ? 'Menyimpan...' : 'Simpan Perubahan';
+                }
+            }
+
+            function setResetLoading(isLoading) {
+                if (resetPasswordButton) {
+                    resetPasswordButton.disabled = isLoading;
+                    resetPasswordButton.textContent = isLoading ? 'Mereset...' : 'Reset Password Owner';
+                }
+            }
+
+            function toPayload(data) {
+                return {
+                    companyName: (data.companyName || '').trim(),
+                    email: (data.email || '').trim(),
+                    phone: (data.phone || '').trim(),
+                    address: (data.address || '').trim(),
+                    status: (data.status || '').trim().toUpperCase(),
+                    subscriptionPlanCode: (data.subscriptionPlanCode || '').trim().toUpperCase(),
+                    ownerName: (data.ownerName || '').trim(),
+                    ownerEmail: (data.ownerEmail || '').trim(),
+                    ownerUsername: (data.ownerUsername || '').trim(),
+                    requestedPlanCode: (data.requestedPlanCode || '').trim().toUpperCase()
+                };
+            }
+
+            async function api(url, method, body) {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (method !== 'GET' && method !== 'HEAD') {
+                    headers[window.csrfHeader || 'X-CSRF-TOKEN'] = window.csrfToken || '';
+                }
+                const response = await fetch(url, {
+                    method: method || 'GET',
+                    credentials: 'same-origin',
+                    headers: headers,
+                    body: body ? JSON.stringify(body) : undefined
+                });
+                const payload = await response.json().catch(function () {
+                    return { success: false, message: 'Response server tidak valid.' };
+                });
+                if (!response.ok || !payload.success) {
+                    throw new Error(payload.message || 'Request gagal diproses.');
+                }
+                return payload.data;
+            }
+
+            function fillForm(detail) {
+                if (!form) {
+                    return;
+                }
+                form.elements.namedItem('companyName').value = detail.companyName || '';
+                form.elements.namedItem('email').value = detail.email || '';
+                form.elements.namedItem('phone').value = detail.phone || '';
+                form.elements.namedItem('address').value = detail.address || '';
+                form.elements.namedItem('status').value = detail.status || 'ACTIVE';
+                form.elements.namedItem('subscriptionPlanCode').value = detail.subscriptionPlanCode || '';
+                form.elements.namedItem('ownerName').value = detail.ownerName || '';
+                form.elements.namedItem('ownerEmail').value = detail.ownerEmail || '';
+                form.elements.namedItem('ownerUsername').value = detail.ownerUsername || '';
+                form.elements.namedItem('requestedPlanCode').value = detail.requestedPlanCode || '';
+
+                if (metaId) {
+                    metaId.textContent = detail.tenantId != null ? String(detail.tenantId) : '-';
+                }
+                if (metaSlug) {
+                    metaSlug.textContent = detail.slug || '-';
+                }
+                if (metaRegId) {
+                    metaRegId.textContent = detail.registrationId != null ? String(detail.registrationId) : '-';
+                }
+            }
+
+            async function inspectTenant(tenantId) {
+                activeTenantId = tenantId;
+                setStatus('Memuat detail tenant...');
+                if (passwordBox) {
+                    passwordBox.style.display = 'none';
+                    passwordBox.textContent = '';
+                }
+                openModal();
+                try {
+                    const detail = await api('/superadmin/tenants/' + tenantId + '/detail', 'GET');
+                    fillForm(detail);
+                    setStatus('Anda bisa mengubah data tenant dan data owner registrasi.');
+                } catch (error) {
+                    setStatus('Gagal memuat data tenant.');
+                    if (window.nmxNotify) {
+                        window.nmxNotify({
+                            type: 'error',
+                            title: 'Inspect Gagal',
+                            message: error.message
+                        });
+                    }
+                }
+            }
+
+            async function resetOwnerPassword() {
+                if (!activeTenantId) {
+                    return;
+                }
+                const confirmed = await window.nmxConfirm(
+                    'Reset password owner tenant ini? Password lama tidak akan bisa dipakai lagi.',
+                    {
+                        title: 'Reset Password Owner',
+                        message: 'Sistem akan membuat password sementara baru dan menampilkannya satu kali di modal ini.',
+                        confirmText: 'Reset Password',
+                        confirmClass: 'btn btn-danger'
+                    }
+                );
+                if (!confirmed) {
+                    return;
+                }
+
+                setResetLoading(true);
+                setStatus('Mereset password owner...');
+                try {
+                    const data = await api('/superadmin/tenants/' + activeTenantId + '/detail/reset-owner-password', 'POST');
+                    const ownerUsername = data.ownerUsername || '-';
+                    const temporaryPassword = data.temporaryPassword || '-';
+                    if (passwordBox) {
+                        passwordBox.style.display = 'block';
+                        passwordBox.textContent = 'Username: ' + ownerUsername + ' | Password sementara: ' + temporaryPassword;
+                    }
+                    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                        navigator.clipboard.writeText(temporaryPassword).catch(function () {});
+                    }
+                    setStatus('Password owner berhasil direset. Simpan password sementara ini dan bagikan ke tenant.');
+                    if (window.nmxNotify) {
+                        window.nmxNotify({
+                            type: 'success',
+                            title: 'Password Direset',
+                            message: 'Password sementara owner sudah dibuat dan ditampilkan di modal.'
+                        });
+                    }
+                } catch (error) {
+                    setStatus('Gagal reset password owner.');
+                    if (window.nmxNotify) {
+                        window.nmxNotify({
+                            type: 'error',
+                            title: 'Reset Gagal',
+                            message: error.message
+                        });
+                    }
+                } finally {
+                    setResetLoading(false);
+                }
+            }
+
+            if (form) {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+                    if (!activeTenantId) {
+                        return;
+                    }
+
+                    const formData = new FormData(form);
+                    const values = Object.fromEntries(formData.entries());
+                    const payload = toPayload(values);
+                    setLoading(true);
+                    setStatus('Menyimpan perubahan...');
+                    try {
+                        await api('/superadmin/tenants/' + activeTenantId + '/detail', 'PUT', payload);
+                        setStatus('Perubahan berhasil disimpan.');
+                        if (window.nmxNotify) {
+                            window.nmxNotify({
+                                type: 'success',
+                                title: 'Tenant Diperbarui',
+                                message: 'Data tenant berhasil diperbarui.'
+                            });
+                        }
+                        window.setTimeout(function () {
+                            window.location.reload();
+                        }, 350);
+                    } catch (error) {
+                        setStatus('Gagal menyimpan perubahan.');
+                        if (window.nmxNotify) {
+                            window.nmxNotify({
+                                type: 'error',
+                                title: 'Update Gagal',
+                                message: error.message
+                            });
+                        }
+                    } finally {
+                        setLoading(false);
+                    }
+                });
+            }
+
+            document.querySelectorAll('.inspect-tenant-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const tenantId = button.getAttribute('data-tenant-id');
+                    if (!tenantId) {
+                        return;
+                    }
+                    inspectTenant(tenantId);
+                });
+            });
+
+            document.querySelectorAll('form[action*="/superadmin/dashboard/tenants/"][action$="/suspend"]').forEach(function (form) {
+                form.addEventListener('submit', async function (event) {
+                    if (form.dataset.confirmed === '1') {
+                        return;
+                    }
+                    event.preventDefault();
+                    const confirmed = await window.nmxConfirm(
+                        'Suspend tenant ini? Tenant tidak akan bisa login sampai diaktifkan kembali.',
+                        {
+                            title: 'Konfirmasi Suspend Tenant',
+                            message: 'Jika dilanjutkan, user tenant akan menerima notifikasi pembatasan akun saat mencoba login.',
+                            confirmText: 'Ya, Suspend Tenant',
+                            confirmClass: 'btn btn-danger'
+                        }
+                    );
+                    if (!confirmed) {
+                        return;
+                    }
+                    form.dataset.confirmed = '1';
+                    form.submit();
+                });
+            });
+
+            if (closeButton) {
+                closeButton.addEventListener('click', closeModal);
+            }
+
+            if (cancelButton) {
+                cancelButton.addEventListener('click', closeModal);
+            }
+
+            if (resetPasswordButton) {
+                resetPasswordButton.addEventListener('click', resetOwnerPassword);
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', function (event) {
+                    if (event.target === overlay) {
+                        closeModal();
+                    }
+                });
+            }
+        });
+    </script>
 </div>

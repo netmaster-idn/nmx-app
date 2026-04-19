@@ -27,6 +27,7 @@ import static com.netmaster.nmx.security.SessionAttributeKeys.TENANT_USERNAME;
 @Service
 @RequiredArgsConstructor
 public class TenantAuthenticationService {
+    private static final String SUSPENDED_LOGIN_MESSAGE = "Akun ada sedang dibatasi!! Mohon untuk menghubungi admin dev NMX";
 
     private final TenantRepository tenantRepository;
     private final TenantConnectionManager tenantConnectionManager;
@@ -86,6 +87,7 @@ public class TenantAuthenticationService {
 
             User user = candidateUser.get();
             if (user.isActive() && passwordEncoder.matches(password, user.getPassword())) {
+                ensureTenantActive(tenant);
                 matchedTenants.add(tenant);
             }
         }
@@ -110,7 +112,6 @@ public class TenantAuthenticationService {
         List<Tenant> candidates = new ArrayList<>();
         for (Long tenantId : tenantIds) {
             tenantRepository.findById(tenantId)
-                    .filter(tenant -> tenant.getStatus() == TenantStatus.ACTIVE)
                     .ifPresent(candidates::add);
         }
 
@@ -118,7 +119,7 @@ public class TenantAuthenticationService {
             return candidates;
         }
 
-        for (Tenant tenant : tenantRepository.findByStatusOrderByCreatedAtDesc(TenantStatus.ACTIVE)) {
+        for (Tenant tenant : tenantRepository.findAll()) {
             if (findTenantUser(tenant, username).isPresent()) {
                 candidates.add(tenant);
             }
@@ -137,6 +138,9 @@ public class TenantAuthenticationService {
     }
 
     private void ensureTenantActive(Tenant tenant) {
+        if (tenant.getStatus() == TenantStatus.SUSPENDED) {
+            throw new IllegalStateException(SUSPENDED_LOGIN_MESSAGE);
+        }
         if (tenant.getStatus() != TenantStatus.ACTIVE) {
             throw new IllegalStateException("Tenant belum aktif atau sedang dinonaktifkan.");
         }

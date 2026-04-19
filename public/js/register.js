@@ -50,13 +50,8 @@ function showErrors(errors = {}) {
 }
 
 function showAlert(type, message) {
-  formAlert.className =
-    "mt-5 rounded-2xl border px-4 py-3 text-sm leading-6 " +
-    (type === "success"
-      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-100"
-      : "border-rose-400/30 bg-rose-400/10 text-rose-100");
+  formAlert.className = "register-alert " + (type === "success" ? "success" : "error");
   formAlert.textContent = message;
-  formAlert.classList.remove("hidden");
 }
 
 function hideAlert() {
@@ -79,13 +74,11 @@ function setPasswordRuleState(node, isValid) {
   if (!node) {
     return;
   }
-  node.className = isValid
-    ? "inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/12 px-2 py-0.5 text-[10px] text-emerald-200"
-    : "inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] text-slate-300";
+  node.className = isValid ? "password-rule is-valid" : "password-rule";
 
   const icon = node.querySelector(".password-rule-icon");
   if (icon) {
-    icon.textContent = isValid ? "✓" : "•";
+    icon.textContent = isValid ? "*" : ".";
   }
 }
 
@@ -110,12 +103,12 @@ function updateConfirmPasswordStatus() {
   }
 
   if (password === confirmPassword) {
-    confirmPasswordStatus.className = "mt-1 text-[11px] font-medium text-emerald-300";
+    confirmPasswordStatus.className = "confirm-password-status is-valid";
     confirmPasswordStatus.textContent = "password match";
     return;
   }
 
-  confirmPasswordStatus.className = "mt-1 text-[11px] font-medium text-rose-300";
+  confirmPasswordStatus.className = "confirm-password-status";
   confirmPasswordStatus.textContent = "incorrect password";
 }
 

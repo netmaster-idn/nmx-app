@@ -68,10 +68,41 @@ public class SuperAdminTenantController {
         return ResponseEntity.ok(ApiResponse.success("Detail tenant berhasil diambil.", tenantAccessService.getTenant(id)));
     }
 
+    @GetMapping("/superadmin/tenants/{id}/detail")
+    public ResponseEntity<ApiResponse<TenantInspectResponse>> getTenantDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                "Detail tenant untuk inspect berhasil diambil.",
+                tenantAccessService.getTenantInspectDetail(id)
+        ));
+    }
+
     @PutMapping("/superadmin/tenants/{id}")
     public ResponseEntity<ApiResponse<Tenant>> updateTenant(@PathVariable Long id,
                                                             @Valid @RequestBody TenantUpdateRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Tenant berhasil diperbarui.", tenantAccessService.updateTenant(id, request)));
+    }
+
+    @PutMapping("/superadmin/tenants/{id}/detail")
+    public ResponseEntity<ApiResponse<TenantInspectResponse>> updateTenantDetail(@PathVariable Long id,
+                                                                                  @Valid @RequestBody TenantInspectUpdateRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(
+                "Detail tenant berhasil diperbarui.",
+                tenantAccessService.updateTenantInspectDetail(id, request)
+        ));
+    }
+
+    @PostMapping("/superadmin/tenants/{id}/detail/reset-owner-password")
+    public ResponseEntity<ApiResponse<TenantOwnerPasswordResetResponse>> resetOwnerPassword(@PathVariable Long id,
+                                                                                             HttpSession session,
+                                                                                             HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(ApiResponse.success(
+                "Password owner tenant berhasil direset.",
+                tenantAccessService.resetTenantOwnerPassword(
+                        id,
+                        (Long) session.getAttribute(SUPERADMIN_ID),
+                        httpServletRequest.getRemoteAddr()
+                )
+        ));
     }
 
     @DeleteMapping("/superadmin/tenants/{id}")

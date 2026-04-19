@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface IspRegistrationRepository extends JpaRepository<IspRegistration, Long> {
     Optional<IspRegistration> findBySlug(String slug);
     Optional<IspRegistration> findByEmail(String email);
+    Optional<IspRegistration> findByOwnerEmailIgnoreCase(String ownerEmail);
     Optional<IspRegistration> findByOwnerUsernameIgnoreCase(String ownerUsername);
     List<IspRegistration> findByStatusOrderByCreatedAtAsc(TenantStatus status);
 }
